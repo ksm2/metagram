@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Generated
+dest
+docs
+src/**/*.js
+
+# Vendor
+node_modules

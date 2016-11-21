@@ -1,0 +1,15 @@
+{
+  "name": "@metagram/mi",
+  "version": "1.0.0",
+  "description": "Metagram Model Interchange",
+  "main": "index.js",
+  "dependencies": {
+    "node-fetch": "^1.6.3",
+    "xml2js": "^0.4.17"
+  },
+  "author": {
+    "name": "Konstantin Simon Maria Möllers",
+    "email": "ksm.moellers@gmail.com"
+  },
+  "license": "MIT"
+}
