@@ -14,7 +14,7 @@ export class Loader {
   }
 
   loadFromXMI(filename: string, encoding: string = 'utf8'): Promise<Model> {
-    return this.loaders['xmi'].loadFromFile(filename, encoding);
+    return this.loaders['xmi'].loadFromURL(filename, encoding);
   }
 
   saveToXMI(model: Model, filename: string, encoding: string = 'utf8'): Promise<void> {
@@ -22,7 +22,7 @@ export class Loader {
   }
 
   loadFromJSON(filename: string, encoding: string = 'utf8'): Promise<Model> {
-    return this.loaders['json'].loadFromFile(filename, encoding);
+    return this.loaders['json'].loadFromURL(filename, encoding);
   }
 
   saveToJSON(model: Model, filename: string, encoding: string = 'utf8'): Promise<void> {

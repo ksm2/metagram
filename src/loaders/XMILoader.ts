@@ -69,6 +69,8 @@ export class XMILoader extends AbstractLoader {
     let $type = content.$[`${xmiNS}type`];
     let $ns = parentNS;
 
+    if (!$type) $type = 'uml:Package'; // FIXME: Should be loaded from HREF
+
     let i = $type.indexOf(':');
     if (i >= 0) {
       $ns = $type.substr(0, i);

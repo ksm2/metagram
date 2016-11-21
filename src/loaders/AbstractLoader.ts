@@ -1,5 +1,7 @@
 import { Model } from '../model/Model';
 import fs = require('fs');
+import path = require('path');
+import fetch from 'node-fetch';
 
 export type NamespaceObject = [string, string][];
 
@@ -16,6 +18,38 @@ export interface ModelElementObject {
 }
 
 export abstract class AbstractLoader {
+  private cacheDir: string;
+
+  constructor(cacheDir?: string) {
+    this.cacheDir = cacheDir || path.join(__dirname, '../../var');
+  }
+
+  loadFromURL(url: string, encoding: string = 'utf8'): Promise<Model> {
+    console.info(`Resolving ${url}`);
+      const filename = path.join(this.cacheDir, url.replace(/[^\w.]/g, '-'));
+      return new Promise((resolve, reject) => fs.exists(filename, (exists) => {
+        if (exists) return resolve(exists);
+        reject(exists);
+      }))
+        .catch(() => {
+          console.info(`Downloading ${url}`);
+          return fetch(url)
+            .then((res) => {
+              return res.text();
+            })
+            .then((text) => {
+              return new Promise<void>((res, rej) => fs.writeFile(filename, text, { encoding }, (err) => {
+                if (err) return rej(err);
+                res();
+              }));
+            })
+          ;
+        })
+        .then(() => {
+          console.info(`Using cached ${url}`);
+          return this.loadFromFile(filename, encoding);
+        });
+  }
 
   /**
    * Loads a model from file
