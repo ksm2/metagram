@@ -2,24 +2,36 @@ import { Model } from './Model';
 import { ModelElementObject } from '../loaders/AbstractLoader';
 
 export class ModelElement {
+  protected model: Model;
   private $id: string;
   private $uri: string;
   private $type: string;
   private elements: Map<string, string | ModelElement[]>;
 
-  constructor(protected model: Model, data: ModelElementObject) {
-    model.setElementById(data.$id, this);
-    this.$id = data.$id;
-    this.$uri = data.$uri;
-    this.$type = data.$type;
-    this.elements = new Map(Object.getOwnPropertyNames(data).filter(k => !k.startsWith('$')).map((k) => {
+  constructor(model: Model, id: string, uri: string, type: string) {
+    this.model = model;
+    this.$id = id;
+    this.$uri = uri;
+    this.$type = type;
+    this.elements = new Map();
+
+    model.setElementById(id, this);
+  }
+
+  static fromData(model: Model, data: ModelElementObject): ModelElement {
+    const element = new ModelElement(model, data.$id, data.$uri, data.$type);
+
+    Object.getOwnPropertyNames(data).filter(k => !k.startsWith('$')).forEach((k) => {
       let datum: string | any[] = data[k];
       if (datum instanceof Array) {
-        datum = datum.map(it => new ModelElement(model, it));
+        element.set(k, datum.map(it => ModelElement.fromData(model, it)));
+        return;
       }
 
-      return [k, datum] as [string, string | ModelElement[]];
-    }));
+      element.set(k, datum);
+    });
+
+    return element;
   }
 
   getData(): ModelElementObject {
@@ -49,6 +61,10 @@ export class ModelElement {
 
   has(key: string): boolean {
     return this.elements.has(key);
+  }
+
+  set(key: string, value: string | ModelElement[]): void {
+    this.elements.set(key, value);
   }
 
   getString(key: string, defaultValue?: string): string | undefined {

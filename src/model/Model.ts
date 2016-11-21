@@ -7,7 +7,7 @@ export class Model {
 
   constructor(data: ModelElementObject[]) {
     this.idMap = new Map();
-    this.elements = new Set(data.map(datum => new ModelElement(this, datum)));
+    this.elements = new Set(data.map(datum => ModelElement.fromData(this, datum)));
   }
 
   getElementById(id: string): ModelElement | undefined {
