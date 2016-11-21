@@ -1,4 +1,4 @@
-import { AbstractLoader, ModelElementObject } from './AbstractLoader';
+import { AbstractLoader, ModelElementObject, ModelObject } from './AbstractLoader';
 import { Parser, Builder } from 'xml2js';
 import { Model } from '../model/Model';
 
@@ -13,25 +13,27 @@ export class XMILoader extends AbstractLoader {
   }
 
   async loadFromString(data: string): Promise<Model> {
-    const object = await new Promise<ModelElementObject[]>((resolve, reject) => {
+    const xmiObject = await new Promise<Object>((resolve, reject) => {
       this.parser.parseString(data, (err: string, result: Object) => {
         if (err) {
           reject(err);
           return;
         }
 
-        resolve(this.transformXMIToObject(result));
+        resolve(result);
       });
     });
 
-    return this.loadFromObject(object);
+    const modelObject = this.transformXMIToObject(xmiObject);
+
+    return this.loadFromObject(modelObject);
   }
 
   saveToString(model: Model): Promise<string> {
     return this.saveToObject(model).then(data => this.builder.buildObject(data));
   }
 
-  private transformXMIToObject(xmlObject: { [key: string]: any }): ModelElementObject[] {
+  private transformXMIToObject(xmlObject: { [key: string]: any }): ModelObject {
     for (let first in xmlObject) {
       const xmi = xmlObject[first];
       const namespaces = xmi['$'];
@@ -51,22 +53,25 @@ export class XMILoader extends AbstractLoader {
 
       console.info(`Using XMI version ${xmiURI}`);
 
-      return Object.getOwnPropertyNames(xmi).filter(key => key != '$').map((key) => {
-        return this.transformXMIChildToObject(ns, xmi[key][0], xmiNS + ':', xmiURI);
-      });
+      return {
+        namespaces: Array.from(ns),
+        content: Object.getOwnPropertyNames(xmi).filter(key => key != '$').map((key) => {
+          return this.transformXMIChildToObject(xmi[key][0], xmiNS + ':', xmiNS);
+        }),
+      };
     }
 
     throw 'XML document is empty';
   }
 
-  private transformXMIChildToObject(ns: Map<string, string>, content: any, xmiNS: string, parentURI: string): ModelElementObject {
+  private transformXMIChildToObject(content: any, xmiNS: string, parentNS: string): ModelElementObject {
     const $id = content.$[`${xmiNS}id`];
     let $type = content.$[`${xmiNS}type`];
-    let $uri = parentURI;
+    let $ns = parentNS;
 
     let i = $type.indexOf(':');
     if (i >= 0) {
-      $uri = ns.get($type.substr(0, i)) || parentURI;
+      $ns = $type.substr(0, i);
       $type = $type.substr(i + 1);
     }
 
@@ -83,10 +88,9 @@ export class XMILoader extends AbstractLoader {
         return;
       }
 
-      children[key] = childrenOfType.map(child => this.transformXMIChildToObject(ns, child, xmiNS, $uri));
+      children[key] = childrenOfType.map(child => this.transformXMIChildToObject(child, xmiNS, $ns));
     });
-    // console.log(content.$);
 
-    return Object.assign({ $uri, $id, $type }, attributes, children);
+    return Object.assign({ $ns, $id, $type }, attributes, children);
   }
 }

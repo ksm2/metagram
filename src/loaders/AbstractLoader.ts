@@ -1,8 +1,15 @@
 import { Model } from '../model/Model';
 import fs = require('fs');
 
+export type NamespaceObject = [string, string][];
+
+export interface ModelObject {
+  namespaces: NamespaceObject;
+  content: ModelElementObject[];
+}
+
 export interface ModelElementObject {
-  $uri: string;
+  $ns: string;
   $type: string;
   $id: string;
   [children: string]: ModelElementObject[] | string;
@@ -36,7 +43,7 @@ export abstract class AbstractLoader {
    * @param data An object to load the model element from
    * @returns Promise for a model element
    */
-  async loadFromObject(data: ModelElementObject[]): Promise<Model> {
+  async loadFromObject(data: ModelObject): Promise<Model> {
     return new Model(data);
   }
 
@@ -73,8 +80,11 @@ export abstract class AbstractLoader {
    * @param model Model which should be saved
    * @returns Promise for an object
    */
-  async saveToObject(model: Model): Promise<ModelElementObject[]> {
-    return Array.from(model.getElements()).map(it => it.getData());
+  async saveToObject(model: Model): Promise<ModelObject> {
+    return {
+      namespaces: model.getNamespaces(),
+      content: Array.from(model.getElements()).map(it => it.getData()),
+    };
   }
 
   /**

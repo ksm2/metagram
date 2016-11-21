@@ -1,17 +1,18 @@
 import { Model } from './Model';
 import { ModelElementObject } from '../loaders/AbstractLoader';
+import { ModelNamespace } from './ModelNamespace';
 
 export class ModelElement {
   protected model: Model;
   private $id: string;
-  private $uri: string;
+  private $ns: string;
   private $type: string;
   private elements: Map<string, string | ModelElement[]>;
 
   constructor(model: Model, id: string, uri: string, type: string) {
     this.model = model;
     this.$id = id;
-    this.$uri = uri;
+    this.$ns = uri;
     this.$type = type;
     this.elements = new Map();
 
@@ -19,7 +20,7 @@ export class ModelElement {
   }
 
   static fromData(model: Model, data: ModelElementObject): ModelElement {
-    const element = new ModelElement(model, data.$id, data.$uri, data.$type);
+    const element = new ModelElement(model, data.$id, data.$ns, data.$type);
 
     Object.getOwnPropertyNames(data).filter(k => !k.startsWith('$')).forEach((k) => {
       let datum: string | any[] = data[k];
@@ -35,7 +36,7 @@ export class ModelElement {
   }
 
   getData(): ModelElementObject {
-    const { $id, $uri, $type } = this;
+    const { $id, $type, $ns } = this;
     const children: { [key: string]: string | ModelElementObject[] } = {};
     this.elements.forEach((value, key) => {
       let datum: any = value;
@@ -44,15 +45,15 @@ export class ModelElement {
       }
       children[key] = datum;
     });
-    return Object.assign({ $type, $id, $uri }, children);
+    return Object.assign({ $type, $id, $ns }, children);
   }
 
   getID(): string {
     return this.$id;
   }
 
-  getURI(): string {
-    return this.$uri;
+  getNamespace(): ModelNamespace {
+    return this.model.getNamespace(this.$ns);
   }
 
   getType(): string {
