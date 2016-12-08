@@ -2,14 +2,16 @@ import { XMILoader } from './XMILoader';
 import { JSONLoader } from './JSONLoader';
 import { AbstractLoader } from './AbstractLoader';
 import { Model } from '../model/Model';
+import { FileService } from '../services/FileService';
 
 export class Loader {
   private loaders: { [key: string]: AbstractLoader };
 
   constructor() {
+    const fileService = new FileService();
     this.loaders = {
-      xmi: new XMILoader(),
-      json: new JSONLoader(),
+      xmi: new XMILoader(fileService),
+      json: new JSONLoader(fileService),
     };
   }
 

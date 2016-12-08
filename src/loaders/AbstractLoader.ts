@@ -1,54 +1,53 @@
 import { Model } from '../model/Model';
-import fs = require('fs');
+import { FileService } from '../services/FileService';
 import path = require('path');
 import fetch from 'node-fetch';
 
 export type NamespaceObject = [string, string][];
 
 export interface ModelObject {
+  content?: ModelElementObject[];
+}
+
+export interface ModelDocumentObject extends ModelObject {
   namespaces: NamespaceObject;
   content: ModelElementObject[];
 }
 
-export interface ModelElementObject {
-  $ns: string;
-  $type: string;
-  $id: string;
-  [children: string]: ModelElementObject[] | string;
+export interface ModelObjectElements {
+  [child: string]: ModelElementObject[] | string;
+}
+
+export interface ModelElementObject extends ModelObject {
+  ns: string;
+  type: string;
+  id?: string;
+  el: ModelObjectElements;
 }
 
 export abstract class AbstractLoader {
   private cacheDir: string;
 
-  constructor(cacheDir?: string) {
+  constructor(private fileService: FileService, cacheDir?: string) {
     this.cacheDir = cacheDir || path.join(__dirname, '../../var');
   }
 
-  loadFromURL(url: string, encoding: string = 'utf8'): Promise<Model> {
+  async loadFromURL(url: string, encoding: string = 'utf8'): Promise<Model> {
     console.info(`Resolving ${url}`);
-      const filename = path.join(this.cacheDir, url.replace(/[^\w.]/g, '-'));
-      return new Promise((resolve, reject) => fs.exists(filename, (exists) => {
-        if (exists) return resolve(exists);
-        reject(exists);
-      }))
-        .catch(() => {
-          console.info(`Downloading ${url}`);
-          return fetch(url)
-            .then((res) => {
-              return res.text();
-            })
-            .then((text) => {
-              return new Promise<void>((res, rej) => fs.writeFile(filename, text, { encoding }, (err) => {
-                if (err) return rej(err);
-                res();
-              }));
-            })
-          ;
-        })
-        .then(() => {
-          console.info(`Using cached ${url}`);
-          return this.loadFromFile(filename, encoding);
-        });
+    const filename = path.join(this.cacheDir, url.replace(/[^\w.]/g, '-'));
+
+    const exists = await this.fileService.fileExists(filename);
+    if (!exists) {
+      console.info(`Downloading ${url}`);
+      const res = await fetch(url);
+      const text = await res.text();
+      console.info(`Caching ${url}`);
+      await this.fileService.writeFile(text, filename, encoding);
+    } else {
+      console.info(`Using cached ${url}`);
+    }
+
+    return this.loadFromFile(filename, encoding);
   }
 
   /**
@@ -58,17 +57,9 @@ export abstract class AbstractLoader {
    * @param [encoding] Encoding of that file
    * @returns Promise for a model element
    */
-  loadFromFile(filename: string, encoding: string = 'utf8'): Promise<Model> {
-    return new Promise((resolve, reject) => {
-      fs.readFile(filename, encoding, (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        resolve(this.loadFromString(data));
-      });
-    });
+  async loadFromFile(filename: string, encoding: string = 'utf8'): Promise<Model> {
+    const data = await this.fileService.readFile(filename, encoding);
+    return this.loadFromString(data);
   }
 
   /**
@@ -77,7 +68,7 @@ export abstract class AbstractLoader {
    * @param data An object to load the model element from
    * @returns Promise for a model element
    */
-  async loadFromObject(data: ModelObject): Promise<Model> {
+  async loadFromObject(data: ModelDocumentObject): Promise<Model> {
     return new Model(data);
   }
 
@@ -98,14 +89,7 @@ export abstract class AbstractLoader {
    */
   async saveToFile(model: Model, filename: string, encoding: string = 'utf8'): Promise<void> {
     const data = await this.saveToString(model);
-    return new Promise<void>((resolve, reject) => {
-      fs.writeFile(filename, data, { encoding }, (err) => {
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      });
-    });
+    this.fileService.writeFile(data, filename, encoding);
   }
 
   /**
@@ -114,7 +98,7 @@ export abstract class AbstractLoader {
    * @param model Model which should be saved
    * @returns Promise for an object
    */
-  async saveToObject(model: Model): Promise<ModelObject> {
+  async saveToObject(model: Model): Promise<ModelDocumentObject> {
     return {
       namespaces: model.getNamespaces(),
       content: Array.from(model.getElements()).map(it => it.getData()),

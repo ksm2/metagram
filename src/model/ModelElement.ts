@@ -1,63 +1,72 @@
 import { Model } from './Model';
-import { ModelElementObject } from '../loaders/AbstractLoader';
+import { ModelElementObject, ModelObjectElements } from '../loaders/AbstractLoader';
 import { ModelNamespace } from './ModelNamespace';
 
 export class ModelElement {
   protected model: Model;
-  private $id: string;
-  private $ns: string;
-  private $type: string;
+  private id: string;
+  private ns: string;
+  private type: string;
   private elements: Map<string, string | ModelElement[]>;
+  private content: Set<ModelElement>;
 
   constructor(model: Model, id: string, uri: string, type: string) {
     this.model = model;
-    this.$id = id;
-    this.$ns = uri;
-    this.$type = type;
+    this.id = id;
+    this.ns = uri;
+    this.type = type;
     this.elements = new Map();
+    this.content = new Set();
 
     model.setElementById(id, this);
   }
 
   static fromData(model: Model, data: ModelElementObject): ModelElement {
-    const element = new ModelElement(model, data.$id, data.$ns, data.$type);
+    const element = new ModelElement(model, data.id || '', data.ns, data.type);
 
-    Object.getOwnPropertyNames(data).filter(k => !k.startsWith('$')).forEach((k) => {
-      let datum: string | any[] = data[k];
+    Object.getOwnPropertyNames(data.el).forEach((k) => {
+      let datum: string | ModelElementObject[] = data.el[k];
       if (datum instanceof Array) {
         element.set(k, datum.map(it => ModelElement.fromData(model, it)));
         return;
       }
 
-      element.set(k, datum);
+      if (datum) element.set(k, datum);
     });
+
+    if (data.content) data.content.forEach(it => element.content.add(ModelElement.fromData(model, it)));
 
     return element;
   }
 
   getData(): ModelElementObject {
-    const { $id, $type, $ns } = this;
-    const children: { [key: string]: string | ModelElementObject[] } = {};
+    const { id, type, ns } = this;
+    const object: ModelElementObject = { id, type, ns, el: {} };
     this.elements.forEach((value, key) => {
       let datum: any = value;
       if (datum instanceof Array) {
         datum = datum.map(it => it.getData());
       }
-      children[key] = datum;
+      object.el[key] = datum;
     });
-    return Object.assign({ $type, $id, $ns }, children);
+
+    if (this.content.size) {
+      object.content = Array.from(this.content).map(it => it.getData());
+    }
+
+    return object;
   }
 
   getID(): string {
-    return this.$id;
+    return this.id;
   }
 
   getNamespace(): ModelNamespace {
-    return this.model.getNamespace(this.$ns);
+    return this.model.getNamespace(this.ns);
   }
 
   getType(): string {
-    return this.$type;
+    return this.type;
   }
 
   has(key: string): boolean {

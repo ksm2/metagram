@@ -1,5 +1,5 @@
 import { ModelElement } from './ModelElement';
-import { NamespaceObject, ModelObject } from '../loaders/AbstractLoader';
+import { NamespaceObject, ModelDocumentObject } from '../loaders/AbstractLoader';
 import { ModelNamespace } from './ModelNamespace';
 
 export class Model {
@@ -7,7 +7,7 @@ export class Model {
   private namespaces: Map<string, ModelNamespace>;
   private elements: Set<ModelElement>;
 
-  constructor(data: ModelObject) {
+  constructor(data: ModelDocumentObject) {
     this.idMap = new Map();
 
     this.setNamespaces(data.namespaces);
