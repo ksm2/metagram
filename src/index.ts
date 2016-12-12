@@ -1,5 +1,5 @@
 export { FileService } from './services/FileService';
-export { ModelElement } from './model/ModelElement';
+export { Entity } from './model/Entity';
 export { Loader } from './loaders/Loader';
 export { AbstractLoader } from './loaders/AbstractLoader';
 export { XMILoader } from './loaders/XMILoader';

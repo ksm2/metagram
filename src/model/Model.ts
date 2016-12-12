@@ -1,37 +1,44 @@
-import { ModelElement } from './ModelElement';
+import { Entity, fromData } from './Entity';
 import { NamespaceObject, ModelDocumentObject } from '../loaders/AbstractLoader';
 import { ModelNamespace } from './ModelNamespace';
 
 export class Model {
-  private idMap: Map<string, ModelElement>;
+  private idMap: Map<string, Entity>;
   private namespaces: Map<string, ModelNamespace>;
-  private elements: Set<ModelElement>;
+  private elements: Set<Entity>;
 
   constructor(data: ModelDocumentObject) {
     this.idMap = new Map();
 
     this.setNamespaces(data.namespaces);
-    this.elements = new Set(data.content.map(datum => ModelElement.fromData(this, datum)));
+    this.elements = new Set(data.content.map(datum => fromData(this, datum)));
   }
 
   /**
    * Sets an elements ID
    */
-  setElementById(id: string, element: ModelElement) {
+  setElementById(id: string, element: Entity) {
     this.idMap.set(id, element);
+  }
+
+  /**
+   * Unsets an elements ID
+   */
+  unsetElementById(id: string) {
+    this.idMap.delete(id);
   }
 
   /**
    * Returns an element by its ID
    */
-  getElementById(id: string): ModelElement | undefined {
+  getElementById(id: string): Entity | undefined {
     return this.idMap.get(id);
   }
 
   /**
    * Returns all elements
    */
-  getElements(): Set<ModelElement> {
+  getElements(): Set<Entity> {
     return this.elements;
   }
 
@@ -52,7 +59,7 @@ export class Model {
   }
 
   /**
-   * Overwrites all known namespaces to this model
+   * Overwrites all known namespaces to this _model
    */
   setNamespaces(namespaces: NamespaceObject): void {
     this.namespaces = new Map(namespaces.map(([prefix, uri]) => [prefix, new ModelNamespace(uri)] as [string, ModelNamespace]));

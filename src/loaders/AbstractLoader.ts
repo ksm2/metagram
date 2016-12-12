@@ -51,11 +51,11 @@ export abstract class AbstractLoader {
   }
 
   /**
-   * Loads a model from file
+   * Loads a _model from file
    *
    * @param filename Name of the file to load
    * @param [encoding] Encoding of that file
-   * @returns Promise for a model element
+   * @returns Promise for a _model element
    */
   async loadFromFile(filename: string, encoding: string = 'utf8'): Promise<Model> {
     const data = await this.fileService.readFile(filename, encoding);
@@ -63,24 +63,24 @@ export abstract class AbstractLoader {
   }
 
   /**
-   * Loads a model from object
+   * Loads a _model from object
    *
-   * @param data An object to load the model element from
-   * @returns Promise for a model element
+   * @param data An object to load the _model element from
+   * @returns Promise for a _model element
    */
   async loadFromObject(data: ModelDocumentObject): Promise<Model> {
     return new Model(data);
   }
 
   /**
-   * Loads a model from string
+   * Loads a _model from string
    *
    * @param data A string containing data parsable by this loader
    */
   abstract loadFromString(data: string): Promise<Model>;
 
   /**
-   * Loads a model from file
+   * Loads a _model from file
    *
    * @param model Model which should be saved
    * @param filename Name of the file to save
@@ -93,7 +93,7 @@ export abstract class AbstractLoader {
   }
 
   /**
-   * Saves a model to object
+   * Saves a _model to object
    *
    * @param model Model which should be saved
    * @returns Promise for an object
@@ -106,7 +106,7 @@ export abstract class AbstractLoader {
   }
 
   /**
-   * Saves a model to string
+   * Saves a _model to string
    *
    * @param model Model which should be saved
    */
