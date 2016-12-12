@@ -1,6 +1,4 @@
-export { FileService } from './services/FileService';
+export * from './encoders';
+export * from './serializers';
+export * from './services';
 export { Entity } from './model/Entity';
-export { Loader } from './loaders/Loader';
-export { AbstractLoader } from './loaders/AbstractLoader';
-export { XMILoader } from './loaders/XMILoader';
-export { JSONLoader } from './loaders/JSONLoader';

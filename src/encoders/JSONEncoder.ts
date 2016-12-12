@@ -1,7 +1,8 @@
-import { AbstractLoader, ModelDocumentObject } from './AbstractLoader';
+import { AbstractEncoder } from './AbstractEncoder';
+import { ModelDocumentObject } from './Encoder';
 import { Model } from '../model/Model';
 
-export class JSONLoader extends AbstractLoader {
+export class JSONEncoder extends AbstractEncoder {
   loadFromString(data: string): Promise<Model> {
     return new Promise<ModelDocumentObject>((reject, resolve) => {
       try {

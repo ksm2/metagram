@@ -1,11 +1,18 @@
 #!/usr/bin/env node
 const mi = require('./dest');
 
-const l = new mi.Loader();
+const fileService = new mi.FileService();
+const opts = {
+  encoders: {
+    xmi: new mi.XMIEncoder(fileService),
+    json: new mi.JSONEncoder(fileService),
+  },
+};
+const serializer = new mi.Serializer(opts);
 
-l.loadFromXMI('http://www.omg.org/spec/UML/20131001/UMLDI.xmi')
+serializer.deserialize('xmi', 'http://www.omg.org/spec/UML/20131001/UMLDI.xmi')
   .then((model) => {
-    return Promise.all([l.saveToJSON(model, 'resources/out.json'), l.saveToXMI(model, 'resources/out.xmi')]);
+    return Promise.all([serializer.serialize(model, 'json', 'resources/out.json'), serializer.serialize(model, 'xmi', 'resources/out.xmi')]);
   })
   .catch((err) => console.error(err))
 ;

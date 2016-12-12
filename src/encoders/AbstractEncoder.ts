@@ -2,30 +2,9 @@ import { Model } from '../model/Model';
 import { FileService } from '../services/FileService';
 import path = require('path');
 import fetch from 'node-fetch';
+import { Encoder, ModelDocumentObject } from './Encoder';
 
-export type NamespaceObject = [string, string][];
-
-export interface ModelObject {
-  content?: ModelElementObject[];
-}
-
-export interface ModelDocumentObject extends ModelObject {
-  namespaces: NamespaceObject;
-  content: ModelElementObject[];
-}
-
-export interface ModelObjectElements {
-  [child: string]: ModelElementObject[] | string;
-}
-
-export interface ModelElementObject extends ModelObject {
-  ns: string;
-  type: string;
-  id?: string;
-  el: ModelObjectElements;
-}
-
-export abstract class AbstractLoader {
+export abstract class AbstractEncoder implements Encoder {
   private cacheDir: string;
 
   constructor(private fileService: FileService, cacheDir?: string) {
@@ -50,54 +29,22 @@ export abstract class AbstractLoader {
     return this.loadFromFile(filename, encoding);
   }
 
-  /**
-   * Loads a _model from file
-   *
-   * @param filename Name of the file to load
-   * @param [encoding] Encoding of that file
-   * @returns Promise for a _model element
-   */
   async loadFromFile(filename: string, encoding: string = 'utf8'): Promise<Model> {
     const data = await this.fileService.readFile(filename, encoding);
     return this.loadFromString(data);
   }
 
-  /**
-   * Loads a _model from object
-   *
-   * @param data An object to load the _model element from
-   * @returns Promise for a _model element
-   */
   async loadFromObject(data: ModelDocumentObject): Promise<Model> {
     return new Model(data);
   }
 
-  /**
-   * Loads a _model from string
-   *
-   * @param data A string containing data parsable by this loader
-   */
   abstract loadFromString(data: string): Promise<Model>;
 
-  /**
-   * Loads a _model from file
-   *
-   * @param model Model which should be saved
-   * @param filename Name of the file to save
-   * @param [encoding] Encoding of that file
-   * @returns Promise to successful writing
-   */
   async saveToFile(model: Model, filename: string, encoding: string = 'utf8'): Promise<void> {
     const data = await this.saveToString(model);
     this.fileService.writeFile(data, filename, encoding);
   }
 
-  /**
-   * Saves a _model to object
-   *
-   * @param model Model which should be saved
-   * @returns Promise for an object
-   */
   async saveToObject(model: Model): Promise<ModelDocumentObject> {
     return {
       namespaces: model.getNamespaces(),
@@ -105,10 +52,5 @@ export abstract class AbstractLoader {
     };
   }
 
-  /**
-   * Saves a _model to string
-   *
-   * @param model Model which should be saved
-   */
   abstract saveToString(model: Model): Promise<string>;
 }

@@ -1,5 +1,5 @@
 import { Entity, fromData } from './Entity';
-import { NamespaceObject, ModelDocumentObject } from '../loaders/AbstractLoader';
+import { NamespaceObject, ModelDocumentObject } from '../encoders';
 import { ModelNamespace } from './ModelNamespace';
 
 export class Model {

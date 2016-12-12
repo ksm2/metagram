@@ -1,4 +1,5 @@
-import { AbstractLoader, ModelElementObject, ModelDocumentObject, ModelObject } from './AbstractLoader';
+import { AbstractEncoder } from './AbstractEncoder';
+import { ModelElementObject, ModelDocumentObject } from './Encoder';
 import { Parser, Builder } from 'xml2js';
 import { Model } from '../model/Model';
 import { FileService } from '../services/FileService';
@@ -10,7 +11,7 @@ export const XMI_VERSIONS: { [URI: string]: string } = {
   'http://www.omg.org/spec/XMI/20071001': '2.1.1',
 };
 
-export class XMILoader extends AbstractLoader {
+export class XMIEncoder extends AbstractEncoder {
   private parser: Parser;
   private builder: Builder;
 
@@ -176,6 +177,4 @@ export class XMILoader extends AbstractLoader {
 
     return Object.assign({ '$': Object.assign(xmiAttr, simpleAttr) }, children, complexAttr);
   }
-
-
 }
