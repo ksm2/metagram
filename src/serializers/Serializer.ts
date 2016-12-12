@@ -1,4 +1,4 @@
-import { Encoder } from '../encoders/Encoder';
+import { Encoder, ModelDocumentObject } from '../encoders/Encoder';
 import { Model } from '../model/Model';
 
 export interface SerializerOptions {
@@ -16,11 +16,36 @@ export class Serializer {
     this.encoders = options.encoders || {};
   }
 
-  deserialize(format: string, filename: string, encoding: string = 'utf8'): Promise<Model> {
-    return this.encoders[format].loadFromURL(filename, encoding);
+  /**
+   * Serializes a model and saves it to a given filename
+   */
+  async serialize(model: Model, format: string, filename: string, encoding: string = 'utf8'): Promise<void> {
+    const obj = await this.normalize(model);
+    return this.encoders[format].encodeFile(obj, filename, encoding);
   }
 
-  serialize(model: Model, format: string, filename: string, encoding: string = 'utf8'): Promise<void> {
-    return this.encoders[format].saveToFile(model, filename, encoding);
+  /**
+   * Deserializes a model given from data stored at a filename
+   */
+  async deserialize(format: string, filename: string, encoding: string = 'utf8'): Promise<Model> {
+    const obj = await this.encoders[format].decodeURL(filename, encoding);
+    return this.denormalize(obj);
+  }
+
+  /**
+   * Normalizes a model to an object.
+   */
+  async normalize(model: Model): Promise<ModelDocumentObject> {
+    return {
+      namespaces: model.getNamespaces(),
+      content: Array.from(model.getElements()).map(it => it.getData()),
+    };
+  }
+
+  /**
+   * Denormalizes an object to a model.
+   */
+  async denormalize(object: ModelDocumentObject): Promise<Model> {
+    return new Model(object);
   }
 }

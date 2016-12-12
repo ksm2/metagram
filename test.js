@@ -11,8 +11,6 @@ const opts = {
 const serializer = new mi.Serializer(opts);
 
 serializer.deserialize('xmi', 'http://www.omg.org/spec/UML/20131001/UMLDI.xmi')
-  .then((model) => {
-    return Promise.all([serializer.serialize(model, 'json', 'resources/out.json'), serializer.serialize(model, 'xmi', 'resources/out.xmi')]);
-  })
-  .catch((err) => console.error(err))
+  .then(model => Promise.all(['json', 'xmi'].map(_ => serializer.serialize(model, _, `resources/out.${_}`))))
+  .catch(err => console.error(err))
 ;

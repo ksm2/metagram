@@ -1,7 +1,6 @@
-import { AbstractEncoder } from './AbstractEncoder';
+import { Encoder } from './Encoder';
 import { ModelElementObject, ModelDocumentObject } from './Encoder';
 import { Parser, Builder } from 'xml2js';
-import { Model } from '../model/Model';
 import { FileService } from '../services/FileService';
 
 export const XMI_VERSIONS: { [URI: string]: string } = {
@@ -11,7 +10,7 @@ export const XMI_VERSIONS: { [URI: string]: string } = {
   'http://www.omg.org/spec/XMI/20071001': '2.1.1',
 };
 
-export class XMIEncoder extends AbstractEncoder {
+export class XMIEncoder extends Encoder {
   private parser: Parser;
   private builder: Builder;
 
@@ -21,7 +20,7 @@ export class XMIEncoder extends AbstractEncoder {
     this.builder = new Builder();
   }
 
-  async loadFromString(data: string): Promise<Model> {
+  async decodeString(data: string): Promise<ModelDocumentObject> {
     const xmiObject = await new Promise<Object>((resolve, reject) => {
       this.parser.parseString(data, (err: string, result: Object) => {
         if (err) {
@@ -33,14 +32,11 @@ export class XMIEncoder extends AbstractEncoder {
       });
     });
 
-    const modelObject = this.transformXMIToObject(xmiObject);
-
-    return this.loadFromObject(modelObject);
+    return this.transformXMIToObject(xmiObject);
   }
 
-  async saveToString(model: Model): Promise<string> {
-    const modelObject = await this.saveToObject(model);
-    const data = this.transformObjectToXMI(modelObject);
+  async encodeString(model: ModelDocumentObject): Promise<string> {
+    const data = this.transformObjectToXMI(model);
     return this.builder.buildObject(data);
   }
 

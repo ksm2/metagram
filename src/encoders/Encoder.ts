@@ -1,4 +1,6 @@
-import { Model } from '../model/Model';
+import { FileService } from '../services/FileService';
+import path = require('path');
+import fetch from 'node-fetch';
 
 export type NamespaceObject = [string, string][];
 
@@ -22,62 +24,74 @@ export interface ModelElementObject extends ModelObject {
   el: ModelObjectElements;
 }
 
-export interface Encoder {
+export abstract class Encoder {
+  private cacheDir: string;
+
+  constructor(private fileService: FileService, cacheDir?: string) {
+    this.cacheDir = cacheDir || path.join(__dirname, '../../var');
+  }
+
   /**
    * Loads a model from an URL
    *
-   * @param url URL where the file can be found
+   * @param url URL where the file to decode can be found
    * @param [encoding] Encoding of that file
    * @returns Promise for a model element
    */
-  loadFromURL(url: string, encoding?: string): Promise<Model>;
+  async decodeURL(url: string, encoding: string = 'utf8'): Promise<ModelDocumentObject> {
+    console.info(`Resolving ${url}`);
+    const filename = path.join(this.cacheDir, url.replace(/[^\w.]/g, '-'));
+
+    const exists = await this.fileService.fileExists(filename);
+    if (!exists) {
+      console.info(`Downloading ${url}`);
+      const res = await fetch(url);
+      const text = await res.text();
+      console.info(`Caching ${url}`);
+      await this.fileService.writeFile(text, filename, encoding);
+    } else {
+      console.info(`Using cached ${url}`);
+    }
+
+    return this.decodeFile(filename, encoding);
+  }
 
   /**
    * Loads a model from file
    *
-   * @param filename Name of the file to load
+   * @param filename Name of the file to decode
    * @param [encoding] Encoding of that file
    * @returns Promise for a model element
    */
-  loadFromFile(filename: string, encoding?: string): Promise<Model>;
-
-  /**
-   * Loads a model from object
-   *
-   * @param data An object to load the model element from
-   * @returns Promise for a model element
-   */
-  loadFromObject(data: ModelDocumentObject): Promise<Model>;
+  async decodeFile(filename: string, encoding: string = 'utf8'): Promise<ModelDocumentObject> {
+    const data = await this.fileService.readFile(filename, encoding);
+    return this.decodeString(data);
+  }
 
   /**
    * Loads a model from string
    *
    * @param data A string containing data parsable by this loader
    */
-  loadFromString(data: string): Promise<Model>;
+  abstract decodeString(data: string): Promise<ModelDocumentObject>;
 
   /**
    * Loads a model from file
    *
-   * @param model Model which should be saved
+   * @param model Model document object which should be encoded
    * @param filename Name of the file to save
    * @param [encoding] Encoding of that file
    * @returns Promise to successful writing
    */
-  saveToFile(model: Model, filename: string, encoding?: string): Promise<void>;
-
-  /**
-   * Saves a model to object
-   *
-   * @param model Model which should be saved
-   * @returns Promise for an object
-   */
-  saveToObject(model: Model): Promise<ModelDocumentObject>;
+  async encodeFile(model: ModelDocumentObject, filename: string, encoding: string = 'utf8'): Promise<void> {
+    const data = await this.encodeString(model);
+    this.fileService.writeFile(data, filename, encoding);
+  }
 
   /**
    * Saves a model to string
    *
-   * @param model Model which should be saved
+   * @param model Model document object which should be encoded
    */
-  saveToString(model: Model): Promise<string>;
+  abstract encodeString(model: ModelDocumentObject): Promise<string>;
 }
