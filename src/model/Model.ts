@@ -1,4 +1,4 @@
-import { Entity, fromData } from './Entity';
+import { Entity } from './Entity';
 import { NamespaceObject, ModelDocumentObject } from '../encoders';
 import { ModelNamespace } from './ModelNamespace';
 
@@ -7,11 +7,9 @@ export class Model {
   private namespaces: Map<string, ModelNamespace>;
   private elements: Set<Entity>;
 
-  constructor(data: ModelDocumentObject) {
+  constructor() {
     this.idMap = new Map();
-
-    this.setNamespaces(data.namespaces);
-    this.elements = new Set(data.content.map(datum => fromData(this, datum)));
+    this.elements = new Set();
   }
 
   /**
@@ -40,6 +38,20 @@ export class Model {
    */
   getElements(): Set<Entity> {
     return this.elements;
+  }
+
+  /**
+   * Adds an element to this model
+   */
+  addElement(entity: Entity): void {
+    this.elements.add(entity);
+  }
+
+  /**
+   * Deletes an element from this model
+   */
+  deleteElement(entity: Entity): boolean {
+    return this.elements.delete(entity);
   }
 
   /**

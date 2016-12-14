@@ -6,7 +6,7 @@ export class Entity {
   private _id: string;
   private _type: string;
   private _ns: string;
-  private _elements: Map<string, string | Entity[]>;
+  private _elements: Map<string, string | Entity[] | string[]>;
   private _content: Set<Entity>;
 
   constructor(model: Model) {
@@ -69,7 +69,15 @@ export class Entity {
     return this._elements.has(key);
   }
 
-  set(key: string, value: string | Entity[]): void {
+  set(key: string, value: string | string[] | Entity[] | undefined): void {
+    if (typeof value == 'undefined') {
+      this._elements.delete(key);
+      return;
+    }
+    this._elements.set(key, value);
+  }
+
+  setString(key: string, value?: string): void {
     this._elements.set(key, value);
   }
 
@@ -80,49 +88,82 @@ export class Entity {
     return typeof value == 'string' ? value : defaultValue;
   }
 
+  setStrings(key: string, value?: string[]): void {
+    this._elements.set(key, value);
+  }
+
+  getStrings(key: string, defaultValue: string[] = []): string[] | undefined {
+    if (!this.has(key)) return defaultValue;
+
+    const value = this._elements.get(key);
+    return (value instanceof Array) ? value as string[] : defaultValue;
+  }
+
+  setBoolean(key: string, value?: boolean): void {
+    this.setString(key, value === true ? 'true' : value === false ? 'false' : void 0);
+  }
+
+  getBoolean(key: string, defaultValue?: boolean): boolean | undefined {
+    const value = this.getString(key);
+    return value === 'true' ? true : value === 'false' ? false : defaultValue;
+  }
+
+  setBooleans(key: string, value?: boolean[]): void {
+    this.setStrings(key, value && value.map(_ => _ === true ? 'true' : 'false'));
+  }
+
+  getBooleans(key: string, defaultValue?: boolean[]): boolean[] | undefined {
+    const value = this.getStrings(key);
+    if (!value) {
+      return defaultValue;
+    }
+    return value.map(_ => _ === 'true' ? true : false);
+  }
+
+  setFloat(key: string, value?: number): void {
+    this.setString(key, (typeof value == 'number') ? value + '' : void 0);
+  }
+
   getFloat(key: string, defaultValue?: number): number | undefined {
     const value = parseFloat(this.getString(key) || '');
     return isNaN(value) ? defaultValue : value;
   }
 
-  getInt(key: string, defaultValue?: number): number | undefined {
+  setInteger(key: string, value?: number): void {
+    this.setString(key, (typeof value == 'number') ? value + '' : void 0);
+  }
+
+  getInteger(key: string, defaultValue?: number): number | undefined {
     const value = parseInt(this.getString(key) || '', 10);
     return isNaN(value) ? defaultValue : value;
   }
 
-  getElement(key: string, defaultValue?: Entity): Entity | undefined {
-    const values = this.getElements(key);
-    return values.length >= 1 ? values[0] : defaultValue;
+  setEnum(key: string, value?: number): void {
+    this.setString(key, (typeof value == 'number') ? value + '' : void 0);
   }
 
-  getElements(key: string, defaultValue: Entity[] = []): Entity[] {
+  getEnum(key: string, defaultValue?: number): number | undefined {
+    const value = parseInt(this.getString(key) || '', 10);
+    return isNaN(value) ? defaultValue : value;
+  }
+
+  setElement<T extends Entity>(key: string, value?: T | undefined ): void {
+    return this.set(key, value && [value]);
+  }
+
+  getElement<T extends Entity>(key: string, defaultValue?: T): T | undefined {
+    const values = this.getElements(key);
+    return values.length >= 1 ? values[0] as T : defaultValue;
+  }
+
+  setElements<T extends Entity>(key: string, value?: T[] | undefined ): void {
+    return this.set(key, value);
+  }
+
+  getElements<T extends Entity>(key: string, defaultValue: T[] = []): T[] {
     if (!this.has(key)) return defaultValue;
     const value = this._elements.get(key);
 
-    return value instanceof Array ? value : defaultValue;
+    return value instanceof Array ? value as T[] : defaultValue;
   }
-}
-
-export function fromData(model: Model, data: ModelElementObject): Entity {
-  let type: any = Entity;
-  const element = new type(model);
-  if (data.id) {
-    element.setID(data.id);
-  }
-  element.setNamespace(data.ns);
-  element.setType(data.type);
-
-  Object.getOwnPropertyNames(data.el).forEach((k) => {
-    let datum: string | ModelElementObject[] = data.el[k];
-    if (datum instanceof Array) {
-      element.set(k, datum.map(it => fromData(model, it)));
-      return;
-    }
-
-    if (datum) element.set(k, datum);
-  });
-
-  if (data.content) data.content.forEach(it => element._content.add(fromData(model, it)));
-
-  return element;
 }

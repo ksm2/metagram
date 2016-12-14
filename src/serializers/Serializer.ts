@@ -1,5 +1,7 @@
-import { Encoder, ModelDocumentObject } from '../encoders/Encoder';
+import { Encoder, ModelDocumentObject, ModelElementObject } from '../encoders/Encoder';
 import { Model } from '../model/Model';
+import * as UML from '../model/UML';
+import { Entity } from '../model/Entity';
 
 export interface SerializerOptions {
   encoders?: SerializerEncoders;
@@ -46,6 +48,44 @@ export class Serializer {
    * Denormalizes an object to a model.
    */
   async denormalize(object: ModelDocumentObject): Promise<Model> {
-    return new Model(object);
+    const m = new Model();
+    m.setNamespaces(object.namespaces);
+
+    for (let elementObj of object.content) {
+      const e = this.denormalizeElementObject(m, elementObj);
+      m.addElement(e);
+    }
+
+    return m;
   }
+
+  denormalizeElementObject(model: Model, data: ModelElementObject): Entity {
+    let type: any = Entity;
+    if (data.ns == 'uml') {
+      const uml: { [type: string]: Function } = UML as any;
+      type = uml[data.type];
+    }
+
+    const element = new type(model);
+    if (data.id) {
+      element.setID(data.id);
+    }
+    element.setNamespace(data.ns);
+    element.setType(data.type);
+
+    Object.getOwnPropertyNames(data.el).forEach((k) => {
+      let datum: string | ModelElementObject[] = data.el[k];
+      if (datum instanceof Array) {
+        element.set(k, datum.map(it => this.denormalizeElementObject(model, it)));
+        return;
+      }
+
+      if (datum) element.set(k, datum);
+    });
+
+    if (data.content) data.content.forEach(it => element._content.add(this.denormalizeElementObject(model, it)));
+
+    return element;
+  }
+
 }
