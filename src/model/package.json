@@ -1,0 +1,14 @@
+{
+  "name": "@metagram/model",
+  "version": "1.0.0",
+  "description": "Metagram Model",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "dependencies": {
+  },
+  "author": {
+    "name": "Konstantin Simon Maria Möllers",
+    "email": "ksm.moellers@gmail.com"
+  },
+  "license": "MIT"
+}

@@ -1,4 +1,4 @@
-import { Entity } from './Entity';
+import { Entity } from '@metagram/model';
 
 
 export enum ObjectNodeOrderingKind {

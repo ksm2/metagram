@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig",
+  "files": [
+    "./index.ts"
+  ],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "../../dest/uml250",
+    "paths": {
+      "@metagram/model": ["../../dest/model"]
+    },
+    "rootDir": "."
+  }
+}

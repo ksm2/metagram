@@ -1,7 +1,6 @@
-import { Encoder, ModelDocumentObject, ModelElementObject } from '../encoders/Encoder';
-import { Model } from '../model/Model';
-import * as UML from '../model/UML';
-import { Entity } from '../model/Entity';
+import { Entity, Model, ModelDocumentObject, ModelElementObject } from '@metagram/model';
+import * as UML from '@metagram/uml250';
+import { Encoder } from '../encoders/Encoder';
 
 export interface SerializerOptions {
   encoders?: SerializerEncoders;

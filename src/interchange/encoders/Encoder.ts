@@ -1,34 +1,10 @@
+import { ModelDocumentObject } from '@metagram/model';
 import { FileService } from '../services/FileService';
 import path = require('path');
 import fetch from 'node-fetch';
 
-export type NamespaceObject = [string, string][];
-
-export interface ModelObject {
-  content?: ModelElementObject[];
-}
-
-export interface ModelDocumentObject extends ModelObject {
-  namespaces: NamespaceObject;
-  content: ModelElementObject[];
-}
-
-export interface ModelObjectElements {
-  [child: string]: ModelElementObject[] | string;
-}
-
-export interface ModelElementObject extends ModelObject {
-  ns: string;
-  type: string;
-  id?: string;
-  el: ModelObjectElements;
-}
-
 export abstract class Encoder {
-  private cacheDir: string;
-
-  constructor(private fileService: FileService, cacheDir?: string) {
-    this.cacheDir = cacheDir || path.join(__dirname, '../../var');
+  constructor(private fileService: FileService, private cacheDir: string) {
   }
 
   /**

@@ -1,6 +1,6 @@
-import { Encoder } from './Encoder';
-import { ModelElementObject, ModelDocumentObject } from './Encoder';
+import { ModelElementObject, ModelDocumentObject } from '@metagram/model';
 import { Parser, Builder } from 'xml2js';
+import { Encoder } from './Encoder';
 import { FileService } from '../services/FileService';
 
 export const XMI_VERSIONS: { [URI: string]: string } = {
@@ -14,8 +14,8 @@ export class XMIEncoder extends Encoder {
   private parser: Parser;
   private builder: Builder;
 
-  constructor(fileService: FileService) {
-    super(fileService);
+  constructor(fileService: FileService, cacheDir: string) {
+    super(fileService, cacheDir);
     this.parser = new Parser();
     this.builder = new Builder();
   }

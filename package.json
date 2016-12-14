@@ -1,9 +1,10 @@
 {
-  "name": "@metagram/mi",
+  "name": "metagram-scrs",
   "version": "1.0.0",
-  "description": "Metagram Model Interchange",
+  "description": "Metagram - a web framework for model transformation and digramming",
   "main": "index.js",
   "dependencies": {
+    "ejs": "^2.5.5",
     "node-fetch": "^1.6.3",
     "xml2js": "^0.4.17"
   },
@@ -17,8 +18,13 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "rimraf dest",
-    "build": "tsc && copyfiles -u 1 ./src/package.json dest"
+    "clean": "rimraf dest",
+    "prebuild": "npm run clean",
+    "build": "npm run build:model && npm run build:uml250 && npm run build:interchange && npm run copy:package",
+    "build:model": "tsc -p src/model",
+    "build:uml250": "tsc -p src/uml250",
+    "build:interchange": "tsc -p src/interchange",
+    "copy:package": "copyfiles -u 1 ./src/*/package.json dest"
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",

@@ -1,11 +1,13 @@
 #!/usr/bin/env node
-const mi = require('./dest');
+const mi = require('@metagram/interchange');
+const path = require('path');
 
 const fileService = new mi.FileService();
+const cacheDir = path.join(__dirname, '../var');
 const opts = {
   encoders: {
-    xmi: new mi.XMIEncoder(fileService),
-    json: new mi.JSONEncoder(fileService),
+    xmi: new mi.XMIEncoder(fileService, cacheDir),
+    json: new mi.JSONEncoder(fileService, cacheDir),
   },
 };
 const serializer = new mi.Serializer(opts);

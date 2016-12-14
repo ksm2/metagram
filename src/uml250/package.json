@@ -1,11 +1,11 @@
 {
-  "name": "@metagram/mi",
+  "name": "@metagram/uml250",
   "version": "1.0.0",
-  "description": "Metagram Model Interchange",
+  "description": "Metagram model for UML 2.5.0",
   "main": "index.js",
+  "typings": "index.d.ts",
   "dependencies": {
-    "node-fetch": "^1.6.3",
-    "xml2js": "^0.4.17"
+    "@metagram/model": "^1.0.0"
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",

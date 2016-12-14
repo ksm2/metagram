@@ -5,16 +5,13 @@
     "moduleResolution": "node",
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "outDir": "dest",
     "declaration": true,
     "noEmitOnError": true,
     "pretty": true,
     "lib": ["es2015", "es2015.collection", "es2015.promise", "dom"],
     "strictNullChecks": true,
-    "sourceMap": true,
+    "skipLibCheck": true,
+    "sourceMap": false,
     "typeRoots": ["node_modules/@types", "custom_typings"]
-  },
-  "files": [
-    "./src/index.ts"
-  ]
+  }
 }

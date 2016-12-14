@@ -1,5 +1,5 @@
 import { Model } from './Model';
-import { ModelElementObject } from '../encoders';
+import { ModelElementObject } from './Interfaces';
 
 export class Entity {
   protected _model: Model;

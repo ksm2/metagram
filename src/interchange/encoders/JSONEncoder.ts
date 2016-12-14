@@ -1,5 +1,5 @@
-import { Encoder, ModelDocumentObject } from './Encoder';
-import { Model } from '../model/Model';
+import { ModelDocumentObject } from '@metagram/model';
+import { Encoder } from './Encoder';
 
 export class JSONEncoder extends Encoder {
   async decodeString(data: string): Promise<ModelDocumentObject> {

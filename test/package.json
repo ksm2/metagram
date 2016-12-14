@@ -1,0 +1,16 @@
+{
+  "name": "metagram-test",
+  "version": "1.0.0",
+  "description": "Metagram Framework Tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@metagram/interchange": "file:///home/moellers/Projects/Masterarbeit/ModelInterchange/dest/interchange",
+    "@metagram/model": "file:///home/moellers/Projects/Masterarbeit/ModelInterchange/dest/model",
+    "@metagram/uml250": "file:///home/moellers/Projects/Masterarbeit/ModelInterchange/dest/uml250"
+  }
+}
