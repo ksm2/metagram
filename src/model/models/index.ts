@@ -1,0 +1,10 @@
+export { Class } from './Class';
+export { Element } from './Element';
+export { Enumeration } from './Enumeration';
+export { EnumerationLiteral } from './EnumerationLiteral';
+export { Package } from './Package';
+export { PrimitiveType } from './PrimitiveType';
+export { Property } from './Property';
+export { Type } from './Type';
+export { TypedElement } from './TypedElement';
+export { XMI } from './XMI';

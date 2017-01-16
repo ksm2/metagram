@@ -5,6 +5,10 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "dependencies": {
+    "ejs": "^2.5.5",
+    "node-fetch": "^1.6.3",
+    "reflect-metadata": "^0.1.9",
+    "xmldom": "^0.1.27"
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",

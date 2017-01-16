@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -8,10 +8,11 @@
     "declaration": true,
     "noEmitOnError": true,
     "pretty": true,
-    "lib": ["es2015", "es2015.collection", "es2015.promise", "dom"],
     "strictNullChecks": true,
     "skipLibCheck": true,
     "sourceMap": false,
-    "typeRoots": ["node_modules/@types", "custom_typings"]
+    "typeRoots": ["node_modules/@types", "custom_typings"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }

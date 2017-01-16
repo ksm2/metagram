@@ -1,4 +1,5 @@
-export { Entity } from './Entity';
-export { ModelObject, ModelDocumentObject, ModelElementObject, ModelObjectElements, NamespaceObject } from './Interfaces';
-export { Model } from './Model';
-export { ModelNamespace } from './ModelNamespace';
+export { XMIDecoder } from './XMIDecoder';
+export { FileService } from './FileService';
+export * from './models';
+export * from './reflection';
+export * from './visitors';

@@ -6,12 +6,13 @@
   "dependencies": {
     "ejs": "^2.5.5",
     "node-fetch": "^1.6.3",
-    "xml2js": "^0.4.17"
+    "reflect-metadata": "^0.1.9",
+    "xmldom": "^0.1.27"
   },
   "devDependencies": {
     "@types/node": "^6.0.48",
     "@types/node-fetch": "^1.6.5",
-    "@types/xml2js": "0.0.29",
+    "@types/xmldom": "^0.1.28",
     "copyfiles": "^1.0.0",
     "rimraf": "^2.5.4",
     "typescript": "^2.1.4"
@@ -20,10 +21,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dest",
     "prebuild": "npm run clean",
-    "build": "npm run build:model && npm run build:uml250 && npm run build:interchange && npm run copy:package",
+    "build": "npm run build:model && npm run copy:package",
     "build:model": "tsc -p src/model",
-    "build:uml250": "tsc -p src/uml250",
-    "build:interchange": "tsc -p src/interchange",
     "copy:package": "copyfiles -u 1 ./src/*/package.json dest"
   },
   "author": {
