@@ -6,44 +6,44 @@ export type DefaultValueType = boolean | number | EnumerationLiteral;
 
 @Class('Property')
 export class Property extends TypedElement {
-  private _lowerValue?: number;
-  private _upperValue?: number;
-  private _defaultValue?: DefaultValueType;
+  private _lowerValue: number | null = null;
+  private _upperValue: number | null = null;
+  private _defaultValue: DefaultValueType | null;
 
   @Attribute({ type: Number })
   get lower(): number {
-    return this._lowerValue || 1;
+    return this._lowerValue === null ? 1 : this._lowerValue;
   }
 
   @Attribute({ type: Number, lower: 0 })
-  get lowerValue(): number | undefined {
+  get lowerValue(): number | null {
     return this._lowerValue;
   }
 
-  set lowerValue(value: number | undefined) {
+  set lowerValue(value: number | null) {
     this._lowerValue = value;
   }
 
   @Attribute({ type: Number })
   get upper(): number {
-    return this._upperValue || 1;
+    return this._upperValue === null ? 1 : this._upperValue;
   }
 
   @Attribute({ type: Number, lower: 0 })
-  get upperValue(): number | undefined {
+  get upperValue(): number | null {
     return this._upperValue;
   }
 
-  set upperValue(value: number | undefined) {
+  set upperValue(value: number | null) {
     this._upperValue = value;
   }
 
   @Attribute({ type: Object, lower: 0 })
-  get defaultValue(): DefaultValueType | undefined {
+  get defaultValue(): DefaultValueType | null {
     return this._defaultValue;
   }
 
-  set defaultValue(value: DefaultValueType | undefined) {
+  set defaultValue(value: DefaultValueType | null) {
     this._defaultValue = value;
   }
 

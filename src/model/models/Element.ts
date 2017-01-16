@@ -2,71 +2,66 @@ import { Class, Attribute } from '../decorators';
 
 @Class('Element')
 export class Element {
-  private _ID: string;
-  private _name: string;
-  private _comment: string;
+  private _ID: string | null = null;
+  private _name: string | null = null;
+  private _comment: string | null;
+  private _elements: Set<Element> = new Set();
+  private _ownedElements: Set<Element> = new Set();
 
   @Attribute({ type: String, lower: 0 })
-  get ID(): string {
+  get ID(): string | null {
     return this._ID;
   }
 
-  set ID(value: string) {
+  set ID(value: string | null) {
     this._ID = value;
   }
 
-  @Attribute({ type: String })
-  get name(): string {
+  @Attribute({ type: String, lower: 0 })
+  get name(): string | null {
     return this._name;
   }
 
-  set name(value: string) {
+  set name(value: string | null) {
     this._name = value;
   }
 
   @Attribute({ type: String, lower: 0 })
-  get comment(): string {
+  get comment(): string | null {
     return this._comment;
   }
 
-  set comment(value: string) {
+  set comment(value: string | null) {
     this._comment = value;
   }
 
-  [key: string]: any;
-  private _children: Set<Element>;
-
-  constructor() {
-    Object.defineProperty(this, '_children', {
-      writable: false,
-      enumerable: false,
-      value: new Set(),
-    });
+  @Attribute({ type: Element, lower: 0, upper: Infinity })
+  get ownedElements(): Set<Element> {
+    return this._ownedElements;
   }
 
+  set ownedElements(value: Set<Element>) {
+    this._ownedElements = value;
+  }
+
+  [key: string]: any;
+
   [Symbol.iterator](): IterableIterator<Element> {
-    return this._children.values();
+    return this._elements.values();
   }
 
   /**
    * Adds a child to this element
    */
   appendChild(child: Element): void {
-    this._children.add(child);
+    this._elements.add(child);
   }
 
   /**
    * Removes a child from this element
    */
   removeChild(child: Element): boolean {
-    return this._children.delete(child);
-  }
-
-  /**
-   * Returns all children
-   */
-  getChildren(): Set<Element> {
-    return this._children;
+    return this._elements.delete(child);
   }
 
   /**

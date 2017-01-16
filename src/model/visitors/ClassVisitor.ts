@@ -10,21 +10,16 @@ export class ClassVisitor extends Visitor<Class> {
   }
 
   visitElement(element: Element, document: XMI, target: Class, model: ModelElement): void {
-    switch (name) {
-      case 'ownedAttribute': {
-        if (model && model instanceof Property) {
-          target.attributes.add(model);
-        }
-
-        return;
-      }
-
+    switch (element.tagName) {
       case 'generalization': {
         const general = document.getElementByID(element.getAttribute('general')!) as Class;
         target.generalizations.add(general);
+        general.specializations.add(target);
 
         return;
       }
+
+      default: super.visitElement(element, document, target, model);
     }
   }
 }

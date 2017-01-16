@@ -3,15 +3,15 @@ import { Class, Attribute } from '../decorators';
 
 @Class('Package', Element)
 export class Package extends Element {
-  private _URI: string;
+  private _URI: string | null = null;
   private _packagedElements: Set<Element> = new Set();
 
   @Attribute(String, 0, 1)
-  get URI(): string {
+  get URI(): string | null {
     return this._URI;
   }
 
-  set URI(value: string) {
+  set URI(value: string | null) {
     this._URI = value;
   }
 

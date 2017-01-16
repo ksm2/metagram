@@ -12,7 +12,7 @@ export class PropertyVisitor extends Visitor<Property> {
   }
 
   visitElement(element: Element, document: XMI, target: Property, model: ModelElement): void {
-    switch (name) {
+    switch (element.tagName) {
       case 'type': {
         if (model && model instanceof Type) {
           target.type = model;

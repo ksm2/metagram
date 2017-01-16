@@ -26,7 +26,7 @@ export class Reflector {
       a.lowerValue = attribute.lower;
       a.upperValue = attribute.upper;
 
-      model.attributes.add(a);
+      model.ownedAttributes.add(a);
     }
 
     return model;

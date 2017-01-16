@@ -1,48 +1,43 @@
 #!/usr/bin/env node
-// const mi = require('@metagram/interchange');
+const mi = require('../dest/model');
 const path = require('path');
 const fs = require('fs');
 
 const cacheDir = path.join(__dirname, '../var');
-// const opts = {
-//   encoders: {
-//     xmi: new mi.XMIEncoder(fileService, cacheDir),
-//     json: new mi.JSONEncoder(fileService, cacheDir),
-//   },
-// };
-// const serializer = new mi.Serializer(opts);
-//
-//
-//
-//
-//
-// serializer.deserialize('xmi', 'http://www.omg.org/spec/UML/20131001/UMLDI.xmi')
-//   .then(model => Promise.all(['json', 'xmi'].map(_ => serializer.serialize(model, _, `resources/out.${_}`))))
-//   .catch(err => console.error(err))
-// ;
-
-const mi = require('../dest/model');
 
 const fileService = new mi.FileService();
-
 const decoder = new mi.XMIDecoder(fileService, cacheDir);
 
 const reflector = new mi.Reflector();
 
 decoder.loadURL('http://www.omg.org/spec/UML/20131001/UML.xmi')
   .then((xmi) => {
-    // console.dir(xmi.content.values().next().value.packagedElements.values().next().value);
-    const packageClass = reflector.reflectClass(xmi.getChildren().values().next().value);
-    console.dir(packageClass);
-
     const x = {};
     const queue = [[x, xmi]];
+    const weakMap = new WeakMap();
     while (queue.length) {
       const [target, element] = queue.shift();
+
+      if (weakMap.has(element)) {
+        target['xmi:idref'] = weakMap.get(element);
+        continue;
+      }
+      target['xmi:id'] = element.ID;
+      weakMap.set(element, target['xmi:id']);
+
       const props = reflector.getProperties(element.constructor);
 
       for (let prop of props) {
         const value = element[prop];
+
+        if (value === Infinity) {
+          target[prop] = '*';
+          continue;
+        }
+
+        if (value === null) {
+          continue;
+        }
 
         if (typeof value !== 'object') {
           target[prop] = value;
@@ -50,6 +45,8 @@ decoder.loadURL('http://www.omg.org/spec/UML/20131001/UML.xmi')
         }
 
         if (value instanceof Set) {
+          if (!value.size) continue;
+
           target[prop] = [];
           for (let child of value) {
             const o = {};

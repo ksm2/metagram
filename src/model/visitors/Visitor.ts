@@ -7,6 +7,18 @@ export abstract class Visitor<T extends ModelElement> {
   abstract createInstance(): T;
 
   visitElement(element: Element, document: XMI, target: T, model?: ModelElement): void {
+    const name = element.tagName;
+    const pluralize = name + 's';
+
+    if (model && name.includes(':')) {
+      target.ownedElements.add(model);
+      return;
+    }
+
+    if (model && target[pluralize] instanceof Set) {
+      target[pluralize].add(model);
+      return;
+    }
   }
 
   visitAttr(name: string, value: string, target: T): void {

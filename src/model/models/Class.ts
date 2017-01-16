@@ -4,16 +4,17 @@ import { Class as Clazz, Attribute } from '../decorators';
 
 @Clazz('Class', Type)
 export class Class extends Type {
-  private _attributes: Set<Property> = new Set();
+  private _ownedAttributes: Set<Property> = new Set();
   private _generalizations: Set<Class> = new Set();
+  private _specializations: Set<Class> = new Set();
 
   @Attribute({ type: Property, lower: 0, upper: Infinity })
-  get attributes(): Set<Property> {
-    return this._attributes;
+  get ownedAttributes(): Set<Property> {
+    return this._ownedAttributes;
   }
 
-  set attributes(value: Set<Property>) {
-    this._attributes = value;
+  set ownedAttributes(value: Set<Property>) {
+    this._ownedAttributes = value;
   }
 
   @Attribute({ type: Class, lower: 0, upper: Infinity })
@@ -23,5 +24,14 @@ export class Class extends Type {
 
   set generalizations(value: Set<Class>) {
     this._generalizations = value;
+  }
+
+  @Attribute({ type: Class, lower: 0, upper: Infinity })
+  get specializations(): Set<Class> {
+    return this._specializations;
+  }
+
+  set specializations(value: Set<Class>) {
+    this._specializations = value;
   }
 }

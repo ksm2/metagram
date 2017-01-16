@@ -7,6 +7,7 @@ import { Element as ModelElement } from './models/Element';
 import { Visitor } from './visitors';
 import UML20131001 from './visitors/UML20131001';
 import XMI20131001 from './visitors/XMI20131001';
+import { Package } from './models/Package';
 
 const XMI_URI = 'http://www.omg.org/spec/XMI/20131001';
 
@@ -113,22 +114,26 @@ export class XMIDecoder {
     // Check for idref
     if (idref) {
       if (!root) throw 'XMI document broken: Used xmi:idref before specifying root';
-      return root.getElementByID(idref);
+      const elementByID = root.getElementByID(idref);
+      tree.set(xml, elementByID!);
+      return elementByID;
     }
 
     // Check for href
     if (href) {
-      return await this.getElementByHref(href);
+      const xmiElement = await this.getElementByHref(href);
+      tree.set(xml, xmiElement!);
+      return xmiElement;
     }
 
     // Check if can retrieve visitor
     const visitor = this.getVisitor(xml);
     if (!visitor) return null;
 
-    const xmiElement = visitor.createInstance();
+    const xmiElement: ModelElement = visitor.createInstance();
     tree.set(xml, xmiElement);
-    xmiElement.ID = id;
-    xmiElement.name = name;
+    xmiElement.ID = id || null;
+    xmiElement.name = name || null;
 
     const promisedChildren = Array.from(xml.childNodes)
       // Is child node an element?
@@ -151,7 +156,7 @@ export class XMIDecoder {
       const element = queue.shift()!;
 
       const target = weakMap.get(element)!;
-      const visitor = this.getVisitor(root)!;
+      const visitor = this.getVisitor(element)!;
 
       // Visit attributes
       Array.from(element.attributes).forEach(attr => visitor.visitAttr(attr.name, attr.value, target));

@@ -8,14 +8,6 @@ export class PackageVisitor extends Visitor<Package> {
     return new Package();
   }
 
-  visitElement(element: Element, document: XMI, target: Package, model: ModelElement): void {
-    if (name === 'packagedElement') {
-      if (model) {
-        target.packagedElements.add(model);
-      }
-    }
-  }
-
   visitAttr(name: string, value: string, target: Package): void {
     switch (name) {
       case 'URI': {
