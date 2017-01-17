@@ -5,11 +5,13 @@
   "main": "index.js",
   "dependencies": {
     "ejs": "^2.5.5",
+    "ncp": "^2.0.0",
     "node-fetch": "^1.6.3",
     "reflect-metadata": "^0.1.9",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
+    "@types/ncp": "^2.0.0",
     "@types/node": "^6.0.48",
     "@types/node-fetch": "^1.6.5",
     "@types/xmldom": "^0.1.28",
@@ -21,9 +23,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dest",
     "prebuild": "npm run clean",
-    "build": "npm run build:model && npm run copy:package",
+    "build": "npm run build:model && npm run copy:assets && npm run copy:package",
     "build:model": "tsc -p src/model",
-    "copy:package": "copyfiles -u 1 ./src/*/package.json dest"
+    "copy:package": "copyfiles -u 1 ./src/*/package.json ./dest",
+    "copy:assets": "copyfiles ./public/**/* ./dest"
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",

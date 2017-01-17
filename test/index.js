@@ -7,10 +7,16 @@ const cacheDir = path.join(__dirname, '../var');
 
 const fileService = new mi.FileService();
 const decoder = new mi.XMIDecoder(fileService, cacheDir);
-
 const reflector = new mi.Reflector();
+const renderer = new mi.Renderer(fileService, '/', path.join(__dirname, '../out'));
 
 decoder.loadURL('http://www.omg.org/spec/UML/20131001/UML.xmi')
+  .then((xmi) => {
+    renderer.render(xmi).then(() => {
+      renderer.copyAssets();
+    });
+    return xmi;
+  })
   .then((xmi) => {
     const x = {};
     const queue = [[x, xmi]];

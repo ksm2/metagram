@@ -8,7 +8,7 @@ export type DefaultValueType = boolean | number | EnumerationLiteral;
 export class Property extends TypedElement {
   private _lowerValue: number | null = null;
   private _upperValue: number | null = null;
-  private _defaultValue: DefaultValueType | null;
+  private _defaultValue: DefaultValueType | null = null;
 
   @Attribute({ type: Number })
   get lower(): number {

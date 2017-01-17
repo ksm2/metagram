@@ -4,7 +4,8 @@ logs
 npm-debug.log*
 
 # Runtime data
-var
+/var
+/out
 pids
 *.pid
 *.seed

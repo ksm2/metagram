@@ -11,11 +11,27 @@ export class PropertyVisitor extends Visitor<Property> {
     return new Property();
   }
 
+  visitAttr(name: string, value: string, document: XMI, target: Property): void {
+    switch (name) {
+      case 'type': {
+        const model = document.getElementByID(value);
+        if (model instanceof Type) {
+          target.type = model;
+        }
+        return;
+      }
+
+      default: super.visitAttr(name, value, document, target);
+    }
+  }
+
   visitElement(element: Element, document: XMI, target: Property, model: ModelElement): void {
     switch (element.tagName) {
       case 'type': {
         if (model && model instanceof Type) {
           target.type = model;
+        } else {
+          console.log(model);
         }
 
         return;

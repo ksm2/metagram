@@ -3,33 +3,14 @@ import AnnotationReader, { ClassDecorator, AttributeDecorator } from '../decorat
 import { Property } from '../models/Property';
 
 export class Reflector {
+  private classReflections: WeakMap<Function, Class>;
 
-  reflectClass(object: Object): Class {
-    const clazz = object.constructor;
-    this.getProperties(clazz);
+  constructor() {
+    this.classReflections = new WeakMap<Function, Class>();
+  }
 
-    const clazzInfo = AnnotationReader.readClassAnnotation(clazz, ClassDecorator);
-    if (!clazzInfo) throw 'This class has no @Class information';
-
-    const model = new Class();
-    model.ID = clazzInfo.name;
-    model.name = clazz.name;
-    console.dir(clazzInfo.generalizations.map((it) => AnnotationReader.readClassAnnotation(it, ClassDecorator)));
-
-    // Read attribute information
-    for (let propertyName of this.getProperties(clazz)) {
-      const attribute = AnnotationReader.readPropertyAnnotation(clazz.prototype, propertyName, AttributeDecorator);
-      if (!attribute) continue;
-
-      const a = new Property();
-      a.name = propertyName;
-      a.lowerValue = attribute.lower;
-      a.upperValue = attribute.upper;
-
-      model.ownedAttributes.add(a);
-    }
-
-    return model;
+  reflectClass(clazz: Function): Class {
+    return this.classReflections.get(clazz) || this.createClassReflection(clazz);
   }
 
   getProperties(func: Function): string[] {
@@ -46,4 +27,35 @@ export class Reflector {
     return keys;
   }
 
+  private createClassReflection(clazz: Function) {
+    this.getProperties(clazz);
+
+    const clazzInfo = AnnotationReader.readClassAnnotation(clazz, ClassDecorator);
+    if (!clazzInfo) throw 'This class has no @Class information';
+
+    const model = new Class();
+    model.ID = clazzInfo.name;
+    model.name = clazz.name;
+    for (let generalization of clazzInfo.generalizations) {
+      const g = this.reflectClass(generalization);
+      model.generalizations.add(g);
+      g.specializations.add(model);
+    }
+
+    // Read attribute information
+    for (let propertyName of this.getProperties(clazz)) {
+      const attribute = AnnotationReader.readPropertyAnnotation(clazz.prototype, propertyName, AttributeDecorator);
+      if (!attribute) continue;
+
+      const a = new Property();
+      a.name = propertyName;
+      a.lowerValue = attribute.lower;
+      a.upperValue = attribute.upper;
+
+      model.ownedAttributes.add(a);
+    }
+
+    this.classReflections.set(clazz, model);
+    return model;
+  }
 }

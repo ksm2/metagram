@@ -5,8 +5,9 @@ export class Element {
   private _ID: string | null = null;
   private _name: string | null = null;
   private _comment: string | null;
-  private _elements: Set<Element> = new Set();
   private _ownedElements: Set<Element> = new Set();
+  private _owningElement: Element | null = null;
+  private _origin: string | undefined;
 
   @Attribute({ type: String, lower: 0 })
   get ID(): string | null {
@@ -44,24 +45,19 @@ export class Element {
     this._ownedElements = value;
   }
 
+  @Attribute({ type: Element, lower: 0 })
+  get owningElement(): Element | null {
+    return this._owningElement;
+  }
+
+  set owningElement(value: Element | null) {
+    this._owningElement = value;
+  }
+
   [key: string]: any;
 
   [Symbol.iterator](): IterableIterator<Element> {
-    return this._elements.values();
-  }
-
-  /**
-   * Adds a child to this element
-   */
-  appendChild(child: Element): void {
-    this._elements.add(child);
-  }
-
-  /**
-   * Removes a child from this element
-   */
-  removeChild(child: Element): boolean {
-    return this._elements.delete(child);
+    return this._ownedElements.values();
   }
 
   /**
@@ -86,5 +82,38 @@ export class Element {
     }
 
     return null;
+  }
+
+  /**
+   * Returns a hyper reference to this element
+   */
+  getHref(): string | undefined {
+    return this.getOrigin() && `${this.getOrigin()}#${this.ID}`;
+  }
+
+  /**
+   * Sets the element's origin
+   */
+  setOrigin(origin: string) {
+    this._origin = origin;
+  }
+
+  /**
+   * Returns the origin of this element
+   */
+  getOrigin(): string | undefined {
+    return this._origin;
+  }
+
+  /**
+   * Returns the hierarchy of all owning elements
+   * (not UML-official.)
+   */
+  allOwningElements(): Element[] {
+    if (null === this._owningElement) {
+      return [];
+    }
+
+    return this._owningElement.allOwningElements().concat([this._owningElement]);
   }
 }

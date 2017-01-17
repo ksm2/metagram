@@ -8,7 +8,7 @@ export class PackageVisitor extends Visitor<Package> {
     return new Package();
   }
 
-  visitAttr(name: string, value: string, target: Package): void {
+  visitAttr(name: string, value: string, document: XMI, target: Package): void {
     switch (name) {
       case 'URI': {
         target.URI = value;

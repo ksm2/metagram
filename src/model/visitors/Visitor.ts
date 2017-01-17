@@ -12,6 +12,7 @@ export abstract class Visitor<T extends ModelElement> {
 
     if (model && name.includes(':')) {
       target.ownedElements.add(model);
+      model.owningElement = target;
       return;
     }
 
@@ -21,7 +22,7 @@ export abstract class Visitor<T extends ModelElement> {
     }
   }
 
-  visitAttr(name: string, value: string, target: T): void {
+  visitAttr(name: string, value: string, document: XMI, target: T): void {
   }
 
   protected decodeLiteralNumber(element: Element): number | null {

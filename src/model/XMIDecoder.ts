@@ -77,38 +77,39 @@ export class XMIDecoder {
       console.info(`Using cached ${url}`);
     }
 
-    return this.decodeFile(filename, encoding);
+    return this.decodeFile(url, filename, encoding);
   }
 
   /**
    * Loads a model from file The document's origin
    *
+   * @param origin Original URL of the file
    * @param filename Name of the file to decode
    * @param [encoding] Encoding of that file
    * @returns Promise for a model element
    */
-  private async decodeFile(filename: string, encoding: string = 'utf8'): Promise<XMI> {
+  private async decodeFile(origin: string, filename: string, encoding: string = 'utf8'): Promise<XMI> {
     const data = await this.fileService.readFile(filename, encoding);
     const xmlDoc = this.parser.parseFromString(data, 'text/xml');
     const xmiElements = xmlDoc.getElementsByTagNameNS(XMI_URI, 'XMI');
     if (xmiElements.length !== 1) throw `Unexpected amount of XMI elements: ${xmiElements.length} (expected 1)`;
 
-    // Denormalize XMI elements
+    // Create a tree of XMI elements
     const element = xmiElements.item(0);
     const tree = new WeakMap<Element, ModelElement>();
+    const xmi = await this.createTree(origin, element, tree);
+    if (!xmi || !(xmi instanceof XMI)) throw 'Could not create XMI tree';
 
-    const xmi = await this.createTree(element, tree);
-    if (!xmi) throw 'Could not create XMI tree';
+    // Denormalize the tree
+    this.denormalizeTree(element, xmi, tree);
 
-    this.denormalizeTree(element, tree);
-
-    return xmi as XMI;
+    return xmi;
   }
 
   /**
    * Creates an XMI tree from an XML structure
    */
-  private async createTree(xml: Element, tree: WeakMap<Element, ModelElement>, root?: ModelElement): Promise<ModelElement | null> {
+  private async createTree(origin: string, xml: Element, tree: WeakMap<Element, ModelElement>, root?: ModelElement): Promise<ModelElement | null> {
     const { id, idref, name, href } = this.extractXMIInfo(xml);
 
     // Check for idref
@@ -132,6 +133,7 @@ export class XMIDecoder {
 
     const xmiElement: ModelElement = visitor.createInstance();
     tree.set(xml, xmiElement);
+    xmiElement.setOrigin(origin);
     xmiElement.ID = id || null;
     xmiElement.name = name || null;
 
@@ -139,18 +141,22 @@ export class XMIDecoder {
       // Is child node an element?
       .filter(childNode => childNode.nodeType === 1)
       // Map XML element to XMI
-      .map(child => this.createTree(child as Element, tree, root || xmiElement))
+      .map(child => this.createTree(origin, child as Element, tree, root || xmiElement))
     ;
 
     // Add children
     const children = await Promise.all(promisedChildren);
-    children.forEach(xmi => xmi && xmiElement.appendChild(xmi));
+    children.forEach((xmi) => {
+      if (xmi) {
+        xmiElement.ownedElements.add(xmi);
+        xmi.owningElement = xmiElement;
+      }
+    });
 
     return xmiElement;
   }
 
-  private denormalizeTree<T extends ModelElement>(root: Element, weakMap: WeakMap<Element, ModelElement>): void {
-    const xmi: XMI = weakMap.get(root)!;
+  private denormalizeTree<T extends ModelElement>(root: Element, xmi: XMI, weakMap: WeakMap<Element, ModelElement>): void {
     const queue = [root];
     while (queue.length) {
       const element = queue.shift()!;
@@ -159,7 +165,7 @@ export class XMIDecoder {
       const visitor = this.getVisitor(element)!;
 
       // Visit attributes
-      Array.from(element.attributes).forEach(attr => visitor.visitAttr(attr.name, attr.value, target));
+      Array.from(element.attributes).forEach(attr => visitor.visitAttr(attr.name, attr.value, xmi, target));
 
       for (let child of Array.from(element.childNodes) as Element[]) {
         if (child.nodeType !== 1) continue;
