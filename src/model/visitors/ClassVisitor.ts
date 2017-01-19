@@ -1,25 +1,40 @@
-import { Visitor } from './Visitor';
+import { ClassifierVisitor } from './ClassifierVisitor';
 import { Class } from '../models/Class';
-import { Property } from '../models/Property';
-import { XMI } from '../models/XMI';
-import { Element as ModelElement } from '../models/Element';
+import { Element } from '../models/Element';
+import { XMIDecoder } from '../decoding/XMIDecoder';
+import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 
-export class ClassVisitor extends Visitor<Class> {
-  createInstance(): Class {
+export class ClassVisitor extends ClassifierVisitor {
+  createInstance(): Element {
     return new Class();
   }
 
-  visitElement(element: Element, document: XMI, target: Class, model: ModelElement): void {
-    switch (element.tagName) {
+  visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
+    if (!(parent instanceof Class)) return;
+
+    switch (name) {
       case 'generalization': {
-        const general = document.getElementByID(element.getAttribute('general')!) as Class;
-        target.generalizations.add(general);
-        general.specializations.add(target);
+        let general: any = childNode.get('general')![0];
+
+        if (typeof general === 'string') {
+          general = childNode.getNodeByID(general);
+        }
+
+        if (general instanceof ResolvedXMINode) {
+          const generalClass = decoder.decodeNode(general);
+          if (generalClass instanceof Class) {
+            parent.generalizations.add(generalClass);
+            generalClass.specializations.add(parent);
+          }
+        } else {
+          console.error(`Could not find generalization: ${general}`);
+        }
 
         return;
       }
 
-      default: super.visitElement(element, document, target, model);
+      default:
+        super.visitOwnedElement(decoder, name, childNode, parent, parentNode);
     }
   }
 }

@@ -5,12 +5,14 @@
   "main": "index.js",
   "dependencies": {
     "ejs": "^2.5.5",
+    "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
     "node-fetch": "^1.6.3",
     "reflect-metadata": "^0.1.9",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
+    "@types/mkdirp": "^0.3.29",
     "@types/ncp": "^2.0.0",
     "@types/node": "^6.0.48",
     "@types/node-fetch": "^1.6.5",

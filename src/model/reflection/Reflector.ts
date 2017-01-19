@@ -34,7 +34,7 @@ export class Reflector {
     if (!clazzInfo) throw 'This class has no @Class information';
 
     const model = new Class();
-    model.ID = clazzInfo.name;
+    model.setID(clazzInfo.name);
     model.name = clazz.name;
     for (let generalization of clazzInfo.generalizations) {
       const g = this.reflectClass(generalization);

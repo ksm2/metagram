@@ -1,4 +1,5 @@
 import { Element } from '../../models/Element';
+import { XMI } from '../../models/XMI';
 
 export function lowerCaseFirst(str: string) {
   return `${str[0].toLowerCase()}${str.substring(1)}`;
@@ -6,10 +7,6 @@ export function lowerCaseFirst(str: string) {
 
 export function camelToHyphenCase(camel: string) {
   return lowerCaseFirst(camel).replace(/([A-Z])/g, _ => '-' + _.toLowerCase());
-}
-
-export function filename(model: Element) {
-  return `${cssClass(model)}/${model.ID!}.html`;
 }
 
 export function cssClass(model: Element) {

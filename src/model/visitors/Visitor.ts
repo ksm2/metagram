@@ -1,39 +1,55 @@
-import { XMI } from '../models/XMI';
-import { Element as ModelElement } from '../models/Element';
+import { Element } from '../models/Element';
+import { XMIDecoder } from '../decoding/XMIDecoder';
+import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 
-export abstract class Visitor<T extends ModelElement> {
+export abstract class Visitor {
   constructor() {}
 
-  abstract createInstance(): T;
+  createInstance(): Element {
+    return new Element();
+  }
 
-  visitElement(element: Element, document: XMI, target: T, model?: ModelElement): void {
-    const name = element.tagName;
-    const pluralize = name + 's';
+  visit(decoder: XMIDecoder, node: ResolvedXMINode, element: Element): Element {
+    element.setID(node.id);
+    element.setOrigin(node.origin);
+    element.setTypeURI(node.typeURI);
+    element.setTypeName(node.typeName);
 
-    if (model && name.includes(':')) {
-      target.ownedElements.add(model);
-      model.owningElement = target;
-      return;
+    for (let [name, values] of node.attrs) {
+      for (let value of values) {
+        this.visitAttr(decoder, name, value, element, node);
+      }
     }
 
-    if (model && target[pluralize] instanceof Set) {
-      target[pluralize].add(model);
-      return;
+    for (let [name, childNodes] of node.elements) {
+      for (let childNode of childNodes) {
+        this.visitOwnedElement(decoder, name, childNode, element, node);
+      }
+    }
+
+    return element;
+  }
+
+  visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
+    if (name === 'ownedComment') {
+      parent.comments = new Set(childNode.attrs.get('body'));
     }
   }
 
-  visitAttr(name: string, value: string, document: XMI, target: T): void {
+  visitAttr(decoder: XMIDecoder, name: string, value: string, parent: Element, parentNode: ResolvedXMINode): void {
+    if (name === 'name') parent.name = value;
   }
 
-  protected decodeLiteralNumber(element: Element): number | null {
-    const [uri, type] = this.decodeXMIType(element);
-
-    const value = element.getAttribute('value');
-    if (type === 'LiteralReal') {
+  /**
+   * Decodes UML's literal number types
+   */
+  protected decodeLiteralNumber(element: ResolvedXMINode): number | null {
+    const value = element.getString('value');
+    if (element.typeName  === 'LiteralReal') {
       return parseFloat(value!);
     }
 
-    if (type !== 'LiteralInteger' && type !== 'LiteralUnlimitedNatural') {
+    if (element.typeName !== 'LiteralInteger' && element.typeName !== 'LiteralUnlimitedNatural') {
       return null;
     }
 
@@ -48,18 +64,21 @@ export abstract class Visitor<T extends ModelElement> {
     return parseInt(value, 10);
   }
 
-  protected decodeLiteralBoolean(element: Element): boolean | null {
-    const [uri, type] = this.decodeXMIType(element);
-    if (type !== 'LiteralBoolean') {
-      return null;
-    }
-
-    return element.getAttribute('value') === 'true';
+  /**
+   * Decodes UML's literal boolean type
+   */
+  protected decodeLiteralBoolean(element: ResolvedXMINode): boolean | null {
+    return element.typeName === 'LiteralBoolean' ? element.getString('value') === 'true' : null;
   }
 
-  protected decodeXMIType(element: Element): [string, string] {
-    const type = element.getAttributeNS('http://www.omg.org/spec/XMI/20131001', 'type') || element.tagName;
-    const [prefix, typeName] = type.split(':');
-    return [element.lookupNamespaceURI(prefix)!, typeName];
+  /**
+   * Decodes UML's literal string type
+   */
+  protected decodeLiteralString(element: ResolvedXMINode): string | null {
+    return element.typeName === 'LiteralString' ? element.getString('value') : null;
+  }
+
+  protected decodeXMIType(element: ResolvedXMINode): [string, string] {
+    return [element.typeURI, element.typeName];
   }
 }

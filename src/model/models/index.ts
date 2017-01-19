@@ -1,4 +1,7 @@
+export { Association } from './Association';
 export { Class } from './Class';
+export { Classifier } from './Classifier';
+export { DataType } from './DataType';
 export { Element } from './Element';
 export { Enumeration } from './Enumeration';
 export { EnumerationLiteral } from './EnumerationLiteral';

@@ -1,8 +1,8 @@
 import { Element } from '../../models/Element';
 import { Package } from '../../models/Package';
-import { cssClass, forEach, filename } from './helpers';
+import { cssClass, forEach } from './helpers';
 
-export default function (model: Element, baseHref: string, body: string) {
+export default function (model: Element, baseHref: string, ref: (m: Element) => string, body: string) {
   return `
 <html lang="en">
 <head>
@@ -19,17 +19,19 @@ export default function (model: Element, baseHref: string, body: string) {
     <header>
       <h1 class="name name-${cssClass(model)}">${model.name}</h1>
       <p>
-        <strong>${model.constructor.name}</strong>
-        <a class="model-id" href="ids.html#${model.ID}">${model.getHref()}</a>
+        <strong>${model.getTypeName()}</strong> from ${model.getTypeURI()}
+        <a class="model-id" href="ids.html#${model.getID()}">${model.getHref()}</a>
       </p>
-      <p class="lead">${model.comment}</p>
+      ${forEach(model.comments, (comment) => `
+        <p class="lead">${comment}</p>
+      `)}
       ${model instanceof Package && model.URI ? `
       <p class="lead">URI: <a href="${model.URI}">${model.URI}</a></p>
       ` : ``}
       <ol class="breadcrumb">
         ${forEach(model.allOwningElements(), (parent) => `
           <li class="breadcrumb-item">
-            <a class="name-ref name-${cssClass(parent)}" href="${filename(parent)}">${parent.name}</a>
+            <a class="name-ref name-${cssClass(parent)}" href="${ref(parent)}">${parent.name}</a>
           </li>
         `)}
         <li class="breadcrumb-item active">

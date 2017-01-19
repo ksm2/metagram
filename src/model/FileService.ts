@@ -1,6 +1,7 @@
 import fs = require('fs');
 import path = require('path');
 import { ncp } from 'ncp';
+import mkdirp = require('mkdirp');
 
 export class FileService {
   readFile(filename: string, encoding: string = 'utf8'): Promise<string> {
@@ -15,19 +16,13 @@ export class FileService {
     return new Promise<boolean>((res, rej) => fs.exists(filename, (exists) => res(exists)));
   }
 
+  async mkDir(directory: string): Promise<void> {
+    return new Promise<void>((res, rej) => mkdirp(directory, (err) => err ? rej(err) : res()));
+  }
+
   async ensureDirectoryExists(filename: string): Promise<void> {
     const dir = path.dirname(filename);
-    return new Promise<void>((res, rej) => fs.stat(dir, (err, stats) => {
-      if (err) {
-        if (err.errno === -2) {
-          return fs.mkdir(dir, (err) => err ? rej(err) : res());
-        }
-
-        return rej(err);
-      }
-
-      stats.isDirectory() ? res() : rej('Is not a directory');
-    }));
+    await this.mkDir(dir);
   }
 
   /**

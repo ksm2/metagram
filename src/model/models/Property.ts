@@ -1,14 +1,16 @@
 import { TypedElement } from './TypedElement';
 import { Class, Attribute } from '../decorators';
 import { EnumerationLiteral } from './EnumerationLiteral';
+import { Association } from './Association';
 
-export type DefaultValueType = boolean | number | EnumerationLiteral;
+export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 
 @Class('Property')
 export class Property extends TypedElement {
   private _lowerValue: number | null = null;
   private _upperValue: number | null = null;
   private _defaultValue: DefaultValueType | null = null;
+  private _association: Association | null = null;
 
   @Attribute({ type: Number })
   get lower(): number {
@@ -45,6 +47,15 @@ export class Property extends TypedElement {
 
   set defaultValue(value: DefaultValueType | null) {
     this._defaultValue = value;
+  }
+
+  @Attribute({ type: Object, lower: 0 })
+  get association(): Association | null {
+    return this._association;
+  }
+
+  set association(value: Association | null) {
+    this._association = value;
   }
 
   /**

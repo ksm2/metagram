@@ -1,29 +1,45 @@
 import { FileService } from './FileService';
-import { Element } from './models/Element';
-import { Class } from './models/Class';
-import { Package } from './models/Package';
-import { Enumeration } from './models/Enumeration';
-import { EnumerationLiteral } from './models/EnumerationLiteral';
-import { Property } from './models/Property';
-import { PrimitiveType } from './models/PrimitiveType';
-import { filename } from './views/html/helpers';
+import { Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
+import { cssClass } from './views/html/helpers';
 
-import classRenderer from './views/html/class.html';
-import packageRenderer from './views/html/package.html';
+import associationRenderer from './views/html/association.html';
+import dataTypeRenderer from './views/html/dataType.html';
 import enumerationRenderer from './views/html/enumeration.html';
 import enumerationLiteralRenderer from './views/html/enumerationLiteral.html';
+import indexRenderer from './views/html/index.html';
+import classRenderer from './views/html/class.html';
+import packageRenderer from './views/html/package.html';
 import propertyRenderer from './views/html/property.html';
 import primitiveTypeRenderer from './views/html/primitiveType.html';
+import { Association } from './models/Association';
 
 export class Renderer {
+  private rendered: Set<Element>;
+
   constructor(
     private fileService: FileService,
     private baseHref: string,
     private outputDir: string,
   ) {
+    this.rendered = new Set();
   }
 
+  /**
+   * Renders many elements sequentially
+   */
+  async renderAll(elements: Element[]): Promise<void> {
+    for (let element of elements) {
+      await this.render(element);
+    }
+  }
+
+  /**
+   * Renders any kind of element
+   */
   async render(element: Element): Promise<void> {
+    if (this.rendered.has(element)) return;
+    this.rendered.add(element);
+
     if (element instanceof Class) {
       await this.renderClass(element);
     } else if (element instanceof Package) {
@@ -36,10 +52,12 @@ export class Renderer {
       await this.renderProperty(element);
     } else if (element instanceof PrimitiveType) {
       await this.renderPrimitiveType(element);
-    }
-
-    for (let child of element) {
-      await this.render(child);
+    } else if (element instanceof DataType) {
+      await this.renderDataType(element);
+    } else if (element instanceof Association) {
+      await this.renderAssociation(element);
+    } else if (element instanceof XMI) {
+      await this.renderIndex(element);
     }
   }
 
@@ -47,33 +65,64 @@ export class Renderer {
     await this.fileService.copyDirectory(__dirname + '/../../public', this.outputDir);
   }
 
+  async renderIndex(model: XMI): Promise<void>  {
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, indexRenderer).catch(e => { throw e });
+  }
+
   async renderClass(model: Class): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${filename(model)}`, classRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, classRenderer).catch(e => { throw e });
   }
 
   async renderPackage(model: Package): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${filename(model)}`, packageRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, packageRenderer).catch(e => { throw e });
   }
 
   async renderEnumeration(model: Enumeration): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${filename(model)}`, enumerationRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, enumerationRenderer).catch(e => { throw e });
   }
 
   async renderEnumerationLiteral(model: EnumerationLiteral): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${filename(model)}`, enumerationLiteralRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, enumerationLiteralRenderer).catch(e => { throw e });
   }
 
   async renderProperty(model: Property): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${filename(model)}`, propertyRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, propertyRenderer).catch(e => { throw e });
   }
 
   async renderPrimitiveType(model: PrimitiveType): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${filename(model)}`, primitiveTypeRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, primitiveTypeRenderer).catch(e => { throw e });
   }
 
-  async writeOut<T>(model: T, filename: string, renderer: (t: T, b: string) => string): Promise<void> {
-    const str = renderer(model, this.baseHref);
-    await this.fileService.ensureDirectoryExists(filename);
-    return this.fileService.writeFile(str, filename);
+  async renderDataType(model: DataType): Promise<void>  {
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, dataTypeRenderer).catch(e => { throw e });
+  }
+
+  async renderAssociation(model: Association): Promise<void>  {
+    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, associationRenderer).catch(e => { throw e });
+  }
+
+  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, ref: (model: Element) => string) => string): Promise<void> {
+    const promises: Promise<void>[] = [];
+    const str = renderer(model, this.baseHref, (model: Element) => {
+      promises.push(this.render(model));
+      return this.generateFilename(model);
+    });
+    await Promise.all(promises);
+    await this.fileService.ensureDirectoryExists(fn);
+    return this.fileService.writeFile(str, fn);
+  }
+
+
+  private generateFilename(model: Element): string {
+    if (model instanceof XMI) return 'index.html';
+
+    const paths = model.allOwningElements().map(el => el.name).filter(el => !!el);
+    if (model.name) {
+      paths.push(`${model.name}.html`);
+    } else {
+      paths.push(`${cssClass(model)}.html`);
+    }
+
+    return paths.join('/');
   }
 }

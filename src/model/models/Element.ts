@@ -2,21 +2,14 @@ import { Class, Attribute } from '../decorators';
 
 @Class('Element')
 export class Element {
-  private _ID: string | null = null;
   private _name: string | null = null;
-  private _comment: string | null;
+  private _comments: Set<string> = new Set();
   private _ownedElements: Set<Element> = new Set();
   private _owningElement: Element | null = null;
   private _origin: string | undefined;
-
-  @Attribute({ type: String, lower: 0 })
-  get ID(): string | null {
-    return this._ID;
-  }
-
-  set ID(value: string | null) {
-    this._ID = value;
-  }
+  private _ID: string | undefined;
+  private _typeURI: string | undefined;
+  private _typeName: string | undefined;
 
   @Attribute({ type: String, lower: 0 })
   get name(): string | null {
@@ -27,13 +20,13 @@ export class Element {
     this._name = value;
   }
 
-  @Attribute({ type: String, lower: 0 })
-  get comment(): string | null {
-    return this._comment;
+  @Attribute({ type: String, lower: 0, upper: Infinity })
+  get comments(): Set<string> {
+    return this._comments;
   }
 
-  set comment(value: string | null) {
-    this._comment = value;
+  set comments(value: Set<string>) {
+    this._comments = value;
   }
 
   @Attribute({ type: Element, lower: 0, upper: Infinity })
@@ -72,7 +65,7 @@ export class Element {
       const element = q.shift();
       if (element instanceof Element) {
         // Check if we found the result
-        if (element.ID === id) return element;
+        if (element.getID() === id) return element;
 
         // Add child elements to look up queue
         for (let child of element) {
@@ -88,7 +81,7 @@ export class Element {
    * Returns a hyper reference to this element
    */
   getHref(): string | undefined {
-    return this.getOrigin() && `${this.getOrigin()}#${this.ID}`;
+    return this.getOrigin() && `${this.getOrigin()}#${this.getID()}`;
   }
 
   /**
@@ -103,6 +96,48 @@ export class Element {
    */
   getOrigin(): string | undefined {
     return this._origin;
+  }
+
+  /**
+   * Sets the element's ID
+   */
+  setID(ID: string | undefined) {
+    this._ID = ID;
+  }
+
+  /**
+   * Returns the ID of this element
+   */
+  getID(): string | undefined {
+    return this._ID;
+  }
+
+  /**
+   * Sets the element's typeURI
+   */
+  setTypeURI(typeURI: string | undefined) {
+    this._typeURI = typeURI;
+  }
+
+  /**
+   * Returns the URI of this element
+   */
+  getTypeURI(): string | undefined {
+    return this._typeURI;
+  }
+
+  /**
+   * Sets the element's type name
+   */
+  setTypeName(typeName: string | undefined) {
+    this._typeName = typeName;
+  }
+
+  /**
+   * Returns the type name of this element
+   */
+  getTypeName(): string | undefined {
+    return this._typeName;
   }
 
   /**

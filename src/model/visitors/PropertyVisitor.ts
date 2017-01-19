@@ -1,74 +1,92 @@
 import { Type } from '../models/Type';
 import { Visitor } from './Visitor';
 import { Property } from '../models/Property';
-import { XMI } from '../models/XMI';
-import { EnumerationLiteral } from '../models/EnumerationLiteral';
-import { Element as ModelElement } from '../models/Element';
+import { Element } from '../models/Element';
 import { URI as UML } from './UML20131001';
+import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
+import { XMIDecoder } from '../decoding/XMIDecoder';
+import { Association } from '../models/Association';
 
-export class PropertyVisitor extends Visitor<Property> {
+export class PropertyVisitor extends Visitor {
   createInstance(): Property {
     return new Property();
   }
 
-  visitAttr(name: string, value: string, document: XMI, target: Property): void {
+  visitAttr(decoder: XMIDecoder, name: string, value: string, parent: Element, parentNode: ResolvedXMINode): void {
+    if (!(parent instanceof Property)) return;
+
     switch (name) {
       case 'type': {
-        const model = document.getElementByID(value);
+        const model = decoder.decodeNode(parentNode.getNodeByID(value));
         if (model instanceof Type) {
-          target.type = model;
+          parent.type = model;
         }
         return;
       }
 
-      default: super.visitAttr(name, value, document, target);
+      case 'association': {
+        const model = decoder.decodeNode(parentNode.getNodeByID(value));
+        if (model instanceof Association) {
+          parent.association = model;
+        }
+        return;
+      }
+
+      default: super.visitAttr(decoder, name, value, parent, parentNode);
     }
   }
 
-  visitElement(element: Element, document: XMI, target: Property, model: ModelElement): void {
-    switch (element.tagName) {
+  visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
+    if (!(parent instanceof Property)) return;
+
+    switch (name) {
       case 'type': {
-        if (model && model instanceof Type) {
-          target.type = model;
+        const model = decoder.decodeNode(childNode);
+        if (model instanceof Type) {
+          parent.type = model;
         } else {
-          console.log(model);
+          console.log('Model?' + model);
         }
 
         return;
       }
 
       case 'lowerValue': {
-        target.lowerValue = this.decodeLiteralNumber(element)!;
+        parent.lowerValue = this.decodeLiteralNumber(childNode)!;
         return;
       }
 
       case 'upperValue': {
-        target.upperValue = this.decodeLiteralNumber(element)!;
+        parent.upperValue = this.decodeLiteralNumber(childNode)!;
         return;
       }
 
       case 'defaultValue': {
-        const number = this.decodeLiteralNumber(element)!;
-        if (null !== number) {
-          target.defaultValue = number;
-          return;
+        switch (childNode.typeName) {
+          case 'LiteralReal':
+          case 'LiteralInteger':
+          case 'LiteralUnlimitedNatural':
+            parent.defaultValue = this.decodeLiteralNumber(childNode)!;
+            return;
+          case 'LiteralBoolean':
+            parent.defaultValue = this.decodeLiteralBoolean(childNode)!;
+            return;
+          case 'LiteralString':
+            parent.defaultValue = this.decodeLiteralString(childNode)!;
+            return;
+          case 'InstanceValue':
+            const instance = childNode.getNodeByID(childNode.getString('instance')!);
+            if (!instance) throw new Error(`Could not find InstanceValue.instance`);
+            parent.defaultValue = decoder.decodeNode(instance);
+            return;
         }
 
-        const bool = this.decodeLiteralBoolean(element)!;
-        if (null !== bool) {
-          target.defaultValue = bool;
-          return;
-        }
-
-        const [uri, type] = this.decodeXMIType(element);
-        if (uri === UML && type === 'InstanceValue') {
-          target.defaultValue = document.getElementByID(element.getAttribute('instance')!) as EnumerationLiteral;
-          return;
-        }
-
-        console.error(`Unexpected default value type: ${type}`);
+        console.error(`Unexpected default value type: ${childNode.typeName}`);
         return;
       }
+
+      default:
+        super.visitOwnedElement(decoder, name, childNode, parent, parentNode);
     }
   }
 }

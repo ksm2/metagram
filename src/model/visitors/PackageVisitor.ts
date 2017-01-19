@@ -1,19 +1,44 @@
 import { Visitor } from './Visitor';
 import { Package } from '../models/Package';
-import { XMI } from '../models/XMI';
-import { Element as ModelElement } from '../models/Element';
+import { Element } from '../models/Element';
+import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
+import { XMIDecoder } from '../decoding/XMIDecoder';
 
-export class PackageVisitor extends Visitor<Package> {
+export class PackageVisitor extends Visitor {
   createInstance(): Package {
     return new Package();
   }
 
-  visitAttr(name: string, value: string, document: XMI, target: Package): void {
+  visitAttr(decoder: XMIDecoder, name: string, value: string, parent: Element, parentNode: ResolvedXMINode): void {
+    if (!(parent instanceof Package)) return;
+
     switch (name) {
       case 'URI': {
-        target.URI = value;
+        parent.URI = value;
         return;
       }
+
+      default: return super.visitAttr(decoder, name, value, parent, parentNode);
+    }
+  }
+
+  visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
+    if (!(parent instanceof Package)) return;
+
+    switch (name) {
+      case 'packagedElement': {
+        const child = decoder.decodeNode(childNode);
+        if (child) {
+          parent.packagedElements.add(child);
+          parent.ownedElements.add(child);
+          child.owningElement = parent;
+        }
+
+        return;
+      }
+
+      default:
+        super.visitOwnedElement(decoder, name, childNode, parent, parentNode);
     }
   }
 }
