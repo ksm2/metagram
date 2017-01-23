@@ -62,7 +62,7 @@ export class Renderer {
   }
 
   async copyAssets(): Promise<void> {
-    await this.fileService.copyDirectory(__dirname + '/../../public', this.outputDir);
+    await this.fileService.copyDirectory(__dirname + '/../public', this.outputDir);
   }
 
   async renderIndex(model: XMI): Promise<void>  {

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es2015",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -13,6 +14,10 @@
     "sourceMap": false,
     "typeRoots": ["node_modules/@types", "custom_typings"],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
+    "emitDecoratorMetadata": true,
+    "outDir": "./dest"
+  },
+  "files": [
+    "./src/index.ts"
+  ]
 }

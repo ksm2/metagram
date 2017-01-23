@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const mi = require('../dest/model');
+const mi = require('../dest');
 const path = require('path');
 const fs = require('fs');
 
