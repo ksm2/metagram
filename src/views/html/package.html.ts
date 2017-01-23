@@ -1,9 +1,9 @@
 import layout from './layout.html';
-import { Element } from '../../models/Element';
+import { ModelElement } from '../../models/ModelElement';
 import { Package } from '../../models/Package';
 import { forEach, cssClass } from './helpers';
 
-export default function (model: Package, baseHref: string, ref: (m: Element) => string) {
+export default function (model: Package, baseHref: string, ref: (m: ModelElement) => string) {
   return layout(model, baseHref, ref, `
     <section>
       <h2>Packaged Elements</h2>

@@ -5,7 +5,7 @@ import { Association } from './Association';
 
 export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 
-@Class('Property')
+@Class('Property', TypedElement)
 export class Property extends TypedElement {
   private _lowerValue: number | null = null;
   private _upperValue: number | null = null;

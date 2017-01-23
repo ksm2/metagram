@@ -1,9 +1,9 @@
 import layout from './layout.html';
-import { Element } from '../../models/Element';
+import { ModelElement } from '../../models/ModelElement';
 import { Enumeration } from '../../models/Enumeration';
 import { forEach, cssClass } from './helpers';
 
-export default function (model: Enumeration, baseHref: string, ref: (m: Element) => string) {
+export default function (model: Enumeration, baseHref: string, ref: (m: ModelElement) => string) {
   return layout(model, baseHref, ref, `
     ${model.ownedLiterals.size ? `<section>
       <h2>Owned Literals</h2>

@@ -84,6 +84,11 @@ export class ResolvedXMINode extends XMINode {
     return this.attrs.get(key) || this.elements.get(key) || null;
   }
 
+  getElement(key: string): ResolvedXMINode | null {
+    const at = this.elements.get(key);
+    return at && at.length && at[0] || null;
+  }
+
   getString(key: string): string | null {
     const atKey = this.attrs.get(key);
     if (atKey && atKey.length) return atKey[0];

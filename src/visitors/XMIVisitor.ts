@@ -3,15 +3,18 @@ import { Element } from '../models/Element';
 import { XMI } from '../models/XMI';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
+import { ModelElement } from '../models/ModelElement';
 
 export class XMIVisitor extends Visitor {
-  createInstance(): XMI {
+  createInstance(node: ResolvedXMINode): Element {
     return new XMI();
   }
 
   visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
+    if (!(parent instanceof XMI)) return;
+
     const child = decoder.decodeNode(childNode);
-    if (child) {
+    if (child instanceof ModelElement) {
       parent.ownedElements.add(child);
       child.owningElement = parent;
     }

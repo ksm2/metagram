@@ -1,10 +1,13 @@
-import { Element } from './Element';
+import { ModelElement } from './ModelElement';
 import { Class, Attribute } from '../decorators';
+import { Diagram } from '../diagram/Diagram';
 
-@Class('Package', Element)
-export class Package extends Element {
+@Class('Package', ModelElement)
+export class Package extends ModelElement {
   private _URI: string | null = null;
-  private _packagedElements: Set<Element> = new Set();
+  private _stereotype: string | null = null;
+  private _packagedElements: Set<ModelElement> = new Set();
+  private _diagrams: Set<Diagram> = new Set();
 
   @Attribute(String, 0, 1)
   get URI(): string | null {
@@ -15,12 +18,30 @@ export class Package extends Element {
     this._URI = value;
   }
 
-  @Attribute(Element, 0, Infinity)
-  get packagedElements(): Set<Element> {
+  @Attribute(ModelElement, 0, Infinity)
+  get packagedElements(): Set<ModelElement> {
     return this._packagedElements;
   }
 
-  set packagedElements(value: Set<Element>) {
+  set packagedElements(value: Set<ModelElement>) {
     this._packagedElements = value;
+  }
+
+  @Attribute(Diagram, 0, Infinity)
+  get diagrams(): Set<Diagram> {
+    return this._diagrams;
+  }
+
+  set diagrams(value: Set<Diagram>) {
+    this._diagrams = value;
+  }
+
+  @Attribute({ type: String, lower: 0 })
+  get stereotype(): string | null {
+    return this._stereotype;
+  }
+
+  set stereotype(value: string | null) {
+    this._stereotype = value;
   }
 }

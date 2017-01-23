@@ -1,8 +1,8 @@
-import { Element } from '../../models/Element';
+import { ModelElement } from '../../models/ModelElement';
 import { Package } from '../../models/Package';
 import { cssClass, forEach } from './helpers';
 
-export default function (model: Element, baseHref: string, ref: (m: Element) => string, body: string) {
+export default function (model: ModelElement, baseHref: string, ref: (m: ModelElement) => string, body: string) {
   return `
 <html lang="en">
 <head>

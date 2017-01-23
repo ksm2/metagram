@@ -5,7 +5,7 @@ import { XMIDecoder } from '../decoding/XMIDecoder';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 
 export class ClassVisitor extends ClassifierVisitor {
-  createInstance(): Element {
+  createInstance(node: ResolvedXMINode): Element {
     return new Class();
   }
 

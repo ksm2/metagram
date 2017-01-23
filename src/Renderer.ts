@@ -1,5 +1,5 @@
 import { FileService } from './FileService';
-import { Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
+import { XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
 import { cssClass } from './views/html/helpers';
 
 import associationRenderer from './views/html/association.html';
@@ -12,9 +12,10 @@ import packageRenderer from './views/html/package.html';
 import propertyRenderer from './views/html/property.html';
 import primitiveTypeRenderer from './views/html/primitiveType.html';
 import { Association } from './models/Association';
+import { ModelElement } from './models/ModelElement';
 
 export class Renderer {
-  private rendered: Set<Element>;
+  private rendered: Set<ModelElement>;
 
   constructor(
     private fileService: FileService,
@@ -27,7 +28,7 @@ export class Renderer {
   /**
    * Renders many elements sequentially
    */
-  async renderAll(elements: Element[]): Promise<void> {
+  async renderAll(elements: ModelElement[]): Promise<void> {
     for (let element of elements) {
       await this.render(element);
     }
@@ -36,7 +37,7 @@ export class Renderer {
   /**
    * Renders any kind of element
    */
-  async render(element: Element): Promise<void> {
+  async render(element: ModelElement): Promise<void> {
     if (this.rendered.has(element)) return;
     this.rendered.add(element);
 
@@ -66,7 +67,7 @@ export class Renderer {
   }
 
   async renderIndex(model: XMI): Promise<void>  {
-    await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, indexRenderer).catch(e => { throw e });
+    await this.writeOut(model, `${this.outputDir}/index.html`, indexRenderer).catch(e => { throw e });
   }
 
   async renderClass(model: Class): Promise<void>  {
@@ -101,9 +102,9 @@ export class Renderer {
     await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, associationRenderer).catch(e => { throw e });
   }
 
-  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, ref: (model: Element) => string) => string): Promise<void> {
+  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, ref: (model: ModelElement) => string) => string): Promise<void> {
     const promises: Promise<void>[] = [];
-    const str = renderer(model, this.baseHref, (model: Element) => {
+    const str = renderer(model, this.baseHref, (model: ModelElement) => {
       promises.push(this.render(model));
       return this.generateFilename(model);
     });
@@ -113,9 +114,7 @@ export class Renderer {
   }
 
 
-  private generateFilename(model: Element): string {
-    if (model instanceof XMI) return 'index.html';
-
+  private generateFilename(model: ModelElement): string {
     const paths = model.allOwningElements().map(el => el.name).filter(el => !!el);
     if (model.name) {
       paths.push(`${model.name}.html`);

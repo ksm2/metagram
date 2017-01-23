@@ -1,0 +1,16 @@
+export { Bounds } from './Bounds';
+export { ClassDiagram } from './ClassDiagram';
+export { ClassifierElement } from './ClassifierElement';
+export { Color } from './Color';
+export { Diagram } from './Diagram';
+export { DiagramElement } from './DiagramElement';
+export { Document } from './Document';
+export { Edge } from './Edge';
+export { Fill } from './Fill';
+export { Font } from './Font';
+export { GeneralizationElement } from './GeneralizationElement';
+export { Handle } from './Handle';
+export { PackageElement } from './PackageElement';
+export { Shape } from './Shape';
+export { Stroke } from './Stroke';
+export { Style } from './Style';

@@ -3,9 +3,12 @@ import { Package } from '../models/Package';
 import { Element } from '../models/Element';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
+import { ModelElement } from '../models/ModelElement';
+import { Diagram } from '../diagram/Diagram';
+import { XMI } from '../models/XMI';
 
 export class PackageVisitor extends Visitor {
-  createInstance(): Package {
+  createInstance(node: ResolvedXMINode): Element {
     return new Package();
   }
 
@@ -28,12 +31,19 @@ export class PackageVisitor extends Visitor {
     switch (name) {
       case 'packagedElement': {
         const child = decoder.decodeNode(childNode);
-        if (child) {
+        if (child instanceof ModelElement) {
           parent.packagedElements.add(child);
           parent.ownedElements.add(child);
           child.owningElement = parent;
         }
+        return;
+      }
 
+      case 'umldi:Diagram': {
+        const diagram = decoder.decodeNode(childNode);
+        if (diagram instanceof Diagram) {
+          parent.diagrams.add(diagram);
+        }
         return;
       }
 

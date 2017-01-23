@@ -6,7 +6,7 @@ import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 
 export class EnumerationVisitor extends Visitor {
-  createInstance(): Enumeration {
+  createInstance(node: ResolvedXMINode): Element {
     return new Enumeration();
   }
 

@@ -1,7 +1,7 @@
 import layout from './layout.html';
-import { Element } from '../../models/Element';
+import { ModelElement } from '../../models/ModelElement';
 import { EnumerationLiteral } from '../../models/EnumerationLiteral';
 
-export default function (model: EnumerationLiteral, baseHref: string, ref: (m: Element) => string) {
+export default function (model: EnumerationLiteral, baseHref: string, ref: (m: ModelElement) => string) {
   return layout(model, baseHref, ref, ``);
 }

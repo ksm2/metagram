@@ -39,26 +39,31 @@ export class XMITree {
     if (href) return new HRefLeaf(this.origin, href);
 
     // Check if can retrieve type or return string leaf
-    const xmiType = this.getXMIType(xml);
-    if (!xmiType) return new StringLeaf(this.origin, xml.tagName, xml.textContent || '');
+    try {
+      const xmiType = this.getXMIType(xml);
+      if (!xmiType) return new StringLeaf(this.origin, xml.tagName, xml.textContent || '');
 
-    const [typeURI, typeName] = xmiType;
-    
-    // Is child node an element?
-    const elements = Array.from(xml.childNodes).filter(childNode => childNode.nodeType === 1) as Element[];
+      const [typeURI, typeName] = xmiType;
 
-    // Resolve children
-    const node = new XMIElementNode(this.origin, xml, typeURI, typeName, id);
-    for (let element of elements) {
-      const childrenOfTag = node.children.get(element.tagName) || [];
-      const childNode = this.createTree(element);
-      if (childNode) {
-        childrenOfTag.push(childNode);
-        node.children.set(element.tagName, childrenOfTag);
+      // Is child node an element?
+      const elements = Array.from(xml.childNodes).filter(childNode => childNode.nodeType === 1) as Element[];
+
+      // Resolve children
+      const node = new XMIElementNode(this.origin, xml, typeURI, typeName, id);
+      for (let element of elements) {
+        const childrenOfTag = node.children.get(element.tagName) || [];
+        const childNode = this.createTree(element);
+        if (childNode) {
+          childrenOfTag.push(childNode);
+          node.children.set(element.tagName, childrenOfTag);
+        }
       }
-    }
 
-    return node;
+      return node;
+    } catch (e) {
+      console.warn(e);
+      return null;
+    }
   }
 
   private async resolveRefNodes(node: XMIElementNode, resolver: XMIResolver, visited: Set<XMIElementNode>): Promise<any> {

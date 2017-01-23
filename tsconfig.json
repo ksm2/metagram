@@ -12,12 +12,13 @@
     "strictNullChecks": true,
     "skipLibCheck": true,
     "sourceMap": false,
-    "typeRoots": ["node_modules/@types", "custom_typings"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "./dest"
   },
   "files": [
-    "./src/index.ts"
+    "./custom_typings/canvas.d.ts",
+    "./src/server.ts",
+    "./src/client.ts"
   ]
 }

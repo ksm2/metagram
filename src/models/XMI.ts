@@ -1,9 +1,8 @@
-import { Element } from './Element';
-import { Class } from '../decorators';
+import { ModelElement } from './ModelElement';
+import { Class, Attribute } from '../decorators';
 
-@Class('XMI', Element)
-export class XMI extends Element {
-
+@Class('XMI', ModelElement)
+export class XMI extends ModelElement {
   merge(otherXMI: XMI): XMI {
     otherXMI.ownedElements.forEach((ownedElement) => {
       ownedElement.owningElement = this;

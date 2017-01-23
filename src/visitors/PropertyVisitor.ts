@@ -2,13 +2,13 @@ import { Type } from '../models/Type';
 import { Visitor } from './Visitor';
 import { Property } from '../models/Property';
 import { Element } from '../models/Element';
-import { URI as UML } from './UML20131001';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { Association } from '../models/Association';
+import { EnumerationLiteral } from '../models/EnumerationLiteral';
 
 export class PropertyVisitor extends Visitor {
-  createInstance(): Property {
+  createInstance(node: ResolvedXMINode): Element {
     return new Property();
   }
 
@@ -44,8 +44,6 @@ export class PropertyVisitor extends Visitor {
         const model = decoder.decodeNode(childNode);
         if (model instanceof Type) {
           parent.type = model;
-        } else {
-          console.log('Model?' + model);
         }
 
         return;
@@ -77,7 +75,11 @@ export class PropertyVisitor extends Visitor {
           case 'InstanceValue':
             const instance = childNode.getNodeByID(childNode.getString('instance')!);
             if (!instance) throw new Error(`Could not find InstanceValue.instance`);
-            parent.defaultValue = decoder.decodeNode(instance);
+
+            const defaultValue = decoder.decodeNode(instance);
+            if (defaultValue instanceof EnumerationLiteral) {
+              parent.defaultValue = defaultValue;
+            }
             return;
         }
 

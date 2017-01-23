@@ -1,10 +1,11 @@
 import layout from './layout.html';
-import { Element } from '../../models/Element';
+import attributes from './attributes.html';
+import operations from './operations.html';
+import { ModelElement } from '../../models/ModelElement';
 import { Class } from '../../models/Class';
-import { forEach, cssClass } from './helpers';
-import { EnumerationLiteral } from '../../models/EnumerationLiteral';
+import { forEach } from './helpers';
 
-export default function (model: Class, baseHref: string, ref: (m: Element) => string) {
+export default function (model: Class, baseHref: string, ref: (m: ModelElement) => string) {
   function generalizations(model: Class): string {
     if (!model.generalizations.size) return '';
     return `<ul>${forEach(model.generalizations, (g) => `<li class="name-ref name-class"><a href="${ref(g)}">${g.name}</a></li>\n${generalizations(g)}`)}</ul>`;
@@ -24,26 +25,7 @@ export default function (model: Class, baseHref: string, ref: (m: Element) => st
       </ul>
     </section>` : ``}
     
-    ${model.ownedAttributes.size ? `<section>
-      <h2>Owned Attributes</h2>
-      <ul class="list-unstyled">
-        ${forEach(model.ownedAttributes, (attribute) => `
-          <li>
-            <a class="name-ref name-${cssClass(attribute)}" href="${ref(attribute)}"><strong>${attribute.name}</strong></a>
-            ${attribute.type ? `<a href="${ref(attribute.type)}">:${attribute.type.name}</a>` : ``}
-            <span>[${attribute.lower}..${attribute.upper === Infinity ? '*' : attribute.upper}]</span>
-            ${attribute.defaultValue instanceof EnumerationLiteral ? ` 
-              <a href="${ref(attribute.defaultValue)}">=${attribute.defaultValue.name}</a>
-            ` : null !== attribute.defaultValue ? `
-              <span>=${attribute.defaultValue}</span>
-            ` : ``}
-            ${attribute.association ? `<a class="name-ref name-association" href="${ref(attribute.association)}">${attribute.association.name}</a>` : ``}
-            ${forEach(attribute.comments, (comment) => `
-              <p class="comment">${comment}</p>
-            `)}
-          </li>
-        `)}
-      </ul>
-    </section>` : ``}
+    ${attributes(model.ownedAttributes, ref)}
+    ${operations(model.ownedOperations, ref)}
   `);
 }

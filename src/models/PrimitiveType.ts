@@ -1,6 +1,6 @@
-import { Type } from './Type';
+import { Classifier } from './Classifier';
 import { Class } from '../decorators';
 
-@Class('PrimitiveType', Type)
-export class PrimitiveType extends Type {
+@Class('PrimitiveType', Classifier)
+export class PrimitiveType extends Classifier {
 }

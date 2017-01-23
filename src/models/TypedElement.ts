@@ -1,9 +1,9 @@
-import { Element } from './Element';
+import { ModelElement } from './ModelElement';
 import { Type } from './Type';
 import { Class, Attribute } from '../decorators';
 
-@Class('TypedElement', Element)
-export class TypedElement extends Element {
+@Class('TypedElement', ModelElement)
+export class TypedElement extends ModelElement {
   private _type: Type;
 
   @Attribute({ type: Type })

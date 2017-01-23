@@ -1,9 +1,9 @@
 import layout from './layout.html';
 import { XMI } from '../../models/XMI';
-import { Element } from '../../models/Element';
+import { ModelElement } from '../../models/ModelElement';
 import { forEach, cssClass } from './helpers';
 
-export default function (model: XMI, baseHref: string, ref: (m: Element) => string) {
+export default function (model: XMI, baseHref: string, ref: (m: ModelElement) => string) {
   return layout(model, baseHref, ref, `
     ${model.ownedElements.size ? `<section>
       <h2>Owned Elements</h2>

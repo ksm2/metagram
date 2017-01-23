@@ -2,7 +2,9 @@
   "name": "@metagram/model",
   "version": "1.0.0",
   "description": "Metagram Model",
-  "main": "index.js",
+  "main": "server.js",
+  "client": "client.js",
+  "server": "server.js",
   "typings": "index.d.ts",
   "dependencies": {
     "mkdirp": "^0.5.1",

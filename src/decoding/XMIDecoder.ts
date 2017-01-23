@@ -2,11 +2,14 @@ import { FileService } from '../FileService';
 import { XMI } from '../models/XMI';
 import { Element } from '../models/Element';
 import { Visitor } from '../visitors';
-import UML20131001 from '../visitors/UML20131001';
-import XMI20131001 from '../visitors/XMI20131001';
 import { XMIResolver } from './XMIResolver';
 import { ResolvedXMINode } from './ResolvedXMINode';
 import { XMINode } from './XMINode';
+
+import UML20131001 from '../namespaces/UML20131001';
+import XMI20131001 from '../namespaces/XMI20131001';
+import UMLDI20131001 from '../namespaces/UMLDI20131001';
+import DC20131001 from '../namespaces/DC20131001';
 
 export class XMIDecoder {
   private visitors: Map<string, Map<string, Visitor>>;
@@ -23,6 +26,8 @@ export class XMIDecoder {
     this.promises = [];
     this.registerModel(UML20131001);
     this.registerModel(XMI20131001);
+    this.registerModel(UMLDI20131001);
+    this.registerModel(DC20131001);
   }
 
   registerModel({ URI, visitors }: { URI: string, visitors: { [key: string]: Visitor } }) {
@@ -100,7 +105,7 @@ export class XMIDecoder {
     if (!visitor) return null;
 
     // Instantiate XMI element
-    const target = visitor.createInstance();
+    const target = visitor.createInstance(node);
     this.resolvedMap.set(node, target);
     this.promises.push(new Promise((resolve) => {
       visitor.visit(this, node, target);

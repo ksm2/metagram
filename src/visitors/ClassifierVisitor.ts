@@ -4,9 +4,10 @@ import { Property } from '../models/Property';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { Classifier } from '../models/Classifier';
+import { Operation } from '../models/Operation';
 
 export class ClassifierVisitor extends Visitor {
-  createInstance(): Element {
+  createInstance(node: ResolvedXMINode): Element {
     return new Classifier();
   }
 
@@ -18,6 +19,16 @@ export class ClassifierVisitor extends Visitor {
         const child = decoder.decodeNode(childNode);
         if (child instanceof Property) {
           parent.ownedAttributes.add(child);
+          parent.ownedElements.add(child);
+          child.owningElement = parent;
+        }
+        return;
+      }
+
+      case 'ownedOperation': {
+        const child = decoder.decodeNode(childNode);
+        if (child instanceof Operation) {
+          parent.ownedOperations.add(child);
           parent.ownedElements.add(child);
           child.owningElement = parent;
         }

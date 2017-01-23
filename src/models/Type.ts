@@ -1,6 +1,6 @@
-import { Element } from './Element';
+import { ModelElement } from './ModelElement';
 import { Class } from '../decorators';
 
-@Class('Type', Element)
-export class Type extends Element {
+@Class('Type', ModelElement)
+export class Type extends ModelElement {
 }

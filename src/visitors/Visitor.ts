@@ -1,11 +1,12 @@
 import { Element } from '../models/Element';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
+import { ModelElement } from '../models/ModelElement';
 
 export abstract class Visitor {
   constructor() {}
 
-  createInstance(): Element {
+  createInstance(node: ResolvedXMINode): Element {
     return new Element();
   }
 
@@ -31,13 +32,30 @@ export abstract class Visitor {
   }
 
   visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
-    if (name === 'ownedComment') {
-      parent.comments = new Set(childNode.attrs.get('body'));
+    if (!(parent instanceof ModelElement)) return;
+
+    switch (name) {
+      case 'ownedElement': {
+        const child = decoder.decodeNode(childNode);
+        if (child instanceof ModelElement) {
+          parent.ownedElements.add(child);
+          child.owningElement = parent;
+        }
+
+        return;
+      }
+
+      case 'ownedComment': {
+        parent.comments = new Set(childNode.attrs.get('body'));
+        return;
+      }
     }
   }
 
   visitAttr(decoder: XMIDecoder, name: string, value: string, parent: Element, parentNode: ResolvedXMINode): void {
-    if (name === 'name') parent.name = value;
+    if (parent instanceof ModelElement) {
+      if (name === 'name') parent.name = value;
+    }
   }
 
   /**
