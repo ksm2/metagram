@@ -16,6 +16,7 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 decoder.loadURLs(
+  'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi',
   'http://www.omg.org/spec/MOF/20131001/MOF.xmi',
   'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi',
   'http://www.omg.org/spec/UML/20131001/UML.xmi',

@@ -11,11 +11,9 @@ export class XMIVisitor extends Visitor {
   }
 
   visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
-    if (!(parent instanceof XMI)) return;
-
     const child = decoder.decodeNode(childNode);
-    if (child instanceof ModelElement) {
-      parent.ownedElements.add(child);
+    if (child !== null) {
+      parent.appendChild(child);
     }
   }
 }

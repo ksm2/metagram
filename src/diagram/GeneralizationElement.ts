@@ -1,17 +1,17 @@
 import { Generalization } from '../models';
 import { arrow, ArrowTipKind } from '../rendering';
 import { Canvas } from '../canvas/Canvas';
-import { Line } from '../rendering/Geometry';
 import { Color } from './Color';
 import { Edge } from './Edge';
+import { Line } from './Line';
 
 export class GeneralizationElement extends Edge<Generalization> {
-  renderLine(canvas: Canvas, line: Line): void {
+  renderLineSegment(canvas: Canvas, line: Line, isLastSegment: boolean): void {
     let stroke = this.stroke;
     if (this.hovered) {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
-    arrow(canvas.ctx, line, stroke, ArrowTipKind.TRIANGLE, ArrowTipKind.NONE, this.modelElement && this.modelElement.name, this.font);
+    arrow(canvas.ctx, line, stroke, isLastSegment ? ArrowTipKind.TRIANGLE : ArrowTipKind.NONE, ArrowTipKind.NONE, this.modelElement && this.modelElement.name, this.font);
   }
 }

@@ -2,6 +2,7 @@ import { Element } from '../models/Element';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { ModelElement } from '../models/ModelElement';
+import { Diagram } from '../diagram/Diagram';
 
 export abstract class Visitor {
   constructor() {}
@@ -47,6 +48,15 @@ export abstract class Visitor {
 
       case 'ownedComment': {
         parent.comments = new Set(childNode.attrs.get('body'));
+        return;
+      }
+
+      case 'di:Diagram':
+      case 'umldi:Diagram': {
+        const diagram = decoder.decodeNode(childNode);
+        if (diagram instanceof Diagram) {
+          parent.appendChild(diagram);
+        }
         return;
       }
     }

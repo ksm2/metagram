@@ -11,6 +11,7 @@ export { Font } from './Font';
 export { GeneralizationElement } from './GeneralizationElement';
 export { Handle } from './Handle';
 export { PackageElement } from './PackageElement';
+export { Point } from './Point';
 export { Shape } from './Shape';
 export { Stroke } from './Stroke';
 export { Style } from './Style';

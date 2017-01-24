@@ -1,13 +1,14 @@
 import { ModelElement } from '../models/ModelElement';
 import { DiagramElement } from './DiagramElement';
-import { Line } from '../rendering/Geometry';
 import { Canvas } from '../canvas/Canvas';
 import { Handle } from './Handle';
 import { Stroke } from './Stroke';
 import { Font } from './Font';
 import { Class, Attribute } from '../decorators/index';
 import { Shape } from './Shape';
-import { bresenhamAlgorithm } from '../rendering/bresenhamAlgorithm';
+import { Point } from './Point';
+import { BresenhamService } from '../services/BresenhamService';
+import { Line } from './Line';
 
 @Class('Edge', DiagramElement)
 export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
@@ -15,6 +16,7 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   private _font: Font = Font.DEFAULT;
   private _source: Shape<any>;
   private _target: Shape<any>;
+  private _waypoint: Point[] = [];
 
   @Attribute({ type: Stroke })
   get stroke(): Stroke {
@@ -52,6 +54,15 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     this._target = value;
   }
 
+  @Attribute({ type: Point, lower: 0, upper: Infinity })
+  get waypoint(): Point[] {
+    return this._waypoint;
+  }
+
+  set waypoint(value: Point[]) {
+    this._waypoint = value;
+  }
+
   constructor() {
     super();
     this.handles.push(new Handle());
@@ -59,13 +70,21 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   }
 
   containsPoint(canvas: Canvas, x: number, y: number): boolean {
-    const l = this.connect(canvas);
+    const bresenham = new BresenhamService();
+    const lines = bresenham.waylines(canvas, this);
+
     const { ctx } = canvas;
     ctx.save();
     ctx.lineWidth = Math.max(6, this.stroke.width);
     ctx.beginPath();
-    ctx.moveTo(l.x1 || 0, l.y1 || 0);
-    ctx.lineTo(l.x2 || 0, l.y2 || 0);
+    let first = true;
+    for (let line of lines) {
+      if (first) {
+        ctx.moveTo(line.from.x, line.from.y);
+        first = false;
+      }
+      ctx.lineTo(line.to.x, line.to.y);
+    }
     ctx.closePath();
     const r = ctx.isPointInStroke(x, y);
     ctx.restore();
@@ -74,17 +93,20 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   }
 
   render(canvas: Canvas): void {
-    const l = this.connect(canvas);
-    this.handles[0].x = l.x1 || 0;
-    this.handles[0].y = l.y1 || 0;
-    this.handles[1].x = l.x2 || 0;
-    this.handles[1].y = l.y2 || 0;
-    this.renderLine(canvas, l);
+    const bresenham = new BresenhamService();
+    const lines = bresenham.waylines(canvas, this);
+
+    let it: IteratorResult<Line>;
+    do {
+      it = lines.next();
+      this.renderLineSegment(canvas, it.value, it.done);
+    } while (!it.done);
+
+    // this.handles[0].x = l.x1 || 0;
+    // this.handles[0].y = l.y1 || 0;
+    // this.handles[1].x = l.x2 || 0;
+    // this.handles[1].y = l.y2 || 0;
   }
 
-  protected abstract renderLine(canvas: Canvas, line: Line): void;
-
-  protected connect(canvas: Canvas): Line {
-    return bresenhamAlgorithm(canvas, this._source, this._target);
-  }
+  protected abstract renderLineSegment(canvas: Canvas, line: Line, isLastSegment: boolean): void;
 }

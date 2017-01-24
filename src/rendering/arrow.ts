@@ -1,9 +1,9 @@
-import { Line, destructLine } from './Geometry';
 import { Stroke } from '../diagram/Stroke';
 import { Font } from '../diagram/Font';
+import { Line } from '../diagram/Line';
 
 export enum ArrowTipKind {
-  NONE,
+  NONE = 0,
   PEAK,
   TRIANGLE,
   TRIANGLE_FILLED,
@@ -19,9 +19,9 @@ export enum ArrowTipKind {
  * Draws a given line with some stroke properties
  */
 export function arrow(ctx: CanvasRenderingContext2D, line: Line, stroke: Stroke,
-                      arrowEnd?: ArrowTipKind, arrowStart?: ArrowTipKind,
+                      arrowEnd: ArrowTipKind = ArrowTipKind.NONE, arrowStart: ArrowTipKind = ArrowTipKind.NONE,
                       label: string | null = null, labelFont?: Font) {
-  const [x1, y1, x2, y2] = destructLine(line);
+  const { x1, y1, x2, y2 } = line.getCoordinates();
   const angle = Math.atan2(y2 - y1, x2 - x1);
 
   // Draw the line itself

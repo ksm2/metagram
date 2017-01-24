@@ -1,4 +1,4 @@
-import { FileService } from './FileService';
+import { FileService } from './services/FileService';
 import { Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
 import { Association } from './models/Association';
 import { ModelElement } from './models/ModelElement';
@@ -72,7 +72,7 @@ export class Renderer {
   }
 
   async renderIndex(model: XMI): Promise<void>  {
-    for (let element of model.ownedElements) {
+    for (let element of model.contents) {
       if (element instanceof ModelElement) {
         this.roots.add(element);
       }

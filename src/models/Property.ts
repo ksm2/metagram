@@ -2,6 +2,7 @@ import { TypedElement } from './TypedElement';
 import { Class, Attribute } from '../decorators';
 import { EnumerationLiteral } from './EnumerationLiteral';
 import { Association } from './Association';
+import { AggregationKind } from './AggregationKind';
 
 export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 
@@ -11,6 +12,7 @@ export class Property extends TypedElement {
   private _upperValue: number | null = null;
   private _defaultValue: DefaultValueType | null = null;
   private _association: Association | null = null;
+  private _aggregation: AggregationKind = AggregationKind.none;
 
   @Attribute({ type: Number })
   get lower(): number {
@@ -56,6 +58,15 @@ export class Property extends TypedElement {
 
   set association(value: Association | null) {
     this._association = value;
+  }
+
+  @Attribute({ type: AggregationKind })
+  get aggregation(): AggregationKind {
+    return this._aggregation;
+  }
+
+  set aggregation(value: AggregationKind) {
+    this._aggregation = value;
   }
 
   /**

@@ -7,6 +7,7 @@ import { Shape } from '../diagram/Shape';
 import { PackageImportElement } from '../diagram/PackageImportElement';
 import { GeneralizationElement } from '../diagram/GeneralizationElement';
 import { AssociationElement } from '../diagram/AssociationElement';
+import { Point } from '../diagram/Point';
 
 export class EdgeVisitor extends DiagramElementVisitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -31,6 +32,14 @@ export class EdgeVisitor extends DiagramElementVisitor {
         const element = decoder.decodeNode(childNode);
         if (element) {
           parent.modelElement = element;
+        }
+        return;
+      }
+
+      case 'waypoint': {
+        const point = decoder.decodeNode(childNode);
+        if (point instanceof Point) {
+          parent.waypoint.push(point);
         }
         return;
       }

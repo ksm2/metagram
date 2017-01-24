@@ -1,18 +1,18 @@
 import { PackageImport } from '../models';
 import { arrow, ArrowTipKind } from '../rendering';
 import { Canvas } from '../canvas/Canvas';
-import { Line } from '../rendering/Geometry';
 import { Color } from './Color';
 import { Edge } from './Edge';
+import { Line } from './Line';
 
 export class PackageImportElement extends Edge<PackageImport> {
   constructor() {
     super();
     this.stroke = this.stroke.clone();
-    this.stroke.dashOffset = 5;
+    this.stroke.dashOffset = 10;
   }
 
-  renderLine(canvas: Canvas, line: Line): void {
+  renderLineSegment(canvas: Canvas, line: Line): void {
     let stroke = this.stroke;
     if (this.hovered) {
       stroke = this.stroke.withStyle(Color.RED);

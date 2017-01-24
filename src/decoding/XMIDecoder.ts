@@ -1,4 +1,4 @@
-import { FileService } from '../FileService';
+import { FileService } from '../services/FileService';
 import { XMI } from '../models/XMI';
 import { Element } from '../models/Element';
 import { Visitor } from '../visitors';
@@ -10,6 +10,7 @@ import UML20131001 from '../namespaces/UML20131001';
 import XMI20131001 from '../namespaces/XMI20131001';
 import UMLDI20131001 from '../namespaces/UMLDI20131001';
 import DC20131001 from '../namespaces/DC20131001';
+import DI20131001 from '../namespaces/DI20131001';
 
 export class XMIDecoder {
   private visitors: Map<string, Map<string, Visitor>>;
@@ -28,6 +29,7 @@ export class XMIDecoder {
     this.registerModel(XMI20131001);
     this.registerModel(UMLDI20131001);
     this.registerModel(DC20131001);
+    this.registerModel(DI20131001);
   }
 
   registerModel({ URI, visitors }: { URI: string, visitors: { [key: string]: Visitor } }) {

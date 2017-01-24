@@ -1,3 +1,4 @@
+export { AggregationKind } from './AggregationKind';
 export { Association } from './Association';
 export { Class } from './Class';
 export { Classifier } from './Classifier';

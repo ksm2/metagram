@@ -9,9 +9,9 @@ export default function (model: XMI, baseHref: string, roots: Set<ModelElement>,
       <h1 class="display-3">Metagram Specifications</h1>
     </header>
     <main>
-    ${model.ownedElements.size ? `<section>
+    ${model.contents.size ? `<section>
       <ul class="list-unstyled">
-        ${forEach(model.ownedElements, (ownedElement) => ownedElement instanceof ModelElement ? `
+        ${forEach(model.contents, (ownedElement) => ownedElement instanceof ModelElement ? `
           <li class="name-ref name-${cssClass(ownedElement)}"><a href="${ref(ownedElement)}">${ownedElement.name}</a>` : '')}    
       </ul>
     </section>` : ``}

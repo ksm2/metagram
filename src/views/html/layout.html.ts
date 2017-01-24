@@ -9,7 +9,7 @@ export default function (model: ModelElement, baseHref: string, roots: Set<Model
       <h1 class="name name-${cssClass(model)}">${model.name}</h1>
       <p>
         <strong>${model.getTypeName()}</strong> from ${model.getTypeURI()}
-        <a class="model-id" href="ids.html#${model.getID()}">${model.getHref()}</a>
+        <a class="model-id" href="overview.html#${model.name}">${model.getHref()}</a>
       </p>
       ${forEach(model.comments, (comment) => `
         <p class="lead">${comment}</p>

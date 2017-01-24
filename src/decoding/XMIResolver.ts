@@ -2,7 +2,7 @@ import path = require('path');
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
 import { XMITree } from './XMITree';
-import { FileService } from '../FileService';
+import { FileService } from '../services/FileService';
 import { ResolvedXMINode } from './ResolvedXMINode';
 
 const XMI_URI = 'http://www.omg.org/spec/XMI/20131001';
@@ -42,6 +42,7 @@ export class XMIResolver {
       console.info(`Caching ${url}`);
       await this.fileService.writeFile(text, filename, encoding);
     } else {
+
       console.info(`Using cached ${url}`);
     }
 

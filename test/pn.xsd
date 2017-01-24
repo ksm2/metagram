@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:xmi="http://www.omg.org/spec/XMI/20131001"
+            xmlns="http://spec.moellers.systems/PN"
+            targetNamespace="http://spec.moellers.systems/PN">
+
+    <xsd:complexType name="PTNet">
+        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="ownedNet" type="PTNet"/>
+        </xsd:choice>
+        <xsd:attribute ref="xmi:id"/>
+        <xsd:attributeGroup ref="xmi:ObjectAttribs"/>
+    </xsd:complexType>
+    <xsd:element name="PTNet" type="PTNet"/>
+
+</xsd:schema>

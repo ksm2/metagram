@@ -1,3 +1,5 @@
+import { Line } from '../diagram/Line';
+
 export type Vector = [number, number];
 
 export interface Shape {
@@ -8,22 +10,13 @@ export interface Point {
   y?: number;
 }
 
-export interface Line {
-  x1?: number;
-  x2?: number;
-  y1?: number;
-  y2?: number;
-  p1?: Point;
-  p2?: Point;
-}
-
 export function vec(l: Line): Vector {
-  const [x1, y1, x2, y2] = destructLine(l);
+  const { x1, y1, x2, y2 } = l.getCoordinates();
   return [x2 - x1, y2 - y1];
 }
 
 export function supportVec(l: Line): Vector {
-  const [x1, y1] = destructLine(l);
+  const { x1, y1 } = l.getCoordinates();
   return [x1, y1];
 }
 
@@ -58,14 +51,6 @@ export function hesseDistance(l: Line, p: Point): number {
 export interface Rectangle extends Point, Shape {
   width: number;
   height: number;
-}
-
-export function destructLine(l: Line): [number, number, number, number] {
-  let { x1, x2, y1, y2, p1, p2 } = l;
-  if (p1) [x1, y1] = destructPoint(p1);
-  if (p2) [x2, y2] = destructPoint(p2);
-
-  return [x1 || 0, y1 || 0, x2 || 0, y2 || 0];
 }
 
 export function destructPoint(p: Point): Vector {

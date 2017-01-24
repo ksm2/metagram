@@ -2,12 +2,29 @@ import { Class, Attribute } from '../decorators';
 
 @Class('Element')
 export class Element {
+  private _contents = new Set<Element>();
   private _origin: string | undefined;
   private _ID: string | undefined;
   private _typeURI: string | undefined;
   private _typeName: string | undefined;
 
-  [key: string]: any;
+  get contents(): Set<Element> {
+    return this._contents;
+  }
+
+  /**
+   * Appends a child to this element
+   */
+  appendChild(child: Element): void {
+    this._contents.add(child);
+  }
+
+  /**
+   * Removes a child from this element
+   */
+  removeChild(child: Element): boolean {
+    return this._contents.delete(child);
+  }
 
   /**
    * Returns a hyper reference to this element

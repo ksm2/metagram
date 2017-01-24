@@ -9,7 +9,7 @@ export class Font extends Element {
   bold: boolean = false;
   italic: boolean = false;
   size: number = 16;
-  family: string = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+  family: string = 'Arial';
   align: TextAlign = 'left';
   baseline: Baseline = 'middle';
 

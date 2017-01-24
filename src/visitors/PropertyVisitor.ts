@@ -6,6 +6,7 @@ import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { Association } from '../models/Association';
 import { EnumerationLiteral } from '../models/EnumerationLiteral';
+import { AggregationKind } from '../models/AggregationKind';
 
 export class PropertyVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -29,6 +30,11 @@ export class PropertyVisitor extends Visitor {
         if (model instanceof Association) {
           parent.association = model;
         }
+        return;
+      }
+
+      case 'aggregation': {
+        parent.aggregation = AggregationKind[value as 'none'] || AggregationKind.none;
         return;
       }
 

@@ -7,7 +7,6 @@ export class Package extends ModelElement {
   private _URI: string | null = null;
   private _stereotype: string | null = null;
   private _packagedElements: Set<ModelElement> = new Set();
-  private _diagrams: Set<Diagram> = new Set();
 
   @Attribute(String, 0, 1)
   get URI(): string | null {
@@ -25,15 +24,6 @@ export class Package extends ModelElement {
 
   set packagedElements(value: Set<ModelElement>) {
     this._packagedElements = value;
-  }
-
-  @Attribute(Diagram, 0, Infinity)
-  get diagrams(): Set<Diagram> {
-    return this._diagrams;
-  }
-
-  set diagrams(value: Set<Diagram>) {
-    this._diagrams = value;
   }
 
   @Attribute({ type: String, lower: 0 })

@@ -39,14 +39,6 @@ export class PackageVisitor extends Visitor {
         return;
       }
 
-      case 'umldi:Diagram': {
-        const diagram = decoder.decodeNode(childNode);
-        if (diagram instanceof Diagram) {
-          parent.diagrams.add(diagram);
-        }
-        return;
-      }
-
       default:
         super.visitOwnedElement(decoder, name, childNode, parent, parentNode);
     }
