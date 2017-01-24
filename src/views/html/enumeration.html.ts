@@ -3,8 +3,8 @@ import { ModelElement } from '../../models/ModelElement';
 import { Enumeration } from '../../models/Enumeration';
 import { forEach, cssClass } from './helpers';
 
-export default function (model: Enumeration, baseHref: string, ref: (m: ModelElement) => string) {
-  return layout(model, baseHref, ref, `
+export default function (model: Enumeration, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {
+  return layout(model, baseHref, roots, ref, `
     ${model.ownedLiterals.size ? `<section>
       <h2>Owned Literals</h2>
       <ul class="list-unstyled">

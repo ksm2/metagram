@@ -1,4 +1,4 @@
-import { ModelElement } from '../../models/ModelElement';
+import { Element } from '../../models/Element';
 
 export function lowerCaseFirst(str: string) {
   return `${str[0].toLowerCase()}${str.substring(1)}`;
@@ -8,7 +8,7 @@ export function camelToHyphenCase(camel: string) {
   return lowerCaseFirst(camel).replace(/([A-Z])/g, _ => '-' + _.toLowerCase());
 }
 
-export function cssClass(model: ModelElement) {
+export function cssClass(model: Element) {
   return camelToHyphenCase(model.constructor.name);
 }
 

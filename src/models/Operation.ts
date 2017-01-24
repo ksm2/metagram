@@ -17,8 +17,8 @@ export class Operation extends TypedElement {
     this._ownedParameters = value;
   }
 
-  get type(): Type {
-    const returnParam = [...this.ownedParameters].find(p => p.direction === ParameterDirectionKind.return)!;
-    return returnParam.type;
+  get type(): Type | null {
+    const returnParam = [...this.ownedParameters].find(p => p.direction === ParameterDirectionKind.return);
+    return returnParam && returnParam.type || null;
   }
 }

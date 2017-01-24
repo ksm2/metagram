@@ -27,6 +27,7 @@
     "prebuild": "npm run clean",
     "build": "npm run build:model && npm run copy:assets && npm run copy:package",
     "build:model": "tsc -p .",
+    "start": "http-server out",
     "copy:package": "copyfiles -u 1 ./src/package.json ./dest",
     "copy:assets": "copyfiles ./public/**/* ./dest"
   },

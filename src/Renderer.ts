@@ -1,7 +1,10 @@
 import { FileService } from './FileService';
-import { XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
+import { Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
+import { Association } from './models/Association';
+import { ModelElement } from './models/ModelElement';
 import { cssClass } from './views/html/helpers';
 
+import overviewRenderer from './views/html/overview.html';
 import associationRenderer from './views/html/association.html';
 import dataTypeRenderer from './views/html/dataType.html';
 import enumerationRenderer from './views/html/enumeration.html';
@@ -11,11 +14,10 @@ import classRenderer from './views/html/class.html';
 import packageRenderer from './views/html/package.html';
 import propertyRenderer from './views/html/property.html';
 import primitiveTypeRenderer from './views/html/primitiveType.html';
-import { Association } from './models/Association';
-import { ModelElement } from './models/ModelElement';
 
 export class Renderer {
   private rendered: Set<ModelElement>;
+  private roots: Set<ModelElement>;
 
   constructor(
     private fileService: FileService,
@@ -23,15 +25,7 @@ export class Renderer {
     private outputDir: string,
   ) {
     this.rendered = new Set();
-  }
-
-  /**
-   * Renders many elements sequentially
-   */
-  async renderAll(elements: ModelElement[]): Promise<void> {
-    for (let element of elements) {
-      await this.render(element);
-    }
+    this.roots = new Set();
   }
 
   /**
@@ -66,7 +60,23 @@ export class Renderer {
     await this.fileService.copyDirectory(__dirname + '/../public', this.outputDir);
   }
 
+  async renderOverview(): Promise<void>  {
+    const fn = `${this.outputDir}/overview.html`;
+
+    const models = this.sortModelElements([...this.rendered].filter(m => m.name));
+    const str = overviewRenderer(models, this.baseHref, this.roots, (model: ModelElement) => {
+      return this.generateFilename(model);
+    });
+    await this.fileService.ensureDirectoryExists(fn);
+    return this.fileService.writeFile(str, fn);
+  }
+
   async renderIndex(model: XMI): Promise<void>  {
+    for (let element of model.ownedElements) {
+      if (element instanceof ModelElement) {
+        this.roots.add(element);
+      }
+    }
     await this.writeOut(model, `${this.outputDir}/index.html`, indexRenderer).catch(e => { throw e });
   }
 
@@ -102,9 +112,9 @@ export class Renderer {
     await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, associationRenderer).catch(e => { throw e });
   }
 
-  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, ref: (model: ModelElement) => string) => string): Promise<void> {
+  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, roots: Set<ModelElement>, ref: (model: ModelElement) => string) => string): Promise<void> {
     const promises: Promise<void>[] = [];
-    const str = renderer(model, this.baseHref, (model: ModelElement) => {
+    const str = renderer(model, this.baseHref, this.roots, (model: ModelElement) => {
       promises.push(this.render(model));
       return this.generateFilename(model);
     });
@@ -113,8 +123,9 @@ export class Renderer {
     return this.fileService.writeFile(str, fn);
   }
 
+  private generateFilename(model: Element): string {
+    if (!(model instanceof ModelElement)) return 'index.html';
 
-  private generateFilename(model: ModelElement): string {
     const paths = model.allOwningElements().map(el => el.name).filter(el => !!el);
     if (model.name) {
       paths.push(`${model.name}.html`);
@@ -123,5 +134,19 @@ export class Renderer {
     }
 
     return paths.join('/');
+  }
+
+  /**
+   * Sorts model elements
+   */
+  private sortModelElements(elements: ModelElement[]): ModelElement[] {
+    const compare = (str1: string, str2: string) => str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
+    const order = ['Class', 'Enumeration', 'DataType', 'PrimitiveType', 'Package'];
+    return elements.sort((m1, m2) => {
+      const o1 = order.indexOf(m1.getTypeName()!);
+      const o2 = order.indexOf(m2.getTypeName()!);
+
+      return (o2 - o1) || compare(m1.name!.toLowerCase(), m2.name!.toLowerCase())
+    });
   }
 }

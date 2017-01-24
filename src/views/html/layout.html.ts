@@ -1,21 +1,10 @@
+import main from './main.html';
 import { ModelElement } from '../../models/ModelElement';
 import { Package } from '../../models/Package';
 import { cssClass, forEach } from './helpers';
 
-export default function (model: ModelElement, baseHref: string, ref: (m: ModelElement) => string, body: string) {
-  return `
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <base href="${baseHref}">
-  <title>Metagram – ${model.name}</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <div class="container">
+export default function (model: ModelElement, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string, body: string) {
+  return main(model.name!, baseHref, roots, model.getRoot().name!, `
     <header>
       <h1 class="name name-${cssClass(model)}">${model.name}</h1>
       <p>
@@ -29,6 +18,9 @@ export default function (model: ModelElement, baseHref: string, ref: (m: ModelEl
       <p class="lead">URI: <a href="${model.URI}">${model.URI}</a></p>
       ` : ``}
       <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="index.html">Home</a>
+        </li>
         ${forEach(model.allOwningElements(), (parent) => `
           <li class="breadcrumb-item">
             <a class="name-ref name-${cssClass(parent)}" href="${ref(parent)}">${parent.name}</a>
@@ -42,8 +34,5 @@ export default function (model: ModelElement, baseHref: string, ref: (m: ModelEl
     <main>
       ${body}
     </main>
-  </div>
-</body>
-</html>
-  `;
+  `);
 }

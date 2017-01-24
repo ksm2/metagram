@@ -16,7 +16,6 @@ export class XMIVisitor extends Visitor {
     const child = decoder.decodeNode(childNode);
     if (child instanceof ModelElement) {
       parent.ownedElements.add(child);
-      child.owningElement = parent;
     }
   }
 }

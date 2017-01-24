@@ -72,4 +72,12 @@ export class ModelElement extends Element {
 
     return this._owningElement.allOwningElements().concat([this._owningElement]);
   }
+
+  /**
+   * Returns the root model element
+   */
+  getRoot(): ModelElement {
+    if (!this._owningElement) return this;
+    return this._owningElement.getRoot();
+  }
 }

@@ -9,49 +9,22 @@ const outputDir = path.join(__dirname, '../out');
 const fileService = new mi.FileService();
 const decoder = new mi.XMIDecoder(fileService, cacheDir);
 const reflector = new mi.Reflector();
-const renderer = new mi.Renderer(fileService, '/', outputDir);
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(reason.name + ' in Promise occurred!');
   console.error(reason);
 });
 
-decoder.loadURLs(
-  'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi',
-  'http://www.omg.org/spec/UML/20131001/UML.xmi',
-  'http://www.omg.org/spec/UML/20131001/StandardProfile.xmi',
-  'http://www.omg.org/spec/UML/20131001/UMLDI.xmi',
-  'http://www.omg.org/spec/XMI/20131001/XMI-model.xmi',
-  'http://www.omg.org/spec/DD/20131001/DC.xmi',
-  'http://www.omg.org/spec/DD/20131001/DI.xmi',
-  'http://www.omg.org/spec/DD/20131001/DG.xmi'
-)
-  .then((xmi) => {
-    decoder.printErrors();
-    xmi.name = 'Index';
-    return decoder.getResolvedElements()
-      .then(() => {
-        return renderer.render(xmi)
-      })
-      .then(() => {
-        return renderer.copyAssets();
-      }).then(() => {
-        return xmi;
-      })
-    ;
-  })
-  .then(() => {
-    return decoder.loadURL('http://www.omg.org/spec/UML/20131001/UMLDI.umldi.xmi');
-  })
-  .then((xmi) => {
-    const diagrams = xmi.ownedElements.values().next().value.diagrams;
-    return Promise.all(Array.from(diagrams).map((diagram) => {
-      const bounds = diagram.calcAllElementBounds();
-      const canvas = new mi.NodeCanvas(bounds.x + bounds.width, bounds.y + bounds.height);
-      canvas.diagram = diagram;
-      return canvas.saveToFile(path.join(outputDir, `${diagram.name}.png`));
-    }));
-  })
+decoder.loadURL('http://www.omg.org/spec/UML/20131001/UMLDI.umldi.xmi')
+.then((xmi) => {
+  const diagrams = xmi.ownedElements.values().next().value.diagrams;
+  return Promise.all(Array.from(diagrams).map((diagram) => {
+    const bounds = diagram.calcAllElementBounds();
+    const canvas = new mi.NodeCanvas(bounds.x + bounds.width, bounds.y + bounds.height);
+    canvas.diagram = diagram;
+    return canvas.saveToFile(path.join(outputDir, `${diagram.name}.png`));
+  }));
+})
   // .then((xmi) => {
   //   const x = {};
   //   const queue = [[x, xmi]];

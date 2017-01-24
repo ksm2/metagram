@@ -1,16 +1,20 @@
-import layout from './layout.html';
+import main from './main.html';
 import { XMI } from '../../models/XMI';
 import { ModelElement } from '../../models/ModelElement';
 import { forEach, cssClass } from './helpers';
 
-export default function (model: XMI, baseHref: string, ref: (m: ModelElement) => string) {
-  return layout(model, baseHref, ref, `
+export default function (model: XMI, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {
+  return main('Home', baseHref, roots, 'index', `
+    <header>
+      <h1 class="display-3">Metagram Specifications</h1>
+    </header>
+    <main>
     ${model.ownedElements.size ? `<section>
-      <h2>Owned Elements</h2>
       <ul class="list-unstyled">
-        ${forEach(model.ownedElements, (ownedElement) => `
-          <li class="name-ref name-${cssClass(ownedElement)}"><a href="${ref(ownedElement)}">${ownedElement.name}</a>`)}    
+        ${forEach(model.ownedElements, (ownedElement) => ownedElement instanceof ModelElement ? `
+          <li class="name-ref name-${cssClass(ownedElement)}"><a href="${ref(ownedElement)}">${ownedElement.name}</a>` : '')}    
       </ul>
     </section>` : ``}
+    </main>
   `);
 }
