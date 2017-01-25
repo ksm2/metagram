@@ -8,7 +8,7 @@ const outputDir = path.join(__dirname, '../out');
 
 const fileService = new mi.FileService();
 const decoder = new mi.XMIDecoder(fileService, cacheDir);
-const renderer = new mi.Renderer(fileService, '/', outputDir);
+const renderer = new mi.Renderer(fileService, '/XMIdoc/', outputDir);
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(reason.name + ' in Promise occurred!');

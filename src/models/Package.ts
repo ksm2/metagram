@@ -34,4 +34,8 @@ export class Package extends ModelElement {
   set stereotype(value: string | null) {
     this._stereotype = value;
   }
+
+  getDiagrams(): Set<Diagram> {
+    return new Set([...this.contents].filter(element => element instanceof Diagram) as Diagram[]);
+  }
 }

@@ -1,85 +1,104 @@
 body {
-    background: #eceeef;
-    padding-top: 5.5rem;
+  background: #eceeef;
+  padding-top: 5.5rem;
 }
 
 header, section {
-    background: white;
-    padding: 1rem;
-    margin-bottom: 2rem;
+  background: white;
+  padding: 1rem;
+  margin-bottom: 2rem;
 }
 
 h2 {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 a.model-id {
-    font-style: italic;
-    color: #888;
+  font-style: italic;
+  color: #888;
 }
 
 .name:before, .name-ref:before {
-    display: inline-block;
-    border-radius: 50%;
-    margin-right: .5rem;
-    font-size: 67%;
-    text-align: center;
-    color: white;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: .5rem;
+  font-size: 67%;
+  text-align: center;
+  color: white;
 }
+
 .name:before {
-    line-height: 2.5rem;
-    width: 2.5rem;
-    vertical-align: .25rem;
+  line-height: 2.5rem;
+  width: 2.5rem;
+  vertical-align: .25rem;
 }
+
 .name-ref:before {
-    line-height: 1rem;
-    width: 1rem;
-    vertical-align: 2px;
+  line-height: 1rem;
+  width: 1rem;
+  vertical-align: 2px;
 }
 
 .name-package:before {
-    content: 'P';
-    background-color: #d91e18;
+  content: 'P';
+  background-color: #d91e18;
 }
+
 .name-class:before {
-    content: 'C';
-    background-color: #1f3a93;
+  content: 'C';
+  background-color: #1f3a93;
 }
+
 .name-property:before {
-    content: 'Y';
-    background-color: #9a12b3;
+  content: 'Y';
+  background-color: #9a12b3;
 }
+
 .name-enumeration:before {
-    content: 'E';
-    background-color: #f9bf3b;
+  content: 'E';
+  background-color: #f9bf3b;
 }
+
 .name-enumeration-literal:before {
-    content: 'L';
-    background-color: #f9bf3b;
+  content: 'L';
+  background-color: #f9bf3b;
 }
+
 .name-association:before {
-    content: 'A';
-    background-color: #2ecc71;
+  content: 'A';
+  background-color: #2ecc71;
 }
+
 .name-primitive-type:before {
-    content: 'T';
-    background-color: #f62496;
+  content: 'T';
+  background-color: #f62496;
 }
+
 .name-data-type:before {
-    content: 'D';
-    background-color: #e67e22;
+  content: 'D';
+  background-color: #e67e22;
 }
+
 .name-operation:before {
-    content: 'O';
-    background-color: #96411b;
+  content: 'O';
+  background-color: #96411b;
 }
+
 .name-parameter:before {
-    content: 'M';
-    background-color: #96411b;
+  content: 'M';
+  background-color: #96411b;
 }
 
 .comment {
-    font-style: italic;
+  font-style: italic;
+}
+
+.section-stripes {
+  background: lightskyblue repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 255, 255, .5) 35px, rgba(255, 255, 255, .5) 70px);
+}
+
+.diagram {
+  width: 100%;
 }

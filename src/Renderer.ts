@@ -14,6 +14,8 @@ import classRenderer from './views/html/class.html';
 import packageRenderer from './views/html/package.html';
 import propertyRenderer from './views/html/property.html';
 import primitiveTypeRenderer from './views/html/primitiveType.html';
+import { Diagram } from './diagram/Diagram';
+import { NodeCanvas } from './canvas/NodeCanvas';
 
 export class Renderer {
   private rendered: Set<ModelElement>;
@@ -84,8 +86,17 @@ export class Renderer {
     await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, classRenderer).catch(e => { throw e });
   }
 
-  async renderPackage(model: Package): Promise<void>  {
+  async renderPackage(model: Package): Promise<void> {
     await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, packageRenderer).catch(e => { throw e });
+    const diagrams = model.getDiagrams();
+    if (diagrams.size) {
+      const diagram = diagrams.values().next().value;
+      const bounds = diagram.calcAllElementBounds();
+      const canvas = new NodeCanvas(bounds.x + bounds.width, bounds.y + bounds.height, 'svg');
+      canvas.diagram = diagram;
+
+      await canvas.saveToFile(`${this.outputDir}/${model.name}/diagram.svg`);
+    }
   }
 
   async renderEnumeration(model: Enumeration): Promise<void>  {

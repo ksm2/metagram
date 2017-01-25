@@ -24,7 +24,7 @@ export default function (title: string, baseHref: string, roots: Set<ModelElemen
       </button>
       <a class="navbar-brand" href="index.html">Metagram Specifications</a>
       
-      <div class="navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item${active === 'index' ? ' active' : ''}">
             <a class="nav-link" href="index.html">Home</a>
