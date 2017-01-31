@@ -97,9 +97,11 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     const lines = bresenham.waylines(canvas, this);
 
     let it: IteratorResult<Line>;
+    let i = 0;
     do {
       it = lines.next();
-      this.renderLineSegment(canvas, it.value, it.done);
+      this.renderLineSegment(canvas, it.value, i, it.done);
+      i += 1;
     } while (!it.done);
 
     // this.handles[0].x = l.x1 || 0;
@@ -108,5 +110,5 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     // this.handles[1].y = l.y2 || 0;
   }
 
-  protected abstract renderLineSegment(canvas: Canvas, line: Line, isLastSegment: boolean): void;
+  protected abstract renderLineSegment(canvas: Canvas, line: Line, index: number, isLastSegment: boolean): void;
 }

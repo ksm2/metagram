@@ -6,7 +6,7 @@ import { Edge } from './Edge';
 import { Line } from './Line';
 
 export class GeneralizationElement extends Edge<Generalization> {
-  renderLineSegment(canvas: Canvas, line: Line, isLastSegment: boolean): void {
+  renderLineSegment(canvas: Canvas, line: Line, index: number, isLastSegment: boolean): void {
     let stroke = this.stroke;
     if (this.hovered) {
       stroke = this.stroke.withStyle(Color.RED);
