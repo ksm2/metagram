@@ -1,19 +1,21 @@
 import main from './main.html';
 import { ModelElement } from '../../models/ModelElement';
 import { Package } from '../../models/Package';
-import { cssClass, forEach } from './helpers';
+import { cssClass, forEach, uriNameFor } from './helpers';
 
 export default function (model: ModelElement, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string, body: string) {
   return main(model.name!, baseHref, roots, model.getRoot().name!, `
     <header>
       <h1 class="name name-${cssClass(model)}">${model.name}</h1>
       <p>
-        <strong>${model.getTypeName()}</strong> from ${model.getTypeURI()}
-        <a class="model-id" href="overview.html#${model.name}">${model.getHref()}</a>
+      ${model.getInstanceOf() ? `
+        <strong>instance of <a href="${ref(model.getInstanceOf()!)}">${model.getInstanceOf()!.name}</strong></a> from ${uriNameFor(model.getInstanceOf()!)}
+      ` : ``}
       </p>
       ${forEach(model.comments, (comment) => `
         <p class="lead">${comment}</p>
       `)}
+      <p class="lead">HRef: <a class="model-id" href="overview.html#${model.name}">${model.getHref()}</a></p>
       ${model instanceof Package && model.URI ? `
       <p class="lead">URI: <a href="${model.URI}">${model.URI}</a></p>
       ` : ``}

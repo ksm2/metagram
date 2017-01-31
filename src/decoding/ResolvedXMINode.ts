@@ -59,12 +59,38 @@ export class ResolvedXMINode extends XMINode {
   }
 
   getNodeByID(id: string): XMINode | null {
+    return this.getRoot().getChildNodeByID(id);
+  }
+
+  getChildNodeByID(id: string): XMINode | null {
     const visited = new Set<ResolvedXMINode>();
-    const queue: ResolvedXMINode[] = [this.getRoot()];
+    const queue: ResolvedXMINode[] = [this];
     while (queue.length) {
       const node = queue.shift()!;
       visited.add(node);
       if (node.id === id) return node;
+
+      for (let child of node.getAllChildren()) {
+        if (child instanceof ResolvedXMINode && !visited.has(child)) {
+          queue.push(child);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  getNodeByName(name: string): XMINode | null {
+    return this.getRoot().getChildNodeByName(name);
+  }
+
+  getChildNodeByName(name: string): XMINode | null {
+    const visited = new Set<ResolvedXMINode>();
+    const queue: ResolvedXMINode[] = [this];
+    while (queue.length) {
+      const node = queue.shift()!;
+      visited.add(node);
+      if (node.getString('name') === name) return node;
 
       for (let child of node.getAllChildren()) {
         if (child instanceof ResolvedXMINode && !visited.has(child)) {

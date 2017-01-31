@@ -1,12 +1,46 @@
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Montserrat Regular'), local('Montserrat'), url('../fonts/Montserrat-Regular.ttf');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Montserrat Light'), url('../fonts/Montserrat-Light.ttf');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Montserrat Thin'), url('../fonts/Montserrat-Thin.ttf');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+
 body {
   background: #eceeef;
-  padding-top: 5.5rem;
+  padding-top: 75px;
+  font-weight: 200;
 }
 
 header, section {
   background: white;
-  padding: 1rem;
-  margin-bottom: 2rem;
+  padding: 8px 25px;
+  margin-bottom: 25px;
+}
+
+h1.display {
+  font-weight: 100;
+  font-size: 90px;
+}
+
+h1 {
+  word-wrap: break-word;
 }
 
 h2 {
@@ -18,27 +52,34 @@ h2 {
 a.model-id {
   font-style: italic;
   color: #888;
+  word-wrap: break-word;
 }
 
 .name:before, .name-ref:before {
   display: inline-block;
   border-radius: 50%;
   margin-right: .5rem;
-  font-size: 67%;
   text-align: center;
   color: white;
+  font-weight: bold;
+}
+
+.name {
+  padding-left: 6rem;
 }
 
 .name:before {
-  line-height: 2.5rem;
-  width: 2.5rem;
-  vertical-align: .25rem;
+  line-height: 5rem;
+  width: 5rem;
+  vertical-align: 0;
+  margin-left: -6rem;
+  float: left;
 }
 
 .name-ref:before {
-  line-height: 1rem;
-  width: 1rem;
-  vertical-align: 2px;
+  line-height: 2.1rem;
+  width: 2.1rem;
+  vertical-align: 0;
 }
 
 .name-package:before {
@@ -96,9 +137,14 @@ a.model-id {
 }
 
 .section-stripes {
-  background: lightskyblue repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 255, 255, .5) 35px, rgba(255, 255, 255, .5) 70px);
+  background: #a4d8da repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255, 255, 255, .3) 35px, rgba(255, 255, 255, .3) 70px);
+}
+
+.section-stripes h2 {
+  border: none;
 }
 
 .diagram {
   width: 100%;
+  margin-bottom: 24px;
 }

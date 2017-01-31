@@ -5,6 +5,7 @@ import { Visitor } from '../visitors';
 import { XMIResolver } from './XMIResolver';
 import { ResolvedXMINode } from './ResolvedXMINode';
 import { XMINode } from './XMINode';
+import { ModelElement } from '../models/ModelElement';
 
 import UML20131001 from '../namespaces/UML20131001';
 import XMI20131001 from '../namespaces/XMI20131001';
@@ -70,6 +71,14 @@ export class XMIDecoder {
     const tree = await this.xmiResolver.resolveTree(url, encoding);
     const element = this.decodeNode(tree);
     if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
+
+    return element;
+  }
+
+  async loadNodeByType(typeURI: string, typeName: string): Promise<ModelElement> {
+    const tree = await this.xmiResolver.resolveURI(typeURI);
+    const element = this.decodeNode(tree.getChildNodeByName(typeName));
+    if (!(element instanceof ModelElement)) throw new Error(`Could not resolve: ${typeName} from ${typeURI}`);
 
     return element;
   }

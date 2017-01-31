@@ -14,8 +14,9 @@ export abstract class Visitor {
   visit(decoder: XMIDecoder, node: ResolvedXMINode, element: Element): Element {
     element.setID(node.id);
     element.setOrigin(node.origin);
-    element.setTypeURI(node.typeURI);
-    element.setTypeName(node.typeName);
+    decoder.loadNodeByType(node.typeURI, node.typeName).then((uriNode) => {
+      element.setInstanceOf(uriNode);
+    });
 
     for (let [name, values] of node.attrs) {
       for (let value of values) {

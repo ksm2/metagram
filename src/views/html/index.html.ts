@@ -6,7 +6,7 @@ import { forEach, cssClass } from './helpers';
 export default function (model: XMI, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {
   return main('Home', baseHref, roots, 'index', `
     <header>
-      <h1 class="display-3">Metagram Specifications</h1>
+      <h1 class="display">Metagram</h1>
     </header>
     <main>
     ${model.contents.size ? `<section>

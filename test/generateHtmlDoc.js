@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const cacheDir = path.join(__dirname, '../var');
-const outputDir = path.join(__dirname, '../out');
+const outputDir = path.join(__dirname, '../out/XMIdoc/');
 
 const fileService = new mi.FileService();
 const decoder = new mi.XMIDecoder(fileService, cacheDir);

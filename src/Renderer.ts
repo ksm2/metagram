@@ -154,8 +154,8 @@ export class Renderer {
     const compare = (str1: string, str2: string) => str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
     const order = ['Class', 'Enumeration', 'DataType', 'PrimitiveType', 'Package'];
     return elements.sort((m1, m2) => {
-      const o1 = order.indexOf(m1.getTypeName()!);
-      const o2 = order.indexOf(m2.getTypeName()!);
+      const o1 = m1.getInstanceOf() ? order.indexOf(m1.getInstanceOf()!.name!) : -1;
+      const o2 = m2.getInstanceOf() ? order.indexOf(m2.getInstanceOf()!.name!) : -1;
 
       return (o2 - o1) || compare(m1.name!.toLowerCase(), m2.name!.toLowerCase())
     });

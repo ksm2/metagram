@@ -4,6 +4,7 @@ import { DOMParser } from 'xmldom';
 import { XMITree } from './XMITree';
 import { FileService } from '../services/FileService';
 import { ResolvedXMINode } from './ResolvedXMINode';
+import KNOWN_MODELS from '../knownModels';
 
 const XMI_URI = 'http://www.omg.org/spec/XMI/20131001';
 
@@ -15,7 +16,7 @@ export class XMIResolver {
   }
 
   /**
-   * Resolves an XMI tree from a given URL
+   * Resolves an XMI tree from a given XMI URL
    */
   async resolveTree(url: string, encoding: string = 'utf8'): Promise<ResolvedXMINode> {
     let promise = this.hyperReferences.get(url);
@@ -25,6 +26,15 @@ export class XMIResolver {
     }
 
     return promise;
+  }
+
+  /**
+   * Resolves an XMI tree from a given URI
+   */
+  async resolveURI(uri: string): Promise<ResolvedXMINode> {
+    if (!KNOWN_MODELS.has(uri)) throw new Error(`Unknown Model URI: ${uri}`);
+    const model = KNOWN_MODELS.get(uri)!;
+    return this.resolveTree(model.xmi);
   }
 
   /**

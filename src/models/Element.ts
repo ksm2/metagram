@@ -1,12 +1,12 @@
 import { Class, Attribute } from '../decorators';
+import { ModelElement } from './ModelElement';
 
 @Class('Element')
 export class Element {
   private _contents = new Set<Element>();
   private _origin: string | undefined;
   private _ID: string | undefined;
-  private _typeURI: string | undefined;
-  private _typeName: string | undefined;
+  private _instanceOf: ModelElement | undefined;
 
   get contents(): Set<Element> {
     return this._contents;
@@ -62,30 +62,16 @@ export class Element {
   }
 
   /**
-   * Sets the element's typeURI
+   * Sets the element's type
    */
-  setTypeURI(typeURI: string | undefined) {
-    this._typeURI = typeURI;
+  setInstanceOf(type: ModelElement | undefined) {
+    this._instanceOf = type;
   }
 
   /**
    * Returns the URI of this element
    */
-  getTypeURI(): string | undefined {
-    return this._typeURI;
-  }
-
-  /**
-   * Sets the element's type name
-   */
-  setTypeName(typeName: string | undefined) {
-    this._typeName = typeName;
-  }
-
-  /**
-   * Returns the type name of this element
-   */
-  getTypeName(): string | undefined {
-    return this._typeName;
+  getInstanceOf(): ModelElement | undefined {
+    return this._instanceOf;
   }
 }
