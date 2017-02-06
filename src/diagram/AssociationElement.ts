@@ -4,8 +4,8 @@ import { Canvas } from '../canvas/Canvas';
 import { Color } from './Color';
 import { Edge } from './Edge';
 import { Line } from './Line';
-import { AggregationKind } from '../models/AggregationKind';
-import { Property } from '../models/Property';
+import { AggregationKind } from '../models/uml/AggregationKind';
+import { Property } from '../models/uml/Property';
 
 export class AssociationElement extends Edge<Association> {
   renderLineSegment(canvas: Canvas, line: Line, index: number, isLastSegment: boolean): void {
@@ -28,9 +28,9 @@ export class AssociationElement extends Edge<Association> {
   private getArrowTip(property: Property): ArrowTipKind {
     const aggregation = property.aggregation;
     switch (aggregation) {
-      case AggregationKind.composite:
+      case AggregationKind.COMPOSITE:
         return ArrowTipKind.DIAMOND_FILLED;
-      case AggregationKind.shared:
+      case AggregationKind.SHARED:
         return ArrowTipKind.DIAMOND;
       default:
         return ArrowTipKind.NONE;

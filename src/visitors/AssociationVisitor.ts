@@ -1,9 +1,9 @@
 import { ClassifierVisitor } from './ClassifierVisitor';
 import { Element } from '../models/Element';
-import { Association } from '../models/Association';
+import { Association } from '../models/uml/Association';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { Property } from '../models/Property';
+import { Property } from '../models/uml/Property';
 
 export class AssociationVisitor extends ClassifierVisitor {
   createInstance(node: ResolvedXMINode): Element {

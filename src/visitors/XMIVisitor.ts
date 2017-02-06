@@ -1,9 +1,9 @@
 import { Visitor } from './Visitor';
 import { Element } from '../models/Element';
-import { XMI } from '../models/XMI';
+import { XMI } from '../models/xmi/XMI';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 
 export class XMIVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

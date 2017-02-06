@@ -1,9 +1,9 @@
-import { ModelElement } from '../../models/ModelElement';
-import { Property } from '../../models/Property';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Property } from '../../models/uml/Property';
 import { forEach, cssClass } from './helpers';
-import { EnumerationLiteral } from '../../models/EnumerationLiteral';
-import { Operation } from '../../models/Operation';
-import { ParameterDirectionKind } from '../../models/ParameterDirectionKind';
+import { EnumerationLiteral } from '../../models/uml/EnumerationLiteral';
+import { Operation } from '../../models/uml/Operation';
+import { ParameterDirectionKind } from '../../models/uml/ParameterDirectionKind';
 
 export default function (operations: Set<Operation>, ref: (m: ModelElement) => string) {
   return operations.size ? `<section>
@@ -13,7 +13,7 @@ export default function (operations: Set<Operation>, ref: (m: ModelElement) => s
           <li>
             <strong class="name-ref name-${cssClass(operation)}">${operation.name}</strong>
             <strong>(</strong>
-            ${forEach([...operation.ownedParameters].filter(p => p.direction !== ParameterDirectionKind.return), (parameter) => `
+            ${forEach([...operation.ownedParameters].filter(p => p.direction !== ParameterDirectionKind.RETURN), (parameter) => `
               <strong>${parameter.name}</strong>
               ${parameter.type ? `&nbsp;<a class="name-ref name-${cssClass(parameter.type)}" href="${ref(parameter.type)}">:${parameter.type.name}</a>` : ``}
               ${parameter.defaultValue instanceof EnumerationLiteral ? ` 

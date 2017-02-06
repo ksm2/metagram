@@ -1,10 +1,10 @@
 import { Visitor } from './Visitor';
 import { Element } from '../models/Element';
-import { Property } from '../models/Property';
+import { Property } from '../models/uml/Property';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { Classifier } from '../models/Classifier';
-import { Operation } from '../models/Operation';
+import { Classifier } from '../models/uml/Classifier';
+import { Operation } from '../models/uml/Operation';
 
 export class ClassifierVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

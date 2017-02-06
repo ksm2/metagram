@@ -1,14 +1,14 @@
 import { FileService } from '../services/FileService';
-import { XMI } from '../models/XMI';
+import { XMI } from '../models/xmi/XMI';
 import { Element } from '../models/Element';
 import { Visitor } from '../visitors';
 import { XMIResolver } from './XMIResolver';
 import { ResolvedXMINode } from './ResolvedXMINode';
 import { XMINode } from './XMINode';
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 
-import UML20131001 from '../namespaces/UML20131001';
-import XMI20131001 from '../namespaces/XMI20131001';
+import UML20131001 from '../models/uml';
+import XMI20131001 from '../models/xmi';
 import UMLDI20131001 from '../namespaces/UMLDI20131001';
 import DC20131001 from '../namespaces/DC20131001';
 import DI20131001 from '../namespaces/DI20131001';

@@ -1,6 +1,6 @@
 import main from './main.html';
-import { ModelElement } from '../../models/ModelElement';
-import { Package } from '../../models/Package';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Package } from '../../models/uml/Package';
 import { cssClass, forEach, uriNameFor } from './helpers';
 
 export default function (model: ModelElement, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string, body: string) {

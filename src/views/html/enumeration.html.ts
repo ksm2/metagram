@@ -1,6 +1,6 @@
 import layout from './layout.html';
-import { ModelElement } from '../../models/ModelElement';
-import { Enumeration } from '../../models/Enumeration';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Enumeration } from '../../models/uml/Enumeration';
 import { forEach, cssClass } from './helpers';
 
 export default function (model: Enumeration, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

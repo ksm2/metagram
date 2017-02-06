@@ -1,25 +1,25 @@
 import { TypedElement } from './TypedElement';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { EnumerationLiteral } from './EnumerationLiteral';
 import { Association } from './Association';
 import { AggregationKind } from './AggregationKind';
 
 export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 
-@Class('Property', TypedElement)
+@Class('http://www.omg.org/spec/UML/20131001:Property', TypedElement)
 export class Property extends TypedElement {
   private _lowerValue: number | null = null;
   private _upperValue: number | null = null;
   private _defaultValue: DefaultValueType | null = null;
   private _association: Association | null = null;
-  private _aggregation: AggregationKind = AggregationKind.none;
+  private _aggregation: string = AggregationKind.NONE;
 
   @Attribute({ type: Number })
   get lower(): number {
     return this._lowerValue === null ? 1 : this._lowerValue;
   }
 
-  @Attribute({ type: Number, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Number', lower: 0 })
   get lowerValue(): number | null {
     return this._lowerValue;
   }
@@ -33,7 +33,7 @@ export class Property extends TypedElement {
     return this._upperValue === null ? 1 : this._upperValue;
   }
 
-  @Attribute({ type: Number, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Number', lower: 0 })
   get upperValue(): number | null {
     return this._upperValue;
   }
@@ -42,7 +42,7 @@ export class Property extends TypedElement {
     this._upperValue = value;
   }
 
-  @Attribute({ type: Object, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Element', lower: 0 })
   get defaultValue(): DefaultValueType | null {
     return this._defaultValue;
   }
@@ -51,7 +51,7 @@ export class Property extends TypedElement {
     this._defaultValue = value;
   }
 
-  @Attribute({ type: Object, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Association', lower: 0 })
   get association(): Association | null {
     return this._association;
   }
@@ -60,12 +60,12 @@ export class Property extends TypedElement {
     this._association = value;
   }
 
-  @Attribute({ type: AggregationKind })
-  get aggregation(): AggregationKind {
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:AggregationKind' })
+  get aggregation(): string {
     return this._aggregation;
   }
 
-  set aggregation(value: AggregationKind) {
+  set aggregation(value: string) {
     this._aggregation = value;
   }
 

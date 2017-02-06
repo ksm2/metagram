@@ -1,6 +1,6 @@
 import main from './main.html';
-import { XMI } from '../../models/XMI';
-import { ModelElement } from '../../models/ModelElement';
+import { XMI } from '../../models/xmi/XMI';
+import { ModelElement } from '../../models/uml/ModelElement';
 import { forEach, cssClass } from './helpers';
 
 export default function (model: XMI, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

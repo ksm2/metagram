@@ -1,14 +1,14 @@
 import { TypedElement } from './TypedElement';
 import { Parameter } from './Parameter';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { Type } from './Type';
 import { ParameterDirectionKind } from './ParameterDirectionKind';
 
-@Class('Operation', TypedElement)
+@Class('http://www.omg.org/spec/UML/20131001:Operation', TypedElement)
 export class Operation extends TypedElement {
   private _ownedParameters: Set<Parameter> = new Set();
 
-  @Attribute({ type: Parameter, lower: 0, upper: Infinity })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Parameter', lower: 0, upper: Infinity })
   get ownedParameters(): Set<Parameter> {
     return this._ownedParameters;
   }
@@ -18,7 +18,7 @@ export class Operation extends TypedElement {
   }
 
   get type(): Type | null {
-    const returnParam = [...this.ownedParameters].find(p => p.direction === ParameterDirectionKind.return);
+    const returnParam = [...this.ownedParameters].find(p => p.direction === ParameterDirectionKind.RETURN);
     return returnParam && returnParam.type || null;
   }
 }

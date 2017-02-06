@@ -1,7 +1,7 @@
 import { FileService } from './services/FileService';
 import { Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
-import { Association } from './models/Association';
-import { ModelElement } from './models/ModelElement';
+import { Association } from './models/uml/Association';
+import { ModelElement } from './models/uml/ModelElement';
 import { cssClass } from './views/html/helpers';
 
 import overviewRenderer from './views/html/overview.html';

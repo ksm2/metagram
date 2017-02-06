@@ -1,12 +1,12 @@
 import { ModelElement } from './ModelElement';
-import { Class, Attribute } from '../decorators';
-import { Diagram } from '../diagram/Diagram';
+import { Class, Attribute } from '../../decorators';
+import { Diagram } from '../../diagram/Diagram';
 
-@Class('Package', ModelElement)
+@Class('http://www.omg.org/spec/UML/20131001:Package', ModelElement)
 export class Package extends ModelElement {
   private _URI: string | null = null;
   private _stereotype: string | null = null;
-  private _packagedElements: Set<ModelElement> = new Set();
+  private _packagedElement: Set<ModelElement> = new Set();
 
   @Attribute(String, 0, 1)
   get URI(): string | null {
@@ -18,15 +18,15 @@ export class Package extends ModelElement {
   }
 
   @Attribute(ModelElement, 0, Infinity)
-  get packagedElements(): Set<ModelElement> {
-    return this._packagedElements;
+  get packagedElement(): Set<ModelElement> {
+    return this._packagedElement;
   }
 
-  set packagedElements(value: Set<ModelElement>) {
-    this._packagedElements = value;
+  set packagedElement(value: Set<ModelElement>) {
+    this._packagedElement = value;
   }
 
-  @Attribute({ type: String, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:String', lower: 0 })
   get stereotype(): string | null {
     return this._stereotype;
   }

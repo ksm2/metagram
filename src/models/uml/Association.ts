@@ -1,12 +1,12 @@
 import { Classifier } from './Classifier';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { Property } from './Property';
 
-@Class('Association', Classifier)
+@Class('http://www.omg.org/spec/UML/20131001:Association', Classifier)
 export class Association extends Classifier {
   private _memberEnd: Property[] = [];
 
-  @Attribute({ type: Property, lower: 2, upper: Infinity })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Property', lower: 2, upper: Infinity })
   get memberEnd(): Property[] {
     return this._memberEnd;
   }

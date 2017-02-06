@@ -1,10 +1,10 @@
 import { Element } from '../models/Element';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 import { Diagram } from '../diagram/Diagram';
 
-export abstract class Visitor {
+export class Visitor {
   constructor() {}
 
   createInstance(node: ResolvedXMINode): Element {

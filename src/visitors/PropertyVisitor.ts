@@ -1,12 +1,12 @@
-import { Type } from '../models/Type';
+import { Type } from '../models/uml/Type';
 import { Visitor } from './Visitor';
-import { Property } from '../models/Property';
+import { Property } from '../models/uml/Property';
 import { Element } from '../models/Element';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { Association } from '../models/Association';
-import { EnumerationLiteral } from '../models/EnumerationLiteral';
-import { AggregationKind } from '../models/AggregationKind';
+import { Association } from '../models/uml/Association';
+import { EnumerationLiteral } from '../models/uml/EnumerationLiteral';
+import { AggregationKind } from '../models/uml/AggregationKind';
 
 export class PropertyVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -34,7 +34,7 @@ export class PropertyVisitor extends Visitor {
       }
 
       case 'aggregation': {
-        parent.aggregation = AggregationKind[value as 'none'] || AggregationKind.none;
+        parent.aggregation = value;
         return;
       }
 

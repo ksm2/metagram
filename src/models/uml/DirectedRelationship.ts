@@ -1,11 +1,11 @@
 import { ModelElement } from './ModelElement';
 import { Classifier } from './Classifier';
-import { Class, Attribute } from '../decorators/index';
+import { Class, Attribute } from '../../decorators/index';
 
 /**
  * A DirectedRelationship represents a relationship between a collection of source model Elements and a collection of target model Elements.
  */
-@Class('DirectedRelationship', ModelElement)
+@Class('http://www.omg.org/spec/UML/20131001:DirectedRelationship', ModelElement)
 export class DirectedRelationship extends ModelElement {
   private _source: Classifier;
   private _target: Classifier;

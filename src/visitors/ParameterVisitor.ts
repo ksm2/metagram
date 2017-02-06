@@ -2,10 +2,10 @@ import { Visitor } from './Visitor';
 import { Element } from '../models/Element';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { Type } from '../models/Type';
-import { Parameter } from '../models/Parameter';
-import { ParameterDirectionKind } from '../models/ParameterDirectionKind';
-import { EnumerationLiteral } from '../models/EnumerationLiteral';
+import { Type } from '../models/uml/Type';
+import { Parameter } from '../models/uml/Parameter';
+import { ParameterDirectionKind } from '../models/uml/ParameterDirectionKind';
+import { EnumerationLiteral } from '../models/uml/EnumerationLiteral';
 
 export class ParameterVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -70,7 +70,7 @@ export class ParameterVisitor extends Visitor {
       }
 
       case 'direction': {
-        parent.direction = ParameterDirectionKind[value as 'return'];
+        parent.direction = value;
         return;
       }
 

@@ -2,8 +2,8 @@ import { Visitor } from './Visitor';
 import { Element } from '../models/Element';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { Operation } from '../models/Operation';
-import { Parameter } from '../models/Parameter';
+import { Operation } from '../models/uml/Operation';
+import { Parameter } from '../models/uml/Parameter';
 
 export class OperationVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

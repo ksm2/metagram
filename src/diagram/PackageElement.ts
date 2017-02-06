@@ -1,4 +1,4 @@
-import { Package } from '../models/Package';
+import { Package } from '../models/uml/Package';
 import { Shape } from './Shape';
 import { measureTextWidth, rect, strokeRect, text, fillRect } from '../rendering';
 import { Canvas } from '../canvas/Canvas';

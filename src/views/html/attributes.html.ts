@@ -1,7 +1,7 @@
-import { ModelElement } from '../../models/ModelElement';
-import { Property } from '../../models/Property';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Property } from '../../models/uml/Property';
 import { forEach, cssClass } from './helpers';
-import { EnumerationLiteral } from '../../models/EnumerationLiteral';
+import { EnumerationLiteral } from '../../models/uml/EnumerationLiteral';
 
 export default function (properties: Set<Property>, ref: (m: ModelElement) => string) {
   return properties.size ? `<section>

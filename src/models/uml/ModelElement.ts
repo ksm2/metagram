@@ -1,16 +1,16 @@
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { VisibilityKind } from './VisibilityKind';
-import { Element } from './Element';
+import { Element } from '../Element';
 
-@Class('ModelElement', Element)
+@Class('http://www.omg.org/spec/UML/20131001:ModelElement', Element)
 export class ModelElement extends Element {
   private _name: string | null = null;
-  private _visibility: VisibilityKind = VisibilityKind.PUBLIC;
+  private _visibility: string = VisibilityKind.PUBLIC;
   private _comments: Set<string> = new Set();
   private _ownedElements: Set<ModelElement> = new Set();
   private _owningElement: ModelElement | null = null;
 
-  @Attribute({ type: String, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:String', lower: 0 })
   get name(): string | null {
     return this._name;
   }
@@ -19,16 +19,16 @@ export class ModelElement extends Element {
     this._name = value;
   }
 
-  @Attribute({ type: Number })
-  get visibility(): VisibilityKind {
+  @Attribute({ type: VisibilityKind })
+  get visibility(): string {
     return this._visibility;
   }
 
-  set visibility(value: VisibilityKind) {
+  set visibility(value: string) {
     this._visibility = value;
   }
 
-  @Attribute({ type: String, lower: 0, upper: Infinity })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:String', lower: 0, upper: Infinity })
   get comments(): Set<string> {
     return this._comments;
   }
@@ -37,7 +37,7 @@ export class ModelElement extends Element {
     this._comments = value;
   }
 
-  @Attribute({ type: ModelElement, lower: 0, upper: Infinity })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:ModelElement', lower: 0, upper: Infinity })
   get ownedElements(): Set<ModelElement> {
     return this._ownedElements;
   }
@@ -46,7 +46,7 @@ export class ModelElement extends Element {
     this._ownedElements = value;
   }
 
-  @Attribute({ type: ModelElement, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:ModelElement', lower: 0 })
   get owningElement(): ModelElement | null {
     return this._owningElement;
   }

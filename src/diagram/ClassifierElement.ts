@@ -1,4 +1,4 @@
-import { Classifier } from '../models/Classifier';
+import { Classifier } from '../models/uml/Classifier';
 import { Property, VisibilityKind, Operation, Parameter, ParameterDirectionKind } from '../models';
 import { Shape } from './Shape';
 import { rect, text, measureTextWidth, fillRect } from '../rendering';
@@ -163,7 +163,7 @@ export class ClassifierElement extends Shape<Classifier> {
 
       // Draw type
       if (parameter.direction) {
-        const label = ParameterDirectionKind[parameter.direction].toLowerCase();
+        const label = parameter.direction.toLowerCase();
         text(ctx, label, { x, y }, this.font);
         x += measureTextWidth(ctx, label, this.font);
         x += sepX;
@@ -206,12 +206,13 @@ export class ClassifierElement extends Shape<Classifier> {
     return y;
   }
 
-  private getVisibilitySymbol(kind: VisibilityKind): string {
+  private getVisibilitySymbol(kind: string): string {
     switch (kind) {
       case VisibilityKind.PRIVATE: return '–';
       case VisibilityKind.PACKAGE: return '~';
       case VisibilityKind.PROTECTED: return '#';
       case VisibilityKind.PUBLIC: return '+';
+      default: return '';
     }
   }
 }

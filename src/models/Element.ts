@@ -1,5 +1,5 @@
 import { Class, Attribute } from '../decorators';
-import { ModelElement } from './ModelElement';
+import { ModelElement } from './uml/ModelElement';
 
 @Class('Element')
 export class Element {

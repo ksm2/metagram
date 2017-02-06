@@ -1,4 +1,4 @@
-import { Package } from '../models/Package';
+import { Package } from '../models/uml/Package';
 import { Shape } from './Shape';
 import { Class, Attribute } from '../decorators';
 

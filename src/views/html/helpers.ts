@@ -1,6 +1,6 @@
 import { Element } from '../../models/Element';
-import { ModelElement } from '../../models/ModelElement';
-import { Package } from '../../models/Package';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Package } from '../../models/uml/Package';
 import KNOWN_MODELS from '../../knownModels';
 
 export function lowerCaseFirst(str: string) {

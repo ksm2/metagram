@@ -1,5 +1,5 @@
 import { ClassifierVisitor } from './ClassifierVisitor';
-import { Class } from '../models/Class';
+import { Class } from '../models/uml/Class';
 import { Element } from '../models/Element';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';

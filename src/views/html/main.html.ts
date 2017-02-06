@@ -1,4 +1,4 @@
-import { ModelElement } from '../../models/ModelElement';
+import { ModelElement } from '../../models/uml/ModelElement';
 import { forEach } from './helpers';
 
 export default function (title: string, baseHref: string, roots: Set<ModelElement>, active: string, body: string) {

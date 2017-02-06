@@ -1,11 +1,11 @@
 import { Visitor } from './Visitor';
-import { Package } from '../models/Package';
+import { Package } from '../models/uml/Package';
 import { Element } from '../models/Element';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 import { Diagram } from '../diagram/Diagram';
-import { XMI } from '../models/XMI';
+import { XMI } from '../models/xmi/XMI';
 
 export class PackageVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -32,7 +32,7 @@ export class PackageVisitor extends Visitor {
       case 'packagedElement': {
         const child = decoder.decodeNode(childNode);
         if (child instanceof ModelElement) {
-          parent.packagedElements.add(child);
+          parent.packagedElement.add(child);
           parent.ownedElements.add(child);
           child.owningElement = parent;
         }

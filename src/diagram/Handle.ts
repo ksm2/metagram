@@ -1,5 +1,5 @@
 import { DiagramElement } from './DiagramElement';
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 import { Canvas } from '../canvas/Canvas';
 import { Attribute } from '../decorators/index';
 

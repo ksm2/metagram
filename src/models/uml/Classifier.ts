@@ -1,15 +1,15 @@
 import { Type } from './Type';
 import { Property } from './Property';
 import { Operation } from './Operation';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 
-@Class('Classifier', Type)
+@Class('http://www.omg.org/spec/UML/20131001:Classifier', Type)
 export class Classifier extends Type {
   private _ownedAttributes: Set<Property> = new Set();
   private _ownedOperations: Set<Operation> = new Set();
   private _stereotype: string | null = null;
 
-  @Attribute({ type: Property, lower: 0, upper: Infinity })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Property', lower: 0, upper: Infinity })
   get ownedAttributes(): Set<Property> {
     return this._ownedAttributes;
   }
@@ -18,7 +18,7 @@ export class Classifier extends Type {
     this._ownedAttributes = value;
   }
 
-  @Attribute({ type: Operation, lower: 0, upper: Infinity })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:Operation', lower: 0, upper: Infinity })
   get ownedOperations(): Set<Operation> {
     return this._ownedOperations;
   }
@@ -27,12 +27,23 @@ export class Classifier extends Type {
     this._ownedOperations = value;
   }
 
-  @Attribute({ type: String, lower: 0 })
+  @Attribute({ type: 'http://www.omg.org/spec/UML/20131001:String', lower: 0 })
   get stereotype(): string | null {
     return this._stereotype;
   }
 
   set stereotype(value: string | null) {
     this._stereotype = value;
+  }
+
+  /**
+   * Gets an attribute with a specific name or null, if it does not exist.
+   */
+  getAttribute(name: string): Property | null {
+    for (let property of this._ownedAttributes) {
+      if (property.name === name) return property;
+    }
+
+    return null;
   }
 }

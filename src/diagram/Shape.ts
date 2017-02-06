@@ -1,4 +1,4 @@
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 import { DiagramElement } from './DiagramElement';
 import { Point } from '../rendering/Geometry';
 import { Canvas } from '../canvas/Canvas';

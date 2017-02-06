@@ -1,5 +1,5 @@
 import { Element } from '../models/Element';
-import { ModelElement } from '../models/ModelElement';
+import { ModelElement } from '../models/uml/ModelElement';
 import { Canvas } from '../canvas/Canvas';
 import { Handle } from './Handle';
 import { Cursor } from './Cursor';

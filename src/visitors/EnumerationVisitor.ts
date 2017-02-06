@@ -1,7 +1,7 @@
 import { Visitor } from './Visitor';
 import { Element } from '../models/Element';
-import { Enumeration } from '../models/Enumeration';
-import { EnumerationLiteral } from '../models/EnumerationLiteral';
+import { Enumeration } from '../models/uml/Enumeration';
+import { EnumerationLiteral } from '../models/uml/EnumerationLiteral';
 import { ResolvedXMINode } from '../decoding/ResolvedXMINode';
 import { XMIDecoder } from '../decoding/XMIDecoder';
 

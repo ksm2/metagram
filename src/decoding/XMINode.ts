@@ -16,6 +16,8 @@ export class XMIElementNode extends XMINode {
     this.tagName = xmlElement.tagName;
     for (let i = 0; i < xmlElement.attributes.length; i += 1) {
       const attr = xmlElement.attributes[i];
+      if (attr.name.indexOf('xmi:') === 0) continue;
+
       this.attrs.set(attr.name, [attr.value]);
     }
   }

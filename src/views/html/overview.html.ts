@@ -1,5 +1,5 @@
 import main from './main.html';
-import { ModelElement } from '../../models/ModelElement';
+import { ModelElement } from '../../models/uml/ModelElement';
 import { forEach, cssClass } from './helpers';
 
 export default function (models: ModelElement[], baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

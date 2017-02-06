@@ -1,8 +1,8 @@
 import layout from './layout.html';
 import attributes from './attributes.html';
 import operations from './operations.html';
-import { ModelElement } from '../../models/ModelElement';
-import { Class } from '../../models/Class';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Class } from '../../models/uml/Class';
 import { forEach } from './helpers';
 
 export default function (model: Class, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {
