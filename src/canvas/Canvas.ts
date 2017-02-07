@@ -10,6 +10,8 @@ export interface ResolveFunction<M extends ModelElement> {
   (m: M): DiagramElement<M>;
 }
 
+const zoomLevels = [1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 1, 2, 3, 4, 5, 6, 7, 8];
+
 export abstract class Canvas {
   ctx: CanvasRenderingContext2D;
 
@@ -18,6 +20,7 @@ export abstract class Canvas {
   private _grid: boolean;
   private _gridX: number;
   private _gridY: number;
+  private _zoom: number;
   private _diagram: Diagram | null;
   private _hoveredElement: DiagramElement<any> | null;
 
@@ -28,6 +31,7 @@ export abstract class Canvas {
     this._grid = false;
     this._gridX = 25;
     this._gridY = 25;
+    this._zoom = 1;
     this._diagram = null;
     this._hoveredElement = null;
   }
@@ -39,6 +43,15 @@ export abstract class Canvas {
 
   get grid(): boolean {
     return this._grid;
+  }
+
+  set zoom(val: number) {
+    this._zoom = val;
+    this.rerender();
+  }
+
+  get zoom(): number {
+    return this._zoom;
   }
 
   get resolution(): number {
@@ -96,16 +109,25 @@ export abstract class Canvas {
    */
   abstract get height(): number;
 
+  get zoomWidth(): number {
+    return this.width / this.zoom;
+  }
+
+  get zoomHeight(): number {
+    return this.height / this.zoom;
+  }
+
   /**
    * Returns the element at the given position
    */
   getElementByPosition(x: number, y: number): DiagramElement<any> | null {
-    // this._selectedElements.
     const handles: Handle[] = Array.prototype.concat.apply([], Array.from(this._selectedElements).map(el => el.handles));
-    const handleAtPos = handles.find(handle => handle.containsPoint(this, x, y));
+    const realX = x / this._zoom;
+    const realY = y / this._zoom;
+    const handleAtPos = handles.find(handle => handle.containsPoint(this, realX, realY));
     if (handleAtPos) return handleAtPos;
 
-    return this._diagram && this._diagram.getElementAtPosition(this, x, y) || null;
+    return this._diagram && this._diagram.getElementAtPosition(this, realX, realY) || null;
   }
 
   /**
@@ -173,6 +195,27 @@ export abstract class Canvas {
   }
 
   /**
+   * Zooms into the diagram
+   */
+  zoomIn() {
+    this.zoom = zoomLevels[Math.min(zoomLevels.length - 1, zoomLevels.indexOf(this._zoom) + 1)];
+  }
+
+  /**
+   * Zooms out of the diagram
+   */
+  zoomOut() {
+    this.zoom = zoomLevels[Math.max(0, zoomLevels.indexOf(this._zoom) - 1)];
+  }
+
+  /**
+   * Zooms 100%
+   */
+  zoom100() {
+    this.zoom = 1
+  }
+
+  /**
    * Resizes the canvas
    *
    * @param width The new width of the canvas
@@ -184,9 +227,12 @@ export abstract class Canvas {
    * Renders the canvas
    */
   protected render(): this {
+    this.pushCanvasStack();
     if (this._grid) this.renderGrid();
+    this.ctx.scale(this.zoom, this.zoom);
     if (this._diagram) this._diagram.render(this);
     this._selectedElements.forEach(element => element.handles.forEach(handle => handle.render(this)));
+    this.popCanvasStack();
     return this;
   }
 
@@ -223,7 +269,8 @@ export abstract class Canvas {
     ctx.strokeStyle = 'rgba(0,0,0,0.2)';
 
     // Render vertical lines
-    for (let x = this._gridX; x < width - 1; x += this._gridX) {
+    const dx = this._gridX * this._zoom;
+    for (let x = dx; x < width - 1; x += dx) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
@@ -231,7 +278,8 @@ export abstract class Canvas {
     }
 
     // Render horizontal lines
-    for (let y = this._gridY; y < height - 1; y += this._gridY) {
+    const dy = this._gridY * this._zoom;
+    for (let y = dy; y < height - 1; y += dy) {
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);

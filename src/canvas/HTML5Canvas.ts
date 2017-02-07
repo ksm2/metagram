@@ -10,6 +10,10 @@ enum MouseButtons {
   FORWARD = 16
 }
 
+interface DOMMouseScroll extends Event {
+  detail: number;
+}
+
 export class HTML5Canvas extends Canvas {
   private _element: HTMLCanvasElement;
   private _isMoving: boolean;
@@ -26,6 +30,8 @@ export class HTML5Canvas extends Canvas {
     element.addEventListener('mousedown', event => this.onMouseDown(event));
     element.addEventListener('mouseup'  , event => this.onMouseUp(event));
     element.addEventListener('mousemove', event => this.onMouseMove(event));
+    element.addEventListener('mousewheel', event => this.onMouseWheelScroll(event.wheelDeltaY));
+    element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheelScroll(-event.detail));
 
     this._element = element;
   }
@@ -44,8 +50,8 @@ export class HTML5Canvas extends Canvas {
   onMouseDown(event: MouseEvent): void {
     const { offsetX, offsetY } = event;
     this._isMoving = false;
-    this._startedX = offsetX;
-    this._startedY = offsetY;
+    this._startedX = offsetX / this.zoom;
+    this._startedY = offsetY / this.zoom;
     this._mouseDownElement = this.getElementByPosition(offsetX, offsetY);
   }
 
@@ -87,8 +93,8 @@ export class HTML5Canvas extends Canvas {
       return;
     }
 
-    let dx = offsetX - this._startedX;
-    let dy = offsetY - this._startedY;
+    let dx = (offsetX / this.zoom) - this._startedX;
+    let dy = (offsetY / this.zoom) - this._startedY;
 
     // Round to raster
     dx = Math.round(dx / this.gridX) * this.gridX;
@@ -104,6 +110,17 @@ export class HTML5Canvas extends Canvas {
       this.selectedElements.forEach(element => element.move(dx, dy));
     }
     this.rerender();
+  }
+
+  /**
+   * Handles when the mouse wheel is scrolled over the canvas
+   */
+  onMouseWheelScroll(delta: number) {
+    if (delta < 0) {
+      this.zoomIn();
+    } else {
+      this.zoomOut();
+    }
   }
 
   resize(width: number, height: number): this {
