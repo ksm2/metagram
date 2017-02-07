@@ -2,6 +2,14 @@ import { Canvas } from './Canvas';
 import { Cursor } from '../diagram/Cursor';
 import { DiagramElement } from '../diagram/DiagramElement';
 
+enum MouseButtons {
+  LEFT = 1,
+  RIGHT = 2,
+  MIDDLE = 4,
+  BACK = 8,
+  FORWARD = 16
+}
+
 export class HTML5Canvas extends Canvas {
   private _element: HTMLCanvasElement;
   private _isMoving: boolean;
@@ -15,62 +23,9 @@ export class HTML5Canvas extends Canvas {
     super(ctx);
 
     // Init event listeners
-    element.addEventListener('mousedown', (event) => {
-      const { offsetX, offsetY } = event;
-      this._isMoving = false;
-      this._startedX = offsetX;
-      this._startedY = offsetY;
-      this._mouseDownElement = this.getElementByPosition(offsetX, offsetY);
-    });
-
-    element.addEventListener('mouseup', (event) => {
-      if (this._isMoving) return;
-
-      const { offsetX, offsetY, shiftKey } = event;
-      const element = this.getElementByPosition(offsetX, offsetY);
-
-      // Clear selection first
-      if (!shiftKey) {
-        this.clearSelection();
-      }
-
-      // Add or remove specific element
-      if (element) {
-        if (shiftKey && this.isSelected(element)) {
-          this.deleteSelection(element);
-        } else {
-          this.addSelection(element);
-        }
-      }
-
-      this.rerender();
-    });
-
-    element.addEventListener('mousemove', (event) => {
-      const { offsetX, offsetY } = event;
-      if (!(event.buttons & 1)) {
-        this.hoveredElement = this.getElementByPosition(offsetX, offsetY);
-        return;
-      }
-
-      let dx = offsetX - this._startedX;
-      let dy = offsetY - this._startedY;
-
-      // Round to raster
-      dx = Math.round(dx / this.gridX) * this.gridX;
-      dy = Math.round(dy / this.gridY) * this.gridY;
-      if (!dx && !dy) return;
-
-      this._isMoving = true;
-      this._startedX += dx;
-      this._startedY += dy;
-      if (this.selectedElements.size < 2 && this._mouseDownElement) {
-        this._mouseDownElement.move(dx, dy);
-      } else {
-        this.selectedElements.forEach(element => element.move(dx, dy));
-      }
-      this.rerender();
-    });
+    element.addEventListener('mousedown', event => this.onMouseDown(event));
+    element.addEventListener('mouseup'  , event => this.onMouseUp(event));
+    element.addEventListener('mousemove', event => this.onMouseMove(event));
 
     this._element = element;
   }
@@ -81,6 +36,74 @@ export class HTML5Canvas extends Canvas {
 
   get height(): number {
     return this._element.height;
+  }
+
+  /**
+   * Handles when a mouse button is pushed down on the canvas
+   */
+  onMouseDown(event: MouseEvent): void {
+    const { offsetX, offsetY } = event;
+    this._isMoving = false;
+    this._startedX = offsetX;
+    this._startedY = offsetY;
+    this._mouseDownElement = this.getElementByPosition(offsetX, offsetY);
+  }
+
+  /**
+   * Handles when a mouse button is released on the canvas
+   */
+  onMouseUp(event: MouseEvent): void {
+    if (this._isMoving) return;
+
+    const { offsetX, offsetY, shiftKey } = event;
+    const element = this.getElementByPosition(offsetX, offsetY);
+
+    // Clear selection first
+    if (!shiftKey) {
+      this.clearSelection();
+    }
+
+    // Add or remove specific element
+    if (element) {
+      if (shiftKey && this.isSelected(element)) {
+        this.deleteSelection(element);
+      } else {
+        this.addSelection(element);
+      }
+    }
+
+    this.rerender();
+  }
+
+  /**
+   * Handles when a mouse is moved over the canvas
+   */
+  onMouseMove(event: MouseEvent): void {
+    const { offsetX, offsetY } = event;
+    const leftButtonIsPressed = event.buttons & MouseButtons.LEFT;
+
+    if (!leftButtonIsPressed) {
+      this.hoveredElement = this.getElementByPosition(offsetX, offsetY);
+      return;
+    }
+
+    let dx = offsetX - this._startedX;
+    let dy = offsetY - this._startedY;
+
+    // Round to raster
+    dx = Math.round(dx / this.gridX) * this.gridX;
+    dy = Math.round(dy / this.gridY) * this.gridY;
+    if (!dx && !dy) return;
+
+    this._isMoving = true;
+    this._startedX += dx;
+    this._startedY += dy;
+    if (this.selectedElements.size < 2 && this._mouseDownElement) {
+      this._mouseDownElement.move(dx, dy);
+    } else {
+      this.selectedElements.forEach(element => element.move(dx, dy));
+    }
+    this.rerender();
   }
 
   resize(width: number, height: number): this {

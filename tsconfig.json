@@ -18,7 +18,6 @@
   },
   "files": [
     "./custom_typings/canvas.d.ts",
-    "./src/server.ts",
-    "./src/client.ts"
+    "./src/index.ts"
   ]
 }

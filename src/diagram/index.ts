@@ -4,6 +4,7 @@ export { ClassifierElement } from './ClassifierElement';
 export { Color } from './Color';
 export { Diagram } from './Diagram';
 export { DiagramElement } from './DiagramElement';
+export { Dimension } from './Dimension';
 export { Document } from './Document';
 export { Edge } from './Edge';
 export { Fill } from './Fill';

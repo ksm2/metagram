@@ -14,11 +14,12 @@ import { Attribute, Class } from '../decorators/index';
 export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   private _fill: Fill = new Fill();
   private _stroke: Stroke = new Stroke();
-  private _font: Font = Font.DEFAULT;
+  private _font: Font = new Font();
   private _bounds: Bounds = new Bounds();
 
   constructor() {
     super();
+    this._bounds.on('*', this.onBoundsChange.bind(this));
     this.updateHandles();
   }
 
@@ -27,17 +28,9 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     return this._fill;
   }
 
-  set fill(value: Fill) {
-    this._fill = value;
-  }
-
   @Attribute({ type: Stroke })
   get stroke(): Stroke {
     return this._stroke;
-  }
-
-  set stroke(value: Stroke) {
-    this._stroke = value;
   }
 
   @Attribute({ type: Font })
@@ -45,17 +38,26 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     return this._font;
   }
 
-  set font(value: Font) {
-    this._font = value;
-  }
-
   @Attribute({ type: Bounds })
   get bounds(): Bounds {
     return this._bounds;
   }
 
-  set bounds(value: Bounds) {
-    this._bounds = value;
+  /**
+   * Render the shape and its children
+   */
+  render(canvas: Canvas): void {
+    canvas.pushCanvasStack();
+    canvas.translate(this._bounds.topLeft);
+    canvas.clipRectangle(this._bounds.dimension.bounds);
+    this.renderContents(canvas);
+    for (let child of this.ownedElements) {
+      child.render(canvas);
+    }
+    canvas.popCanvasStack();
+  }
+
+  renderContents(canvas: Canvas): void {
   }
 
   /**
@@ -88,7 +90,7 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
 
   updateHandles() {
     for (let d = 0; d < 8; d += 1) {
-      const [x, y] = Directions.rect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, d);
+      const [x, y] = Directions.rect(this.bounds, d);
       const onMove = this.handleMoved.bind(this, d);
       const handle = new Handle();
       Object.assign(handle, { x, y, cursor: Directions.cursor(d), onMove });
@@ -112,6 +114,10 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     if (d >= Directions.SOUTH_EAST && d <= Directions.SOUTH_WEST) {
       this.bounds.height = newY - y;
     }
+    this.updateHandles();
+  }
+
+  onBoundsChange() {
     this.updateHandles();
   }
 }

@@ -31,10 +31,10 @@ export class ClassifierElement extends Shape<Classifier> {
     const x = width / 2;
     let offsetY = 16;
     if (modelElement.stereotype) {
-      text(ctx, `«${modelElement.stereotype}»`, { x, y: offsetY }, this.font.withAlign('center'), width);
+      text(ctx, `«${modelElement.stereotype}»`, { x, y: offsetY }, this.font, width, 'center');
       offsetY += 18;
     }
-    text(ctx, modelElement.name || '', { x, y: offsetY }, this.font.withBold().withAlign('center'), width);
+    text(ctx, modelElement.name || '', { x, y: offsetY }, this.font.boldFont, width, 'center');
 
     offsetY += 16;
 
@@ -70,7 +70,7 @@ export class ClassifierElement extends Shape<Classifier> {
 
       // Draw visibility
       if (attribute.visibility) {
-        text(ctx, this.getVisibilitySymbol(attribute.visibility), { x: x + visibilityWidth/2, y }, this.font.withAlign('center'));
+        text(ctx, this.getVisibilitySymbol(attribute.visibility), { x: x + visibilityWidth/2, y }, this.font, visibilityWidth, 'center');
       }
       x += visibilityWidth;
       x += sepX;
@@ -115,7 +115,7 @@ export class ClassifierElement extends Shape<Classifier> {
 
       // Draw visibility
       if (operation.visibility) {
-        text(ctx, this.getVisibilitySymbol(operation.visibility), { x: x + visibilityWidth/2, y }, this.font.withAlign('center'));
+        text(ctx, this.getVisibilitySymbol(operation.visibility), { x: x + visibilityWidth/2, y }, this.font, visibilityWidth, 'center');
       }
       x += visibilityWidth;
       x += sepX;

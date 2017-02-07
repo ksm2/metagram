@@ -18,7 +18,7 @@ export class PackageElement extends Shape<Package> {
 
     const stereotypeFont = this.font;
     const stereotypeText = `«${this.modelElement.stereotype || 'Package'}»`;
-    const nameFont = this.font.withBold();
+    const nameFont = this.font;
     const nameText = modelElement.name || '';
 
     const nameWidth = measureTextWidth(ctx, nameText, nameFont);

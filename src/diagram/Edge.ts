@@ -13,7 +13,7 @@ import { Line } from './Line';
 @Class('Edge', DiagramElement)
 export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   private _stroke: Stroke = new Stroke();
-  private _font: Font = Font.DEFAULT;
+  private _font: Font = new Font();
   private _source: Shape<any>;
   private _target: Shape<any>;
   private _waypoint: Point[] = [];

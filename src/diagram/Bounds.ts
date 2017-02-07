@@ -1,12 +1,22 @@
 import { Element } from '../models/Element';
 import { Class, Attribute } from '../decorators';
+import { Point } from './Point';
+import { Dimension } from './Dimension';
 
 @Class('Bounds', Element)
 export class Bounds extends Element {
-  private _x: number = 0;
-  private _y: number = 0;
-  private _width: number = 300;
-  private _height: number = 100;
+  private _x: number;
+  private _y: number;
+  private _width: number;
+  private _height: number;
+
+  constructor(x: number = 0, y: number = 0, width: number = 300, height: number = 100) {
+    super();
+    this._x = x;
+    this._y = y;
+    this._width = width;
+    this._height = height;
+  }
 
   @Attribute({ type: Number })
   get x(): number {
@@ -15,6 +25,7 @@ export class Bounds extends Element {
 
   set x(value: number) {
     this._x = value;
+    this.emit('x', value);
   }
 
   @Attribute({ type: Number })
@@ -24,6 +35,7 @@ export class Bounds extends Element {
 
   set y(value: number) {
     this._y = value;
+    this.emit('y', value);
   }
 
   @Attribute({ type: Number })
@@ -33,6 +45,7 @@ export class Bounds extends Element {
 
   set width(value: number) {
     this._width = value;
+    this.emit('width', value);
   }
 
   @Attribute({ type: Number })
@@ -42,5 +55,23 @@ export class Bounds extends Element {
 
   set height(value: number) {
     this._height = value;
+    this.emit('height', value);
+  }
+
+  get topLeft(): Point {
+    return new Point(this._x, this._y);
+  }
+
+  get dimension(): Dimension {
+    return new Dimension(this._width, this._height);
+  }
+
+  /**
+   * Insets the bounds given a length in X and Y direction
+   */
+  inset(dx: number, dy?: number): Bounds {
+    const x = dx;
+    const y = dy || dx;
+    return new Bounds(this._x + x, this._y + y, this._width - 2 * x, this._height - 2 * y);
   }
 }

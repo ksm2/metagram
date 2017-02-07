@@ -14,7 +14,7 @@ export class DiagramElement<M extends ModelElement> extends Element {
   private _handles: Handle[] = [];
   private _selected: boolean = false;
   private _hovered: boolean = false;
-  private _ownedElements: Set<DiagramElement<any>> = new Set();
+  private _ownedElements: DiagramElement<any>[] = [];
   private _owningElement: DiagramElement<any> | null = null;
 
   @Attribute({ type: Element, lower: 0 })
@@ -27,11 +27,11 @@ export class DiagramElement<M extends ModelElement> extends Element {
   }
 
   @Attribute({ type: DiagramElement, lower: 0, upper: Infinity })
-  get ownedElements(): Set<DiagramElement<any>> {
+  get ownedElements(): DiagramElement<any>[] {
     return this._ownedElements;
   }
 
-  set ownedElements(value: Set<DiagramElement<any>>) {
+  set ownedElements(value: DiagramElement<any>[]) {
     this._ownedElements = value;
   }
 
@@ -66,9 +66,6 @@ export class DiagramElement<M extends ModelElement> extends Element {
   }
 
   render(canvas: Canvas): void {
-    for (let child of this.ownedElements) {
-      child.render(canvas);
-    }
   }
 
   /**
@@ -121,7 +118,8 @@ export class DiagramElement<M extends ModelElement> extends Element {
       return null;
     }
 
-    for (let element of this.ownedElements) {
+    for (let i = this._ownedElements.length - 1; i >= 0; i -= 1) {
+      const element = this._ownedElements[i];
       let childElement;
       if (childElement = element.getElementAtPosition(canvas, x, y)) {
         return childElement;
@@ -146,11 +144,6 @@ export class DiagramElement<M extends ModelElement> extends Element {
       }
     }
 
-    const b = new Bounds();
-    b.x = minX;
-    b.y = minY;
-    b.width = maxX - minX;
-    b.height = maxY - minY;
-    return b;
+    return new Bounds(minX, minY, maxX - minX, maxY - minY);
   }
 }

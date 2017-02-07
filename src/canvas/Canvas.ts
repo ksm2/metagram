@@ -3,6 +3,8 @@ import { ModelElement } from '../models';
 import { Diagram } from '../diagram';
 import { Cursor } from '../diagram/Cursor';
 import { Handle } from '../diagram/Handle';
+import { Bounds } from '../diagram/Bounds';
+import { Point } from '../diagram/Point';
 
 export interface ResolveFunction<M extends ModelElement> {
   (m: M): DiagramElement<M>;
@@ -135,6 +137,39 @@ export abstract class Canvas {
   clearSelection() {
     this._selectedElements.forEach(element => element.deselect());
     this._selectedElements.clear();
+  }
+
+  /**
+   * Pushes the canvas stack
+   */
+  pushCanvasStack() {
+    this.ctx.save();
+  }
+
+  /**
+   * Pops the canvas stack
+   */
+  popCanvasStack() {
+    this.ctx.restore();
+  }
+
+  translate(offset: Point) {
+    this.ctx.translate(offset.x, offset.y);
+  }
+
+  /**
+   * Draws a rectangle within the given bounds
+   */
+  drawRectangle(bounds: Bounds) {
+    this.ctx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+
+  /**
+   * Clips the canvas to a rectangle
+   */
+  clipRectangle(bounds: Bounds) {
+    this.drawRectangle(bounds);
+    this.ctx.clip();
   }
 
   /**

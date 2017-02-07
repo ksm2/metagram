@@ -3,8 +3,14 @@ import { Class, Attribute } from '../decorators';
 
 @Class('Point', Element)
 export class Point extends Element {
-  private _x: number = 0;
-  private _y: number = 0;
+  private _x: number;
+  private _y: number;
+
+  constructor(x: number = 0, y: number = 0) {
+    super();
+    this._x = x;
+    this._y = y;
+  }
 
   @Attribute({ type: Number })
   get x(): number {
@@ -13,6 +19,7 @@ export class Point extends Element {
 
   set x(value: number) {
     this._x = value;
+    this.emit('x', value);
   }
 
   @Attribute({ type: Number })
@@ -22,6 +29,7 @@ export class Point extends Element {
 
   set y(value: number) {
     this._y = value;
+    this.emit('y', value);
   }
 
   /**
