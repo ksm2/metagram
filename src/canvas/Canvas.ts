@@ -20,6 +20,8 @@ export abstract class Canvas {
   private _grid: boolean;
   private _gridX: number;
   private _gridY: number;
+  private _offsetX: number;
+  private _offsetY: number;
   private _zoom: number;
   private _diagram: Diagram | null;
   private _hoveredElement: DiagramElement<any> | null;
@@ -31,6 +33,8 @@ export abstract class Canvas {
     this._grid = false;
     this._gridX = 25;
     this._gridY = 25;
+    this._offsetX = 0;
+    this._offsetY = 0;
     this._zoom = 1;
     this._diagram = null;
     this._hoveredElement = null;
@@ -45,9 +49,13 @@ export abstract class Canvas {
     return this._grid;
   }
 
-  set zoom(val: number) {
-    this._zoom = val;
-    this.rerender();
+  set zoom(newZoom: number) {
+    const oldZoom = this._zoom;
+    const centerX = this.zoomWidth / 2;
+    const centerY = this.zoomHeight / 2;
+    const d = (oldZoom / newZoom - 1);
+    this._zoom = newZoom;
+    this.moveOffset(centerX * d, centerY * d);
   }
 
   get zoom(): number {
@@ -122,8 +130,8 @@ export abstract class Canvas {
    */
   getElementByPosition(x: number, y: number): DiagramElement<any> | null {
     const handles: Handle[] = Array.prototype.concat.apply([], Array.from(this._selectedElements).map(el => el.handles));
-    const realX = x / this._zoom;
-    const realY = y / this._zoom;
+    const realX = x / this._zoom - this._offsetX;
+    const realY = y / this._zoom - this._offsetY;
     const handleAtPos = handles.find(handle => handle.containsPoint(this, realX, realY));
     if (handleAtPos) return handleAtPos;
 
@@ -159,6 +167,15 @@ export abstract class Canvas {
   clearSelection() {
     this._selectedElements.forEach(element => element.deselect());
     this._selectedElements.clear();
+  }
+
+  /**
+   * Move the offset point of the canvas
+   */
+  moveOffset(dx: number, dy: number) {
+    this._offsetX += dx;
+    this._offsetY += dy;
+    this.rerender();
   }
 
   /**
@@ -230,6 +247,7 @@ export abstract class Canvas {
     this.pushCanvasStack();
     if (this._grid) this.renderGrid();
     this.ctx.scale(this.zoom, this.zoom);
+    this.ctx.translate(this._offsetX, this._offsetY);
     if (this._diagram) this._diagram.render(this);
     this._selectedElements.forEach(element => element.handles.forEach(handle => handle.render(this)));
     this.popCanvasStack();

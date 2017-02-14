@@ -6,26 +6,33 @@ import { Edge } from './Edge';
 import { Line } from './Line';
 import { AggregationKind } from '../models/uml/AggregationKind';
 import { Property } from '../models/uml/Property';
+import { text } from '../rendering/text';
 
 export class AssociationElement extends Edge<Association> {
-  renderLineSegment(canvas: Canvas, line: Line, index: number, isLastSegment: boolean): void {
+  renderLineSegment(canvas: Canvas, line: Line, index: number, isLast: boolean): void {
+    const isFirst = index === 0;
     let stroke = this.stroke;
     if (this.hovered) {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
-    // Check arrow tips
+    // Check arrow tips and end labels
     let [arrowStart, arrowEnd] = [ArrowTipKind.NONE, ArrowTipKind.NONE];
-    if (index === 0) {
+    if (isFirst) {
       arrowStart = this.getArrowTip(this.modelElement.memberEnd[0]);
-    } else if (isLastSegment) {
+    }
+    if (isLast) {
       arrowEnd = this.getArrowTip(this.modelElement.memberEnd[1]);
     }
 
-    arrow(canvas.ctx, line, stroke, arrowEnd, arrowStart);
+    arrow(canvas.ctx, line, stroke, arrowEnd, arrowStart, this.font, this.label, isFirst ? this.sourceLabel : null, isLast ? this.targetLabel : null);
   }
 
   private getArrowTip(property: Property): ArrowTipKind {
+    if (this.modelElement.ownedEnd.has(property)) {
+      return ArrowTipKind.PEAK;
+    }
+
     const aggregation = property.aggregation;
     switch (aggregation) {
       case AggregationKind.COMPOSITE:

@@ -20,9 +20,10 @@ export enum ArrowTipKind {
  */
 export function arrow(ctx: CanvasRenderingContext2D, line: Line, stroke: Stroke,
                       arrowEnd: ArrowTipKind = ArrowTipKind.NONE, arrowStart: ArrowTipKind = ArrowTipKind.NONE,
-                      label: string | null = null, labelFont?: Font) {
+                      labelFont?: Font, label: string | null = null, sourceLabel: string | null = null, targetLabel: string | null = null) {
   const { x1, y1, x2, y2 } = line.getCoordinates();
   const angle = Math.atan2(y2 - y1, x2 - x1);
+  const flip = angle > Math.PI / 2 || angle < -Math.PI / 2;
 
   // Draw the line itself
   ctx.beginPath();
@@ -48,14 +49,43 @@ export function arrow(ctx: CanvasRenderingContext2D, line: Line, stroke: Stroke,
     ctx.restore();
   }
 
-  if (label) {
+  if (labelFont && (label || sourceLabel || targetLabel)) {
+    const partX = (x2 - x1) / 6;
+    const partY = (y2 - y1) / 6;
+    const textAngle = flip ? Math.PI + angle : angle;
+
     ctx.save();
-    ctx.translate((x1 + x2)/2, (y1 + y2)/2);
-    ctx.rotate(angle);
-    ctx.translate(0, -10);
+    labelFont.apply(ctx);
     ctx.textAlign = 'center';
-    if (labelFont) labelFont.apply(ctx);
-    ctx.fillText(label, 0, 0);
+
+    ctx.translate(x1, y1);
+    ctx.translate(partX, partY);
+    if (sourceLabel) {
+      ctx.save();
+      ctx.rotate(textAngle);
+      ctx.translate(0, -10);
+      ctx.fillText(sourceLabel, 0, 0);
+      ctx.restore();
+    }
+
+    ctx.translate(2 * partX, 2 * partY);
+    if (label) {
+      ctx.save();
+      ctx.rotate(textAngle);
+      ctx.translate(0, -10);
+      ctx.fillText(label, 0, 0);
+      ctx.restore();
+    }
+
+    ctx.translate(2 * partX, 2 * partY);
+    if (targetLabel) {
+      ctx.save();
+      ctx.rotate(textAngle);
+      ctx.translate(0, -10);
+      ctx.fillText(targetLabel, 0, 0);
+      ctx.restore();
+    }
+
     ctx.restore();
   }
 }

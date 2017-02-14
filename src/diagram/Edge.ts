@@ -17,6 +17,9 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   private _source: Shape<any>;
   private _target: Shape<any>;
   private _waypoint: Point[] = [];
+  private _label: string | null = null;
+  private _sourceLabel: string | null = null;
+  private _targetLabel: string | null = null;
 
   @Attribute({ type: Stroke })
   get stroke(): Stroke {
@@ -63,6 +66,33 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     this._waypoint = value;
   }
 
+  @Attribute({ type: String, lower: 0 })
+  get label(): string | null {
+    return this._label;
+  }
+
+  set label(value: string | null) {
+    this._label = value;
+  }
+
+  @Attribute({ type: String, lower: 0 })
+  get sourceLabel(): string | null {
+    return this._sourceLabel;
+  }
+
+  set sourceLabel(value: string | null) {
+    this._sourceLabel = value;
+  }
+
+  @Attribute({ type: String, lower: 0 })
+  get targetLabel(): string | null {
+    return this._targetLabel;
+  }
+
+  set targetLabel(value: string | null) {
+    this._targetLabel = value;
+  }
+
   constructor() {
     super();
     this.handles.push(new Handle());
@@ -96,13 +126,11 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     const bresenham = new BresenhamService();
     const lines = bresenham.waylines(canvas, this);
 
-    let it: IteratorResult<Line>;
-    let i = 0;
-    do {
-      it = lines.next();
-      this.renderLineSegment(canvas, it.value, i, it.done);
-      i += 1;
-    } while (!it.done);
+    const lastIndex = lines.length - 1;
+    for (let i = 0; i <= lastIndex; i += 1) {
+      const line = lines[i];
+      this.renderLineSegment(canvas, line, i, i === lastIndex);
+    }
 
     // this.handles[0].x = l.x1 || 0;
     // this.handles[0].y = l.y1 || 0;

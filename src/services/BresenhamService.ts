@@ -12,25 +12,23 @@ export class BresenhamService {
    * @param canvas Where the edge gets painted on
    * @param edge The edge which gets painted
    */
-  waylines(canvas: Canvas, edge: Edge<any>): IterableIterator<Line> {
-    const service = this;
-    return (function* () {
-      // No waypoints? Just connect source and target
-      if (!edge.waypoint.length) return service.connectShapeWithShape(canvas, edge.source, edge.target);
+  waylines(canvas: Canvas, edge: Edge<any>): Line[] {
+    // No waypoints? Just connect source and target
+    if (!edge.waypoint.length) return [this.connectShapeWithShape(canvas, edge.source, edge.target)];
 
-      // Yield way from source to first waypoint
-      yield service.connectShapeWithPoint(canvas, edge.source, edge.waypoint[0]);
+    // Yield way from source to first waypoint
+    const result = [this.connectShapeWithPoint(canvas, edge.source, edge.waypoint[0])];
 
-      // Yield ways between waypoints
-      let i = 0;
-      const max = edge.waypoint.length - 1;
-      for (; i < max; i += 1) {
-        yield Line.fromTwoPoints(edge.waypoint[i - 1], edge.waypoint[i]);
-      }
+    // Yield ways between waypoints
+    let i = 0;
+    const max = edge.waypoint.length - 1;
+    for (; i < max; i += 1) {
+       result.push(Line.fromTwoPoints(edge.waypoint[i - 1], edge.waypoint[i]));
+    }
 
-      // Yield way from last waypoint to target
-      return service.connectPointWithShape(canvas, edge.waypoint[i], edge.target);
-    })();
+    // Yield way from last waypoint to target
+    result.push(this.connectPointWithShape(canvas, edge.waypoint[i], edge.target));
+    return result;
   }
 
   connectShapeWithPoint(canvas: Canvas, shape: Shape<any>, point: Point): Line {

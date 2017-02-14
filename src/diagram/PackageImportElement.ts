@@ -18,6 +18,6 @@ export class PackageImportElement extends Edge<PackageImport> {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
-    arrow(canvas.ctx, line, stroke, ArrowTipKind.NONE, ArrowTipKind.NONE, this.modelElement && this.modelElement.name, this.font);
+    arrow(canvas.ctx, line, stroke, ArrowTipKind.NONE, ArrowTipKind.NONE, this.font, this.modelElement && this.modelElement.name);
   }
 }

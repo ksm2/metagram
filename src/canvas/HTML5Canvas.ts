@@ -106,8 +106,10 @@ export class HTML5Canvas extends Canvas {
     this._startedY += dy;
     if (this.selectedElements.size < 2 && this._mouseDownElement) {
       this._mouseDownElement.move(dx, dy);
-    } else {
+    } else if (this.selectedElements.size) {
       this.selectedElements.forEach(element => element.move(dx, dy));
+    } else {
+      this.moveOffset(dx, dy);
     }
     this.rerender();
   }

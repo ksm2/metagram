@@ -12,6 +12,6 @@ export class GeneralizationElement extends Edge<Generalization> {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
-    arrow(canvas.ctx, line, stroke, isLastSegment ? ArrowTipKind.TRIANGLE : ArrowTipKind.NONE, ArrowTipKind.NONE, this.modelElement && this.modelElement.name, this.font);
+    arrow(canvas.ctx, line, stroke, isLastSegment ? ArrowTipKind.TRIANGLE : ArrowTipKind.NONE, ArrowTipKind.NONE, this.font, this.modelElement && this.modelElement.name);
   }
 }
