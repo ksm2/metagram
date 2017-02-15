@@ -12,7 +12,7 @@ enum MouseButtons {
   FORWARD = 16
 }
 
-interface DOMMouseScroll extends Event {
+interface DOMMouseScroll extends MouseEvent {
   detail: number;
 }
 
@@ -32,8 +32,8 @@ export class HTML5Canvas extends Canvas {
     element.addEventListener('mousedown', event => this.onMouseDown(event));
     element.addEventListener('mouseup'  , event => this.onMouseUp(event));
     element.addEventListener('mousemove', event => this.onMouseMove(event));
-    element.addEventListener('mousewheel', event => this.onMouseWheelScroll(event.wheelDeltaY));
-    element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheelScroll(-event.detail));
+    element.addEventListener('mousewheel', event => this.onMouseWheelScroll(event.wheelDeltaY, event.offsetX, event.offsetY));
+    element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheelScroll(-event.detail, event.offsetX, event.offsetY));
 
     this._element = element;
   }
@@ -133,11 +133,11 @@ export class HTML5Canvas extends Canvas {
   /**
    * Handles when the mouse wheel is scrolled over the canvas
    */
-  onMouseWheelScroll(delta: number) {
+  onMouseWheelScroll(delta: number, x: number, y: number) {
     if (delta < 0) {
-      this.zoomIn();
+      this.zoomIn(x, y);
     } else {
-      this.zoomOut();
+      this.zoomOut(x, y);
     }
   }
 

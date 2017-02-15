@@ -51,15 +51,6 @@ export abstract class Canvas {
     return this._grid;
   }
 
-  set zoom(newZoom: number) {
-    const oldZoom = this._zoom;
-    const centerX = this.zoomWidth / 2;
-    const centerY = this.zoomHeight / 2;
-    const d = (oldZoom / newZoom - 1);
-    this._zoom = newZoom;
-    this.moveOffset(centerX * d, centerY * d);
-  }
-
   get zoom(): number {
     return this._zoom;
   }
@@ -248,22 +239,31 @@ export abstract class Canvas {
   /**
    * Zooms into the diagram
    */
-  zoomIn() {
-    this.zoom = zoomLevels[Math.min(zoomLevels.length - 1, zoomLevels.indexOf(this._zoom) + 1)];
+  zoomIn(x?: number, y?: number) {
+    this.zoomCanvas(zoomLevels[Math.min(zoomLevels.length - 1, zoomLevels.indexOf(this._zoom) + 1)], x, y);
   }
 
   /**
    * Zooms out of the diagram
    */
-  zoomOut() {
-    this.zoom = zoomLevels[Math.max(0, zoomLevels.indexOf(this._zoom) - 1)];
+  zoomOut(x?: number, y?: number) {
+    this.zoomCanvas(zoomLevels[Math.max(0, zoomLevels.indexOf(this._zoom) - 1)], x, y);
   }
 
   /**
    * Zooms 100%
    */
-  zoom100() {
-    this.zoom = 1
+  zoom100(x?: number, y?: number) {
+    this.zoomCanvas(1, x, y);
+  }
+
+  zoomCanvas(newZoom: number, x?: number, y?: number) {
+    const oldZoom = this._zoom;
+    const centerX = x ? x / this._zoom : this.zoomWidth / 2;
+    const centerY = y ? y / this._zoom : this.zoomHeight / 2;
+    const d = (oldZoom / newZoom - 1);
+    this._zoom = newZoom;
+    this.moveOffset(centerX * d, centerY * d);
   }
 
   /**
