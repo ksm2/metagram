@@ -32,6 +32,22 @@ export class Line extends Element {
     return this._to.x - this._from.x;
   }
 
+  get x1(): number {
+    return this._from.x;
+  }
+
+  get y1(): number {
+    return this._from.y;
+  }
+
+  get x2(): number {
+    return this._to.x;
+  }
+
+  get y2(): number {
+    return this._to.y;
+  }
+
   get dy(): number {
     return this._to.y - this._from.y;
   }
@@ -71,6 +87,14 @@ export class Line extends Element {
     const [x1, y1] = this._from.getTuple();
     const [x2, y2] = this._to.getTuple();
     return { x1, y1, x2, y2 };
+  }
+
+  /**
+   * Calculates the distance if a point to this line
+   */
+  calculateDistanceToPoint(point: Point): number {
+    const { length, x1, y1, x2, y2, dx, dy } = this;
+    return Math.abs(dy * point.x - dx * point.y + x2 * y1 - y2 * x1) / length;
   }
 
   /**

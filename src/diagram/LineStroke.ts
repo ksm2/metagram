@@ -2,6 +2,7 @@ import { Element } from '../models/Element';
 import { Class, Attribute } from '../decorators';
 import { Line } from './Line';
 import { SVGService } from '../services/SVGService';
+import { Point } from './Point';
 
 @Class('LineStroke', Element)
 export class LineStroke extends Element {
@@ -92,4 +93,10 @@ export class LineStroke extends Element {
     return new LineStroke(lines);
   }
 
+  /**
+   * Calculates the distance if a point to this line stroke
+   */
+  calculateDistanceToPoint(point: Point): number {
+    return this._lines.reduce((previous, current) => Math.min(previous, current.calculateDistanceToPoint(point)), Infinity);
+  }
 }

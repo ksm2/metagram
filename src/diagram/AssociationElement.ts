@@ -6,7 +6,6 @@ import { Edge } from './Edge';
 import { Line } from './Line';
 import { AggregationKind } from '../models/uml/AggregationKind';
 import { Property } from '../models/uml/Property';
-import { text } from '../rendering/text';
 
 export class AssociationElement extends Edge<Association> {
   renderLineSegment(canvas: Canvas, line: Line, index: number, isLast: boolean): void {

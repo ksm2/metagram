@@ -94,32 +94,8 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     this._targetLabel = value;
   }
 
-  constructor() {
-    super();
-    this.handles.push(new Handle());
-    this.handles.push(new Handle());
-  }
-
   containsPoint(px: number, py: number): boolean {
-    const lines = this.waylines.lines;
-
-    // const { ctx } = canvas;
-    // ctx.save();
-    // ctx.lineWidth = Math.max(6, this.stroke.width);
-    // ctx.beginPath();
-    // let first = true;
-    // for (let line of lines) {
-    //   if (first) {
-    //     ctx.moveTo(line.from.x, line.from.y);
-    //     first = false;
-    //   }
-    //   ctx.lineTo(line.to.x, line.to.y);
-    // }
-    // ctx.closePath();
-    // const r = ctx.isPointInStroke(px, py);
-    // ctx.restore();
-
-    return false;
+    return this.waylines.calculateDistanceToPoint(new Point(px, py)) < 10;
   }
 
   render(canvas: Canvas): void {
@@ -130,11 +106,33 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
       const line = lines[i];
       this.renderLineSegment(canvas, line, i, i === lastIndex);
     }
+  }
 
-    // this.handles[0].x = l.x1 || 0;
-    // this.handles[0].y = l.y1 || 0;
-    // this.handles[1].x = l.x2 || 0;
-    // this.handles[1].y = l.y2 || 0;
+  createHandles(canvas: Canvas): Handle[] {
+    const lines = this.waylines.lines;
+
+    const handle = new Handle(lines[0].x1, lines[0].y1);
+    handle.on('move', (p: Point) => {
+      this._source = p;
+    });
+
+    const handles = [handle];
+    const lastIndex = lines.length - 1;
+    for (let i = 0; i <= lastIndex; i += 1) {
+      const line = lines[i];
+      const handle = new Handle(line.x2, line.y2);
+      handle.on('move', (p: Point) => {
+        if (i == lastIndex) {
+          this._target = p;
+        } else {
+          this._waypoint[i] = p;
+        }
+      });
+
+      handles.push(handle);
+    }
+
+    return handles;
   }
 
   get svgPath(): string {

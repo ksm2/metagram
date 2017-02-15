@@ -24,6 +24,10 @@ export class Element {
     this._listeners.set(key, listeners);
   }
 
+  off(key: string) {
+    this._listeners.delete(key);
+  }
+
   /**
    * Appends a child to this element
    */

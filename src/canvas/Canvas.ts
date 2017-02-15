@@ -25,6 +25,7 @@ export abstract class Canvas {
   private _zoom: number;
   private _diagram: Diagram | null;
   private _hoveredElement: DiagramElement<any> | null;
+  private _handles: Map<DiagramElement<any>, Handle[]>;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
@@ -38,6 +39,7 @@ export abstract class Canvas {
     this._zoom = 1;
     this._diagram = null;
     this._hoveredElement = null;
+    this._handles = new Map();
   }
 
   set grid(val: boolean) {
@@ -129,13 +131,25 @@ export abstract class Canvas {
    * Returns the element at the given position
    */
   getElementByPosition(x: number, y: number): DiagramElement<any> | null {
-    const handles: Handle[] = Array.prototype.concat.apply([], Array.from(this._selectedElements).map(el => el.handles));
     const realX = x / this._zoom - this._offsetX;
     const realY = y / this._zoom - this._offsetY;
-    const handleAtPos = handles.find(handle => handle.containsPoint(realX, realY));
+    const handleAtPos = this.getHandleByPosition(realX, realY);
     if (handleAtPos) return handleAtPos;
 
     return this._diagram && this._diagram.getElementAtPosition(this, realX, realY) || null;
+  }
+
+  /**
+   * Returns the handle at the given position
+   */
+  getHandleByPosition(x: number, y: number): Handle | null {
+    for (let handles of this._handles.values()) {
+      for (let handle of handles) {
+        if (handle.containsPoint(x, y)) return handle;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -143,15 +157,31 @@ export abstract class Canvas {
    */
   addSelection(element: DiagramElement<any>): void {
     this._selectedElements.add(element);
+    // Add handles of the element
+    this._handles.set(element, element.createHandles(this));
     element.select();
+    element.on('resize', () => {
+      this._handles.set(element, element.createHandles(this));
+    });
   }
 
   /**
    * Deselects a given element
    */
   deleteSelection(element: DiagramElement<any>): boolean {
+    // Remove handles
+    this._handles.delete(element);
     element.deselect();
+    element.off('resize');
     return this._selectedElements.delete(element);
+  }
+
+  moveElement(element: DiagramElement<any>, dx: number, dy: number) {
+    element.move(dx, dy);
+    // Update the element's handles
+    if (this._handles.has(element)) {
+      this._handles.set(element, element.createHandles(this));
+    }
   }
 
   /**
@@ -165,7 +195,11 @@ export abstract class Canvas {
    * Clears the selection of all canvas elements
    */
   clearSelection() {
-    this._selectedElements.forEach(element => element.deselect());
+    this._handles.clear();
+    this._selectedElements.forEach((element) => {
+      element.deselect();
+      element.off('resize');
+    });
     this._selectedElements.clear();
   }
 
@@ -249,7 +283,7 @@ export abstract class Canvas {
     this.ctx.scale(this.zoom, this.zoom);
     this.ctx.translate(this._offsetX, this._offsetY);
     if (this._diagram) this._diagram.render(this);
-    this._selectedElements.forEach(element => element.handles.forEach(handle => handle.render(this)));
+    this._handles.forEach(handles => handles.forEach(handle => handle.render(this)));
     this.popCanvasStack();
     return this;
   }

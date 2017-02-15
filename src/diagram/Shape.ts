@@ -1,6 +1,5 @@
 import { ModelElement } from '../models/uml/ModelElement';
 import { DiagramElement } from './DiagramElement';
-import { Point } from '../rendering/Geometry';
 import { Canvas } from '../canvas/Canvas';
 import { Directions } from './Directions';
 import { Handle } from './Handle';
@@ -9,6 +8,7 @@ import { Stroke } from './Stroke';
 import { Font } from './Font';
 import { Bounds } from './Bounds';
 import { Attribute, Class } from '../decorators/index';
+import { Point } from './Point';
 
 @Class('Shape', DiagramElement)
 export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
@@ -20,7 +20,6 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   constructor() {
     super();
     this._bounds.on('*', this.onBoundsChange.bind(this));
-    this.updateHandles();
   }
 
   @Attribute({ type: Fill })
@@ -57,6 +56,21 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     canvas.popCanvasStack();
   }
 
+  createHandles(canvas: Canvas): Handle[] {
+    const handles = [];
+    for (let d = 0; d < 8; d += 1) {
+      const [x, y] = Directions.rect(this.bounds, d);
+      const handle = new Handle(x, y);
+      handle.cursor = Directions.cursor(d);
+      handle.on('move', (p: Point) => {
+        this.handleMoved(d, p.x, p.y);
+      });
+      handles[d] = handle;
+    }
+
+    return handles;
+  }
+
   renderContents(canvas: Canvas): void {
   }
 
@@ -74,7 +88,7 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   center(): Point {
     const x = this.bounds.x + this.bounds.width / 2;
     const y = this.bounds.y + this.bounds.height / 2;
-    return { x, y };
+    return new Point(x, y);
   }
 
   containsPoint(px: number, py: number): boolean {
@@ -85,17 +99,6 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   move(dx: number, dy: number): void {
     this.bounds.x += dx;
     this.bounds.y += dy;
-    this.updateHandles();
-  }
-
-  updateHandles() {
-    for (let d = 0; d < 8; d += 1) {
-      const [x, y] = Directions.rect(this.bounds, d);
-      const onMove = this.handleMoved.bind(this, d);
-      const handle = new Handle();
-      Object.assign(handle, { x, y, cursor: Directions.cursor(d), onMove });
-      this.handles[d] = handle;
-    }
   }
 
   handleMoved(d: number, newX: number, newY: number) {
@@ -114,10 +117,9 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     if (d >= Directions.SOUTH_EAST && d <= Directions.SOUTH_WEST) {
       this.bounds.height = newY - y;
     }
-    this.updateHandles();
   }
 
   onBoundsChange() {
-    this.updateHandles();
+    this.emit('resize', this.bounds);
   }
 }

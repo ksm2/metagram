@@ -11,7 +11,6 @@ import { Shape } from './Shape';
 export class DiagramElement<M extends ModelElement> extends Element {
   private _modelElement: M;
   private _cursor: Cursor = 'default';
-  private _handles: Handle[] = [];
   private _selected: boolean = false;
   private _hovered: boolean = false;
   private _ownedElements: DiagramElement<any>[] = [];
@@ -53,10 +52,6 @@ export class DiagramElement<M extends ModelElement> extends Element {
     this._cursor = value;
   }
 
-  get handles(): Handle[] {
-    return this._handles;
-  }
-
   get selected(): boolean {
     return this._selected;
   }
@@ -66,6 +61,13 @@ export class DiagramElement<M extends ModelElement> extends Element {
   }
 
   render(canvas: Canvas): void {
+  }
+
+  /**
+   * Create handles for this element
+   */
+  createHandles(canvas: Canvas): Handle[] {
+    return [];
   }
 
   /**
@@ -106,7 +108,7 @@ export class DiagramElement<M extends ModelElement> extends Element {
   }
 
   hover(val: boolean) {
-    this._selected = val;
+    this._hovered = val;
   }
 
   /**

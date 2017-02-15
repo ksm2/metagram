@@ -2,16 +2,17 @@ import { DiagramElement } from './DiagramElement';
 import { ModelElement } from '../models/uml/ModelElement';
 import { Canvas } from '../canvas/Canvas';
 import { Attribute } from '../decorators/index';
+import { Point } from './Point';
 
 export class Handle extends DiagramElement<ModelElement> {
-  private _x: number = 100;
-  private _y: number = 100;
-  private _onMove: (x: number, y: number) => void;
+  private _x: number;
+  private _y: number;
 
-  constructor() {
+  constructor(x: number = 100, y: number = 100) {
     super();
+    this._x = x;
+    this._y = y;
     this.cursor = 'default';
-    this.onMove = () => {};
   }
 
   @Attribute({ type: Number })
@@ -30,15 +31,6 @@ export class Handle extends DiagramElement<ModelElement> {
 
   set y(value: number) {
     this._y = value;
-  }
-
-  @Attribute({ type: Function })
-  get onMove(): (x: number, y: number) => void {
-    return this._onMove;
-  }
-
-  set onMove(value: (x: number, y: number) => void) {
-    this._onMove = value;
   }
 
   render(canvas: Canvas): void {
@@ -68,6 +60,6 @@ export class Handle extends DiagramElement<ModelElement> {
   move(dx: number, dy: number): void {
     this.x += dx;
     this.y += dy;
-    this.onMove(this.x, this.y);
+    this.emit('move', new Point(this.x, this.y));
   }
 }
