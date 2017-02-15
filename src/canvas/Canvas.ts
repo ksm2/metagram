@@ -321,8 +321,11 @@ export abstract class Canvas {
     ctx.strokeStyle = 'rgba(0,0,0,0.2)';
 
     // Render vertical lines
-    const dx = this._gridX * this._zoom;
-    for (let x = dx; x < width - 1; x += dx) {
+    let dx = this._gridX * this._zoom;
+    while (dx < 10) dx *= 2;
+
+    const sx = (this._offsetX * this._zoom) % dx;
+    for (let x = sx; x < width - 1; x += dx) {
       ctx.beginPath();
       ctx.moveTo(x, 0);
       ctx.lineTo(x, height);
@@ -330,8 +333,11 @@ export abstract class Canvas {
     }
 
     // Render horizontal lines
-    const dy = this._gridY * this._zoom;
-    for (let y = dy; y < height - 1; y += dy) {
+    let dy = this._gridY * this._zoom;
+    while (dy < 10) dy *= 2;
+
+    const sy = (this._offsetY * this._zoom) % dy;
+    for (let y = sy; y < height - 1; y += dy) {
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);

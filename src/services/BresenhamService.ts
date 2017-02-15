@@ -19,14 +19,13 @@ export class BresenhamService {
     const result = [this.connect(edge.source, edge.waypoint[0])];
 
     // Yield ways between waypoints
-    let i = 0;
     const max = edge.waypoint.length - 1;
-    for (; i < max; i += 1) {
-       result.push(Line.fromTwoPoints(edge.waypoint[i - 1], edge.waypoint[i]));
+    for (let i = 0; i < max; i += 1) {
+       result.push(Line.fromTwoPoints(edge.waypoint[i], edge.waypoint[i + 1]));
     }
 
     // Yield way from last waypoint to target
-    result.push(this.connect(edge.waypoint[i], edge.target));
+    result.push(this.connect(edge.waypoint[max], edge.target));
     return new LineStroke(result);
   }
 

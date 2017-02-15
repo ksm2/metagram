@@ -1,6 +1,8 @@
 import { Canvas } from './Canvas';
 import { Cursor } from '../diagram/Cursor';
 import { DiagramElement } from '../diagram/DiagramElement';
+import { Edge } from '../diagram/Edge';
+import { Point } from '../diagram/Point';
 
 enum MouseButtons {
   LEFT = 1,
@@ -96,6 +98,25 @@ export class HTML5Canvas extends Canvas {
     let dx = (offsetX / this.zoom) - this._startedX;
     let dy = (offsetY / this.zoom) - this._startedY;
 
+    // Extract a new waypoint
+    if (!this._isMoving && this.selectedElements.size < 2 && this._mouseDownElement instanceof Edge) {
+      this._isMoving = true;
+      const x = Math.round(offsetX / this.gridX) * this.gridX;
+      const y = Math.round(offsetY / this.gridY) * this.gridY;
+      this._mouseDownElement.waypoint.push(new Point(x, y));
+      this.rerender();
+
+      return;
+    }
+
+    // Move the whole canvas
+    if (!this.selectedElements.size) {
+      this._startedX += dx;
+      this._startedY += dy;
+      this.moveOffset(dx, dy);
+      return;
+    }
+
     // Round to raster
     dx = Math.round(dx / this.gridX) * this.gridX;
     dy = Math.round(dy / this.gridY) * this.gridY;
@@ -104,13 +125,8 @@ export class HTML5Canvas extends Canvas {
     this._isMoving = true;
     this._startedX += dx;
     this._startedY += dy;
-    if (this.selectedElements.size < 2 && this._mouseDownElement) {
-      this.moveElement(this._mouseDownElement, dx, dy);
-    } else if (this.selectedElements.size) {
-      this.selectedElements.forEach(element => this.moveElement(element, dx, dy));
-    } else {
-      this.moveOffset(dx, dy);
-    }
+    this.selectedElements.forEach(element => this.moveElement(element, dx, dy));
+
     this.rerender();
   }
 
