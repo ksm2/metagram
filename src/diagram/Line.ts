@@ -40,6 +40,14 @@ export class Line extends Element {
     return Math.hypot(this.dx, this.dy);
   }
 
+  constructor(x1?: number, y1?: number, x2?: number, y2?: number) {
+    super();
+    if (typeof x1 == 'number' && typeof y1 == 'number' && typeof x2 == 'number' && typeof y2 == 'number') {
+      this._from = new Point(x1, y1);
+      this._to = new Point(x2, y2);
+    }
+  }
+
   static fromCoordinates({ x1, y1, x2, y2 }: { x1: number, y1: number, x2: number, y2: number }): Line {
     const result = new Line();
     result.from.x = x1;

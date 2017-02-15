@@ -42,14 +42,14 @@ export class ClassifierElement extends Shape<Classifier> {
     const attributes = modelElement.ownedAttributes;
     if (attributes.size) {
       offsetY = this.renderSeparator(ctx, offsetY);
-      offsetY = this.renderProperties([...attributes], ctx, offsetY);
+      offsetY = this.renderProperties(attributes, ctx, offsetY);
     }
 
     // Draw operations
     const operations = modelElement.ownedOperations;
     if (operations.size) {
       offsetY = this.renderSeparator(ctx, offsetY);
-      offsetY = this.renderOperations([...operations], ctx, offsetY);
+      offsetY = this.renderOperations(operations, ctx, offsetY);
     }
 
     if (selected || hovered) fillRect(ctx, { width, height }, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
@@ -57,14 +57,13 @@ export class ClassifierElement extends Shape<Classifier> {
     ctx.restore();
   }
 
-  private renderProperties(attributes: Property[], ctx: CanvasRenderingContext2D, offsetY: number): number {
+  private renderProperties(attributes: Set<Property>, ctx: CanvasRenderingContext2D, offsetY: number): number {
     const offsetX = 10;
     const sepX = 5;
     const visibilityWidth = measureTextWidth(ctx, '~', this.font);
     let y = offsetY;
 
-    for (let i = 0; i < attributes.length; i += 1) {
-      const attribute = attributes[i];
+    for (let attribute of attributes) {
       let x = offsetX;
       y += ENTRY_Y_OFFSET;
 
@@ -102,14 +101,13 @@ export class ClassifierElement extends Shape<Classifier> {
     return y;
   }
 
-  private renderOperations(operations: Operation[], ctx: CanvasRenderingContext2D, offsetY: number): number {
+  private renderOperations(operations: Set<Operation>, ctx: CanvasRenderingContext2D, offsetY: number): number {
     const offsetX = 10;
     const sepX = 5;
     const visibilityWidth = measureTextWidth(ctx, '~', this.font);
     let y = offsetY;
 
-    for (let i = 0; i < operations.length; i += 1) {
-      const operation = operations[i];
+    for (let operation of operations) {
       let x = offsetX;
       y += ENTRY_Y_OFFSET;
 

@@ -71,11 +71,10 @@ export class DiagramElement<M extends ModelElement> extends Element {
   /**
    * Checks whether this element contains a given point
    *
-   * @param canvas A canvas to perform positioning
    * @param px X coordinate of the point to check
    * @param py Y coordinate of the point to check
    */
-  containsPoint(canvas: Canvas, px: number, py: number): boolean {
+  containsPoint(px: number, py: number): boolean {
     return false;
   }
 
@@ -114,7 +113,7 @@ export class DiagramElement<M extends ModelElement> extends Element {
    * Returns the element at a given position.
    */
   getElementAtPosition(canvas: Canvas, x: number, y: number): DiagramElement<any> | null {
-    if (!this.containsPoint(canvas, x, y)) {
+    if (!this.containsPoint(x, y)) {
       return null;
     }
 

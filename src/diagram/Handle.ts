@@ -52,7 +52,7 @@ export class Handle extends DiagramElement<ModelElement> {
     ctx.restore();
   }
 
-  containsPoint(canvas: Canvas, px: number, py: number): boolean {
+  containsPoint(px: number, py: number): boolean {
     const { x, y } = this;
     return x - 4.5 <= px && px <= x + 4.5 && y - 4.5 <= py && py <= y + 4.5;
   }

@@ -77,7 +77,7 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     return { x, y };
   }
 
-  containsPoint(canvas: Canvas, px: number, py: number): boolean {
+  containsPoint(px: number, py: number): boolean {
     const { x, y, width, height } = this.bounds;
     return px >= x && px < x + width && py >= y && py < y + height;
   }

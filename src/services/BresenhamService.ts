@@ -4,20 +4,19 @@ import { Point } from '../diagram/Point';
 import { Edge } from '../diagram/Edge';
 import { Canvas } from '../canvas/Canvas';
 import { destructPoint } from '../rendering/Geometry';
+import { LineStroke } from '../diagram/LineStroke';
 
 export class BresenhamService {
   /**
-   * Iterates over all lines which are part of an edge
-   *
-   * @param canvas Where the edge gets painted on
+   * Iterates over all lines which are part of an edge Where the edge gets painted on
    * @param edge The edge which gets painted
    */
-  waylines(canvas: Canvas, edge: Edge<any>): Line[] {
+  waylines(edge: Edge<any>): LineStroke {
     // No waypoints? Just connect source and target
-    if (!edge.waypoint.length) return [this.connectShapeWithShape(canvas, edge.source, edge.target)];
+    if (!edge.waypoint.length) return new LineStroke([this.connect(edge.source, edge.target)]);
 
     // Yield way from source to first waypoint
-    const result = [this.connectShapeWithPoint(canvas, edge.source, edge.waypoint[0])];
+    const result = [this.connect(edge.source, edge.waypoint[0])];
 
     // Yield ways between waypoints
     let i = 0;
@@ -27,33 +26,56 @@ export class BresenhamService {
     }
 
     // Yield way from last waypoint to target
-    result.push(this.connectPointWithShape(canvas, edge.waypoint[i], edge.target));
-    return result;
+    result.push(this.connect(edge.waypoint[i], edge.target));
+    return new LineStroke(result);
   }
 
-  connectShapeWithPoint(canvas: Canvas, shape: Shape<any>, point: Point): Line {
+  connect(a1: Shape<any> | Point, a2: Shape<any> | Point): Line {
+    if (a1 instanceof Point) {
+      if (a2 instanceof Point) {
+        return this.connectPointWithPoint(a1, a2);
+      } else {
+        return this.connectPointWithShape(a1, a2);
+      }
+    } else {
+      if (a2 instanceof Point) {
+        return this.connectShapeWithPoint(a1, a2);
+      } else {
+        return this.connectShapeWithShape(a1, a2);
+      }
+    }
+  }
+
+  connectPointWithPoint(p1: Point, p2: Point): Line {
+    const [x1, y1] = [p1.x, p1.y];
+    const [x2, y2] = [p2.x, p2.y];
+
+    return new Line(x1, y1, x2, y2);
+  }
+
+  connectShapeWithPoint(shape: Shape<any>, point: Point): Line {
     const [x1, y1] = destructPoint(shape.center());
     const [x2, y2] = [point.x, point.y];
-    const touches1 = (x: number, y: number) => shape.containsPoint(canvas, x, y);
+    const touches1 = (x: number, y: number) => shape.containsPoint(x, y);
     const touches2 = (x: number, y: number) => false;
 
     return this.bresenhamAlgorithm(x1, y1, x2, y2, touches1, touches2);
   }
 
-  connectPointWithShape(canvas: Canvas, point: Point, shape: Shape<any>): Line {
+  connectPointWithShape(point: Point, shape: Shape<any>): Line {
     const [x1, y1] = [point.x, point.y];
     const [x2, y2] = destructPoint(shape.center());
     const touches1 = (x: number, y: number) => false;
-    const touches2 = (x: number, y: number) => shape.containsPoint(canvas, x, y);
+    const touches2 = (x: number, y: number) => shape.containsPoint(x, y);
 
     return this.bresenhamAlgorithm(x1, y1, x2, y2, touches1, touches2);
   }
 
-  connectShapeWithShape(canvas: Canvas, el1: Shape<any>, el2: Shape<any>): Line {
+  connectShapeWithShape(el1: Shape<any>, el2: Shape<any>): Line {
     const [x1, y1] = destructPoint(el1.center());
     const [x2, y2] = destructPoint(el2.center());
-    const touches1 = (x: number, y: number) => el1.containsPoint(canvas, x, y);
-    const touches2 = (x: number, y: number) => el2.containsPoint(canvas, x, y);
+    const touches1 = (x: number, y: number) => el1.containsPoint(x, y);
+    const touches2 = (x: number, y: number) => el2.containsPoint(x, y);
 
     return this.bresenhamAlgorithm(x1, y1, x2, y2, touches1, touches2);
   }

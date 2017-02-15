@@ -37,7 +37,7 @@ export class Diagram extends Shape<Package> {
     this._resolution = value;
   }
 
-  containsPoint(canvas: Canvas, px: number, py: number): boolean {
+  containsPoint(px: number, py: number): boolean {
     // A diagram always contains a point
     return true;
   }

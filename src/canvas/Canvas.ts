@@ -132,7 +132,7 @@ export abstract class Canvas {
     const handles: Handle[] = Array.prototype.concat.apply([], Array.from(this._selectedElements).map(el => el.handles));
     const realX = x / this._zoom - this._offsetX;
     const realY = y / this._zoom - this._offsetY;
-    const handleAtPos = handles.find(handle => handle.containsPoint(this, realX, realY));
+    const handleAtPos = handles.find(handle => handle.containsPoint(realX, realY));
     if (handleAtPos) return handleAtPos;
 
     return this._diagram && this._diagram.getElementAtPosition(this, realX, realY) || null;
