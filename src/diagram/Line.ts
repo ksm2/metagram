@@ -94,6 +94,8 @@ export class Line extends Element {
    */
   calculateDistanceToPoint(point: Point): number {
     const { length, x1, y1, x2, y2, dx, dy } = this;
+    if (Math.hypot(point.x - x1, point.y - y1) > length || Math.hypot(point.x - x2, point.y - y2) > length) return Infinity;
+
     return Math.abs(dy * point.x - dx * point.y + x2 * y1 - y2 * x1) / length;
   }
 
