@@ -10,36 +10,28 @@ export interface ResolveFunction<M extends ModelElement> {
   (m: M): DiagramElement<M>;
 }
 
-const zoomLevels = [1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 1, 2, 3, 4, 5, 6, 7, 8];
-
 export abstract class Canvas {
   ctx: CanvasRenderingContext2D;
 
-  private _selectedElements: Set<DiagramElement<any>>;
   private _resolution: number = 300;
   private _grid: boolean;
   private _gridX: number;
   private _gridY: number;
+  private _zoom: number;
   private _offsetX: number;
   private _offsetY: number;
-  private _zoom: number;
   private _diagram: Diagram | null;
-  private _hoveredElement: DiagramElement<any> | null;
-  private _handles: Map<DiagramElement<any>, Handle[]>;
 
   constructor(ctx: CanvasRenderingContext2D) {
     this.ctx = ctx;
 
-    this._selectedElements = new Set();
     this._grid = false;
     this._gridX = 25;
     this._gridY = 25;
+    this._diagram = null;
+    this._zoom = 1;
     this._offsetX = 0;
     this._offsetY = 0;
-    this._zoom = 1;
-    this._diagram = null;
-    this._hoveredElement = null;
-    this._handles = new Map();
   }
 
   set grid(val: boolean) {
@@ -49,10 +41,6 @@ export abstract class Canvas {
 
   get grid(): boolean {
     return this._grid;
-  }
-
-  get zoom(): number {
-    return this._zoom;
   }
 
   get resolution(): number {
@@ -76,28 +64,32 @@ export abstract class Canvas {
     return this._diagram;
   }
 
-  set hoveredElement(element: DiagramElement<any> | null) {
-    if (this._hoveredElement) this._hoveredElement.hover(false);
-    this._hoveredElement = element;
-    this.changeCursor(element ? element.cursor : 'default');
-    if (this._hoveredElement) this._hoveredElement.hover(true);
-    this.rerender();
-  }
-
-  get hoveredElement(): DiagramElement<any> | null {
-    return this._hoveredElement;
-  }
-
-  get selectedElements(): Set<DiagramElement<any>> {
-    return this._selectedElements;
-  }
-
   get gridX(): number {
     return this._gridX;
   }
 
   get gridY(): number {
     return this._gridY;
+  }
+
+  get offsetX(): number {
+    return this._offsetX;
+  }
+
+  get offsetY(): number {
+    return this._offsetY;
+  }
+
+  get zoom(): number {
+    return this._zoom;
+  }
+
+  get zoomWidth(): number {
+    return this.width / this.zoom;
+  }
+
+  get zoomHeight(): number {
+    return this.height / this.zoom;
   }
 
   /**
@@ -109,99 +101,6 @@ export abstract class Canvas {
    * Returns the current height of the canvas
    */
   abstract get height(): number;
-
-  get zoomWidth(): number {
-    return this.width / this.zoom;
-  }
-
-  get zoomHeight(): number {
-    return this.height / this.zoom;
-  }
-
-  /**
-   * Returns the element at the given position
-   */
-  getElementByPosition(x: number, y: number): DiagramElement<any> | null {
-    const realX = x / this._zoom - this._offsetX;
-    const realY = y / this._zoom - this._offsetY;
-    const handleAtPos = this.getHandleByPosition(realX, realY);
-    if (handleAtPos) return handleAtPos;
-
-    return this._diagram && this._diagram.getElementAtPosition(this, realX, realY) || null;
-  }
-
-  /**
-   * Returns the handle at the given position
-   */
-  getHandleByPosition(x: number, y: number): Handle | null {
-    for (let handles of this._handles.values()) {
-      for (let handle of handles) {
-        if (handle.containsPoint(x, y)) return handle;
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Selects a given element
-   */
-  addSelection(element: DiagramElement<any>): void {
-    this._selectedElements.add(element);
-    // Add handles of the element
-    this._handles.set(element, element.createHandles(this));
-    element.select();
-    element.on('resize', () => {
-      this._handles.set(element, element.createHandles(this));
-    });
-  }
-
-  /**
-   * Deselects a given element
-   */
-  deleteSelection(element: DiagramElement<any>): boolean {
-    // Remove handles
-    this._handles.delete(element);
-    element.deselect();
-    element.off('resize');
-    return this._selectedElements.delete(element);
-  }
-
-  moveElement(element: DiagramElement<any>, dx: number, dy: number) {
-    element.move(dx, dy);
-    // Update the element's handles
-    if (this._handles.has(element)) {
-      this._handles.set(element, element.createHandles(this));
-    }
-  }
-
-  /**
-   * Tests whether an element is selected
-   */
-  isSelected(element: DiagramElement<any>): boolean {
-    return this._selectedElements.has(element);
-  }
-
-  /**
-   * Clears the selection of all canvas elements
-   */
-  clearSelection() {
-    this._handles.clear();
-    this._selectedElements.forEach((element) => {
-      element.deselect();
-      element.off('resize');
-    });
-    this._selectedElements.clear();
-  }
-
-  /**
-   * Move the offset point of the canvas
-   */
-  moveOffset(dx: number, dy: number) {
-    this._offsetX += dx;
-    this._offsetY += dy;
-    this.rerender();
-  }
 
   /**
    * Pushes the canvas stack
@@ -237,36 +136,6 @@ export abstract class Canvas {
   }
 
   /**
-   * Zooms into the diagram
-   */
-  zoomIn(x?: number, y?: number) {
-    this.zoomCanvas(zoomLevels[Math.min(zoomLevels.length - 1, zoomLevels.indexOf(this._zoom) + 1)], x, y);
-  }
-
-  /**
-   * Zooms out of the diagram
-   */
-  zoomOut(x?: number, y?: number) {
-    this.zoomCanvas(zoomLevels[Math.max(0, zoomLevels.indexOf(this._zoom) - 1)], x, y);
-  }
-
-  /**
-   * Zooms 100%
-   */
-  zoom100(x?: number, y?: number) {
-    this.zoomCanvas(1, x, y);
-  }
-
-  zoomCanvas(newZoom: number, x?: number, y?: number) {
-    const oldZoom = this._zoom;
-    const centerX = x ? x / this._zoom : this.zoomWidth / 2;
-    const centerY = y ? y / this._zoom : this.zoomHeight / 2;
-    const d = (oldZoom / newZoom - 1);
-    this._zoom = newZoom;
-    this.moveOffset(centerX * d, centerY * d);
-  }
-
-  /**
    * Resizes the canvas
    *
    * @param width The new width of the canvas
@@ -283,7 +152,6 @@ export abstract class Canvas {
     this.ctx.scale(this.zoom, this.zoom);
     this.ctx.translate(this._offsetX, this._offsetY);
     if (this._diagram) this._diagram.render(this);
-    this._handles.forEach(handles => handles.forEach(handle => handle.render(this)));
     this.popCanvasStack();
     return this;
   }
@@ -307,6 +175,24 @@ export abstract class Canvas {
    * Changes the cursor displayed on the canvas
    */
   protected changeCursor(cursor: Cursor): void {
+  }
+
+  protected zoomCanvas(newZoom: number, x?: number, y?: number) {
+    const oldZoom = this._zoom;
+    const centerX = x ? x / this._zoom : this.zoomWidth / 2;
+    const centerY = y ? y / this._zoom : this.zoomHeight / 2;
+    const d = (oldZoom / newZoom - 1);
+    this._zoom = newZoom;
+    this.moveOffset(centerX * d, centerY * d);
+  }
+
+  /**
+   * Move the offset point of the canvas
+   */
+  protected moveOffset(dx: number, dy: number) {
+    this._offsetX += dx;
+    this._offsetY += dy;
+    this.rerender();
   }
 
   /**

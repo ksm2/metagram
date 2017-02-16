@@ -1,8 +1,8 @@
-import { Canvas } from './Canvas';
 import { Cursor } from '../diagram/Cursor';
 import { DiagramElement } from '../diagram/DiagramElement';
 import { Edge } from '../diagram/Edge';
 import { Point } from '../diagram/Point';
+import { InteractiveCanvas } from './InteractiveCanvas';
 
 enum MouseButtons {
   LEFT = 1,
@@ -16,12 +16,20 @@ interface DOMMouseScroll extends MouseEvent {
   detail: number;
 }
 
-export class HTML5Canvas extends Canvas {
+export class HTML5Canvas extends InteractiveCanvas {
   private _element: HTMLCanvasElement;
   private _isMoving: boolean;
   private _startedX: number;
   private _startedY: number;
   private _mouseDownElement: DiagramElement<any> | null;
+
+  get width(): number {
+    return this._element.width;
+  }
+
+  get height(): number {
+    return this._element.height;
+  }
 
   constructor(element: HTMLCanvasElement) {
     const ctx = element.getContext && element.getContext('2d');
@@ -38,12 +46,10 @@ export class HTML5Canvas extends Canvas {
     this._element = element;
   }
 
-  get width(): number {
-    return this._element.width;
-  }
-
-  get height(): number {
-    return this._element.height;
+  resize(width: number, height: number): this {
+    this._element.width = width;
+    this._element.height = height;
+    return this.rerender();
   }
 
   /**
@@ -139,12 +145,6 @@ export class HTML5Canvas extends Canvas {
     } else {
       this.zoomOut(x, y);
     }
-  }
-
-  resize(width: number, height: number): this {
-    this._element.width = width;
-    this._element.height = height;
-    return this.render();
   }
 
   protected changeCursor(cursor: Cursor): void {
