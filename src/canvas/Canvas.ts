@@ -17,13 +17,13 @@ export interface ResolveFunction<M extends ModelElement> {
 export abstract class Canvas {
   ctx: CanvasRenderingContext2D;
 
-  private _resolution: number = 300;
   private _grid: boolean;
   private _gridX: number;
   private _gridY: number;
   private _zoom: number;
   private _offsetX: number;
   private _offsetY: number;
+  private _background: string | null;
   private _diagram: Diagram | null;
 
   constructor(ctx: CanvasRenderingContext2D) {
@@ -36,6 +36,7 @@ export abstract class Canvas {
     this._zoom = 1;
     this._offsetX = 0;
     this._offsetY = 0;
+    this._background = null;
   }
 
   set grid(val: boolean) {
@@ -45,18 +46,6 @@ export abstract class Canvas {
 
   get grid(): boolean {
     return this._grid;
-  }
-
-  get resolution(): number {
-    return this._resolution;
-  }
-
-  get userUnitsPerInch(): number {
-    return this._resolution;
-  }
-
-  get userUnitsPerPoint(): number {
-    return this._resolution / 72;
   }
 
   set diagram(val: Diagram | null) {
@@ -86,6 +75,19 @@ export abstract class Canvas {
 
   get zoom(): number {
     return this._zoom;
+  }
+
+  set zoom(value: number) {
+    this._zoom = value;
+  }
+
+  get background(): string | any {
+    return this._background;
+  }
+
+  set background(value: string | any) {
+    this._background = value;
+    this.rerender();
   }
 
   get zoomWidth(): number {
@@ -180,7 +182,12 @@ export abstract class Canvas {
    * Invalidates the canvas by emptying it
    */
   protected invalidate(): void {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    if (this._background) {
+      this.ctx.fillStyle = this._background;
+      this.ctx.fillRect(0, 0, this.width, this.height);
+    } else {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+    }
   }
 
   /**

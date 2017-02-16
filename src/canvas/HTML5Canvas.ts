@@ -208,6 +208,39 @@ export class HTML5Canvas extends InteractiveCanvas {
     }
   }
 
+  /**
+   * Generates an image data URL from the canvas
+   *
+   * @param zoom The zoom factor used for the generated image
+   * @param format The format as mime type. By default this is image/png
+   * @param quality If JPEG, a quality can be specified
+   * @returns A data URL covering the image data
+   */
+  generateImage(zoom: number, format: string = 'image/png', quality?: number): string {
+    // No diagram present?
+    if (!this.diagram) return 'data:,';
+
+    // Retrieve diagram dimensions
+    const dim = this.diagram.calcAllElementBounds();
+
+    // Create element
+    const el = window.document.createElement('canvas');
+    el.width = zoom * dim.width;
+    el.height = zoom * dim.height;
+
+    // Draw the contents
+    const canvas = new HTML5Canvas(el);
+    canvas.moveOffset(-dim.x, -dim.y);
+    canvas.zoom = zoom;
+    canvas.diagram = this.diagram;
+    if (format === 'image/jpeg') {
+      canvas.background = 'white';
+    }
+
+    // Extract data URL
+    return el.toDataURL(format, quality);
+  }
+
   protected changeCursor(cursor: Cursor): void {
     this._element.style.cursor = cursor;
   }
