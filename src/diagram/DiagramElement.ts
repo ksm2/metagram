@@ -6,6 +6,7 @@ import { Cursor } from './Cursor';
 import { Class, Attribute } from '../decorators/index';
 import { Bounds } from './Bounds';
 import { Shape } from './Shape';
+import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
 
 @Class('DiagramElement', Element)
 export class DiagramElement<M extends ModelElement> extends Element {
@@ -109,6 +110,33 @@ export class DiagramElement<M extends ModelElement> extends Element {
 
   hover(val: boolean) {
     this._hovered = val;
+  }
+
+  /**
+   * Called when the mouse is moved over the element
+   *
+   * @param x X position on element
+   * @param y Y position on element
+   * @param i The interactive canvas which is accepts drawing commands
+   */
+  onMouseMove(x: number, y: number, i: InteractiveCanvas) {
+  }
+
+  /**
+   * Called when the mouse is leaving the element
+   *
+   * @param i The interactive canvas which is accepts drawing commands
+   */
+  onMouseLeave(i: InteractiveCanvas) {
+  }
+
+  /**
+   * Called when a key is pressed on the element
+   *
+   * @param key The key being pressed
+   * @param i The interactive canvas which is accepts drawing commands
+   */
+  onKeyPress(key: string, i: InteractiveCanvas) {
   }
 
   /**

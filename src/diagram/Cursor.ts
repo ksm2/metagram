@@ -1,6 +1,7 @@
 export type Cursor =
   'default' |
   'pointer' |
+  'text' |
   'n-resize' |
   's-resize' |
   'w-resize' |

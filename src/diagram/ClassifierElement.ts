@@ -7,12 +7,16 @@ import { Cursor } from './Cursor';
 import { Color } from './Color';
 import { Fill } from './Fill';
 import { Class as Clazz } from '../decorators';
+import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
+import { Bounds } from './Bounds';
+import { DiagramElement } from './DiagramElement';
 
-const ENTRY_Y_OFFSET = 11;
+const ENTRY_Y_OFFSET = 25 / 2;
 
 @Clazz('ClassifierElement', Shape)
 export class ClassifierElement extends Shape<Classifier> {
   cursor: Cursor = 'pointer';
+  selectedProperty: Property | null = null;
 
   render(canvas: Canvas): void {
     const { ctx } = canvas;
@@ -57,46 +61,89 @@ export class ClassifierElement extends Shape<Classifier> {
     ctx.restore();
   }
 
+  onMouseMove(x: number, y: number, i: InteractiveCanvas) {
+    const prop = Math.floor((y - 33) / (ENTRY_Y_OFFSET * 2));
+
+    this.selectedProperty = null;
+    if (prop >= 0) {
+      const property = Array.from(this.modelElement.ownedAttributes)[prop];
+      if (property) {
+        this.selectedProperty = property;
+      }
+    }
+    i.cursor = this.selectedProperty ? 'text' : this.cursor;
+    i.rerender();
+  }
+
+  onMouseLeave(i: InteractiveCanvas) {
+    this.selectedProperty = null;
+  }
+
+  onKeyPress(key: string, i: InteractiveCanvas) {
+    if (!this.selectedProperty) return super.onKeyPress(key, i);
+
+    // A single letter is pressed?
+    if (key.length == 1) {
+      this.selectedProperty.name += key;
+      return;
+    }
+
+    // A backspace is pressed?
+    if (key == 'Backspace' && this.selectedProperty.name) {
+      const name = this.selectedProperty.name;
+      this.selectedProperty.name = name.substr(0, name.length - 1);
+      return;
+    }
+  }
+
   private renderProperties(attributes: Set<Property>, ctx: CanvasRenderingContext2D, offsetY: number): number {
-    const offsetX = 10;
-    const sepX = 5;
-    const visibilityWidth = measureTextWidth(ctx, '~', this.font);
     let y = offsetY;
 
     for (let attribute of attributes) {
-      let x = offsetX;
-      y += ENTRY_Y_OFFSET;
-
-      // Draw visibility
-      if (attribute.visibility) {
-        text(ctx, this.getVisibilitySymbol(attribute.visibility), { x: x + visibilityWidth/2, y }, this.font, visibilityWidth, 'center');
-      }
-      x += visibilityWidth;
-      x += sepX;
-
-      // Draw name
-      const attributeName = attribute.name || '';
-      text(ctx, attributeName, { x, y }, this.font);
-      x += measureTextWidth(ctx, attributeName, this.font);
-
-      // Draw type
-      if (attribute.type) {
-        x += sepX;
-        const label = ':' + attribute.type.name;
-        text(ctx, label, { x, y }, this.font);
-        x += measureTextWidth(ctx, label, this.font);
-      }
-
-      // Draw default value
-      if (attribute.defaultValue) {
-        x += sepX;
-        const label = '= ' + attribute.defaultValue;
-        text(ctx, label, { x, y }, this.font);
-        x += measureTextWidth(ctx, label, this.font);
-      }
-
-      y += ENTRY_Y_OFFSET;
+      y = this.renderProperty(attribute, ctx, y);
     }
+
+    return y;
+  }
+
+  private renderProperty(attribute: Property, ctx: CanvasRenderingContext2D, offsetY: number) {
+    const visibilityWidth = measureTextWidth(ctx, '~', this.font);
+    const sepX = 5;
+    let x = 10, y = offsetY;
+    y += ENTRY_Y_OFFSET;
+
+    // Draw visibility
+    if (attribute.visibility) {
+      text(ctx, this.getVisibilitySymbol(attribute.visibility), { x: x + visibilityWidth / 2, y }, this.font, visibilityWidth, 'center');
+    }
+    x += visibilityWidth;
+    x += sepX;
+
+    // Draw name
+    const attributeName = attribute.name || '';
+    let font = this.font;
+    if (this.selectedProperty == attribute) {
+      font = font.boldFont;
+    }
+    text(ctx, attributeName, { x, y }, font);
+    x += measureTextWidth(ctx, attributeName, font);
+
+    // Draw type
+    if (attribute.type) {
+      const label = ': ' + attribute.type.name;
+      text(ctx, label, { x, y }, this.font);
+      x += measureTextWidth(ctx, label, this.font);
+    }
+
+    // Draw default value
+    if (attribute.defaultValue) {
+      x += sepX;
+      const label = '= ' + attribute.defaultValue;
+      text(ctx, label, { x, y }, this.font);
+      x += measureTextWidth(ctx, label, this.font);
+    }
+
+    y += ENTRY_Y_OFFSET;
 
     return y;
   }

@@ -32,12 +32,21 @@ export class HTML5Canvas extends InteractiveCanvas {
     return this._element.height;
   }
 
+  get cursor(): Cursor {
+    return this._element.style.cursor as Cursor;
+  }
+
+  set cursor(cursor: Cursor) {
+    this._element.style.cursor = cursor;
+  }
+
   constructor(element: HTMLCanvasElement) {
     const ctx = element.getContext && element.getContext('2d');
     if (!ctx) throw 'HTML5 Context is not available';
     super(ctx);
 
     // Init event listeners
+    element.addEventListener('keydown', event => this.onKeyPress(event), true);
     element.addEventListener('mousedown', event => this.onMouseDown(event));
     element.addEventListener('mouseup'  , event => this.onMouseUp(event));
     element.addEventListener('mousemove', event => this.onMouseMove(event));
@@ -52,6 +61,11 @@ export class HTML5Canvas extends InteractiveCanvas {
     this._element.width = width;
     this._element.height = height;
     return this.rerender();
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    this.selectedElements.forEach(element => element.onKeyPress(event.key, this));
+    this.rerender();
   }
 
   /**
@@ -96,6 +110,11 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     if (!leftButtonIsPressed) {
       this.hoveredElement = this.getElementByPosition(offsetX, offsetY);
+      if (this.hoveredElement) {
+        const [x, y] = this.getElementCoordinates(this.hoveredElement);
+        const [px, py] = [offsetX / this.zoom - this.offsetX - x, offsetY / this.zoom - this.offsetY - y];
+        this.hoveredElement.onMouseMove(px, py, this);
+      }
       return;
     }
 
@@ -239,10 +258,6 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     // Extract data URL
     return el.toDataURL(format, quality);
-  }
-
-  protected changeCursor(cursor: Cursor): void {
-    this._element.style.cursor = cursor;
   }
 
   /**

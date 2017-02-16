@@ -1,6 +1,7 @@
 import { Canvas } from './Canvas';
 import { Handle } from '../diagram/Handle';
 import { DiagramElement } from '../diagram/DiagramElement';
+import { Cursor } from '../diagram/Cursor';
 
 const zoomLevels = [1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 2/3, 1, 3/2, 2, 3, 4, 5, 6, 7, 8];
 
@@ -9,10 +10,18 @@ export abstract class InteractiveCanvas extends Canvas {
   private _handles: Map<DiagramElement<any>, Handle[]>;
   private _hoveredElement: DiagramElement<any> | null;
 
+  /**
+   * Sets the element being hovered over
+   *
+   * @param element The new element
+   */
   set hoveredElement(element: DiagramElement<any> | null) {
-    if (this._hoveredElement) this._hoveredElement.hover(false);
+    if (this._hoveredElement) {
+      this._hoveredElement.hover(false);
+      this._hoveredElement.onMouseLeave(this);
+    }
     this._hoveredElement = element;
-    this.changeCursor(element ? element.cursor : 'default');
+    this.cursor = element ? element.cursor : 'default';
     if (this._hoveredElement) this._hoveredElement.hover(true);
     this.rerender();
   }
@@ -24,6 +33,16 @@ export abstract class InteractiveCanvas extends Canvas {
   get selectedElements(): Set<DiagramElement<any>> {
     return this._selectedElements;
   }
+
+  /**
+   * Returns the current cursor
+   */
+  abstract get cursor(): Cursor;
+
+  /**
+   * Sets the current cursor
+   */
+  abstract set cursor(value: Cursor);
 
   constructor(ctx: CanvasRenderingContext2D) {
     super(ctx);

@@ -1,7 +1,6 @@
 import { DiagramElement } from '../diagram';
 import { ModelElement } from '../models';
 import { Diagram } from '../diagram';
-import { Cursor } from '../diagram/Cursor';
 import { Bounds } from '../diagram/Bounds';
 import { Point } from '../diagram/Point';
 import { Line } from '../diagram/Line';
@@ -9,6 +8,7 @@ import { LineHelper } from '../rendering/LineHelper';
 import { LineTip } from '../rendering/LineTip';
 import { Stroke } from '../diagram/Stroke';
 import { Font } from '../diagram/Font';
+import { Shape } from '../diagram/Shape';
 
 export interface ResolveFunction<M extends ModelElement> {
   (m: M): DiagramElement<M>;
@@ -157,6 +157,14 @@ export abstract class Canvas {
    */
   abstract resize(width: number, height: number): this;
 
+
+  /**
+   * Invalidates and renders the canvas
+   */
+  rerender(): this {
+    this.invalidate();
+    return this.render();
+  }
   /**
    * Renders the canvas
    */
@@ -171,14 +179,6 @@ export abstract class Canvas {
   }
 
   /**
-   * Invalidates and renders the canvas
-   */
-  protected rerender(): this {
-    this.invalidate();
-    return this.render();
-  }
-
-  /**
    * Invalidates the canvas by emptying it
    */
   protected invalidate(): void {
@@ -188,12 +188,6 @@ export abstract class Canvas {
     } else {
       this.ctx.clearRect(0, 0, this.width, this.height);
     }
-  }
-
-  /**
-   * Changes the cursor displayed on the canvas
-   */
-  protected changeCursor(cursor: Cursor): void {
   }
 
   protected zoomCanvas(newZoom: number, x?: number, y?: number) {
@@ -212,6 +206,23 @@ export abstract class Canvas {
     this._offsetX += dx;
     this._offsetY += dy;
     this.rerender();
+  }
+
+  /**
+   * Converts global coordinates to element based coordinates
+   */
+  protected getElementCoordinates(target: DiagramElement<any>): [number, number] {
+    let element: DiagramElement<any> | null = target;
+    let x = 0, y = 0;
+    do {
+      if (element instanceof Shape) {
+        x += element.bounds.x;
+        y += element.bounds.y;
+      }
+      element = element.owningElement;
+    } while (element);
+
+    return [x, y];
   }
 
   /**
