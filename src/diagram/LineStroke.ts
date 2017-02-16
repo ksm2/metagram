@@ -99,4 +99,24 @@ export class LineStroke extends Element {
   calculateDistanceToPoint(point: Point): number {
     return this._lines.reduce((previous, current) => Math.min(previous, current.calculateDistanceToPoint(point)), Infinity);
   }
+
+  /**
+   * Returns the nearest line to a given point
+   * @param point The point to look the nearest path for
+   * @returns The index of the nearest line
+   */
+  getNearestLine(point: Point): number {
+    const dd = new Map<Line, number>();
+    const nearestLines = this._lines.slice().sort((line1, line2) => {
+      if (!dd.has(line1)) dd.set(line1, line1.calculateDistanceToPoint(point));
+      if (!dd.has(line2)) dd.set(line2, line2.calculateDistanceToPoint(point));
+
+      const d1 = dd.get(line1)!;
+      const d2 = dd.get(line2)!;
+
+      return d1 - d2;
+    });
+
+    return this._lines.indexOf(nearestLines[0]);
+  }
 }

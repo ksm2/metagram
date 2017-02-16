@@ -106,6 +106,7 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     // Extract a new waypoint
     if (!this._isMoving && this.selectedElements.size < 2 && this._mouseDownElement instanceof Edge) {
+      this._isMoving = true;
       this.extractNewEdgeWaypoint(this._mouseDownElement, offsetX, offsetY);
       return;
     }
@@ -157,9 +158,13 @@ export class HTML5Canvas extends InteractiveCanvas {
    * @param py Y position
    */
   private extractNewEdgeWaypoint(edge: Edge<any>, px: number, py: number) {
-    this._isMoving = true;
     const [x, y] = this.snapToGrid(px, py);
-    edge.waypoint.push(new Point(x, y));
+    const point = new Point(x, y);
+
+    // Calculate nearest line segment to add the point there
+    const index = edge.waylines.getNearestLine(point);
+    edge.waypoint.splice(index, 0, point);
+
     this.updateHandles(edge);
     this.rerender();
   }
