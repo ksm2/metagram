@@ -59,11 +59,11 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   createHandles(canvas: Canvas): Handle[] {
     const handles = [];
     for (let d = 0; d < 8; d += 1) {
-      const [x, y] = Directions.rect(this.bounds, d);
-      const handle = new Handle(x, y);
+      const handlePosition = Directions.rect(this.bounds, d);
+      const handle = new Handle(this, handlePosition);
       handle.cursor = Directions.cursor(d);
       handle.on('move', (p: Point) => {
-        this.handleMoved(d, p.x, p.y);
+        this.onHandleMoved(d, p.x, p.y);
       });
       handles[d] = handle;
     }
@@ -101,7 +101,7 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     this.bounds.y += dy;
   }
 
-  handleMoved(d: number, newX: number, newY: number) {
+  onHandleMoved(d: number, newX: number, newY: number) {
     const { x, y } = this.bounds;
     if (d >= Directions.SOUTH_WEST && d <= Directions.NORTH_WEST) {
       this.bounds.width += x - newX;

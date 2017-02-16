@@ -1,36 +1,20 @@
 import { DiagramElement } from './DiagramElement';
 import { ModelElement } from '../models/uml/ModelElement';
 import { Canvas } from '../canvas/Canvas';
-import { Attribute } from '../decorators/index';
 import { Point } from './Point';
 
 export class Handle extends DiagramElement<ModelElement> {
-  private _x: number;
-  private _y: number;
+  private _attachedTo: Point;
 
-  constructor(x: number = 100, y: number = 100) {
+  constructor(owner: DiagramElement<any>, attachedTo: Point) {
     super();
-    this._x = x;
-    this._y = y;
+    this.owningElement = owner;
+    this._attachedTo = attachedTo;
     this.cursor = 'default';
   }
 
-  @Attribute({ type: Number })
-  get x(): number {
-    return this._x;
-  }
-
-  set x(value: number) {
-    this._x = value;
-  }
-
-  @Attribute({ type: Number })
-  get y(): number {
-    return this._y;
-  }
-
-  set y(value: number) {
-    this._y = value;
+  get attachedTo(): Point {
+    return this._attachedTo;
   }
 
   render(canvas: Canvas): void {
@@ -45,12 +29,12 @@ export class Handle extends DiagramElement<ModelElement> {
   }
 
   containsPoint(px: number, py: number): boolean {
-    const { x, y } = this;
+    const { x, y } = this._attachedTo;
     return x - 4.5 <= px && px <= x + 4.5 && y - 4.5 <= py && py <= y + 4.5;
   }
 
   drawRect(ctx: CanvasRenderingContext2D) {
-    const { x, y } = this;
+    const { x, y } = this._attachedTo;
     ctx.beginPath();
     ctx.rect(x - 4.5, y - 4.5, 9, 9);
     ctx.fill();
@@ -58,8 +42,8 @@ export class Handle extends DiagramElement<ModelElement> {
   }
 
   move(dx: number, dy: number): void {
-    this.x += dx;
-    this.y += dy;
-    this.emit('move', new Point(this.x, this.y));
+    this._attachedTo.x += dx;
+    this._attachedTo.y += dy;
+    this.emit('move', this._attachedTo);
   }
 }

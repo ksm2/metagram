@@ -109,28 +109,29 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   }
 
   createHandles(canvas: Canvas): Handle[] {
-    const lines = this.waylines.lines;
+    const lines = this.waylines;
 
-    const handle = new Handle(lines[0].x1, lines[0].y1);
-    handle.on('move', (p: Point) => {
+    const sourceHandle = new Handle(this, lines.from);
+    sourceHandle.on('move', (p: Point) => {
       this._source = p;
     });
 
-    const handles = [handle];
-    const lastIndex = lines.length - 1;
-    for (let i = 0; i <= lastIndex; i += 1) {
-      const line = lines[i];
-      const handle = new Handle(line.x2, line.y2);
+    const handles = [sourceHandle];
+    for (let point of this._waypoint) {
+      const handle = new Handle(this, point);
       handle.on('move', (p: Point) => {
-        if (i == lastIndex) {
-          this._target = p;
-        } else {
-          this._waypoint[i] = p;
-        }
+        point.x = p.x;
+        point.y = p.y;
       });
 
       handles.push(handle);
     }
+
+    const targetHandle = new Handle(this, lines.to);
+    targetHandle.on('move', (p: Point) => {
+      this._target = p;
+    });
+    handles.push(targetHandle);
 
     return handles;
   }

@@ -3,6 +3,7 @@ import { DiagramElement } from '../diagram/DiagramElement';
 import { Edge } from '../diagram/Edge';
 import { Point } from '../diagram/Point';
 import { InteractiveCanvas } from './InteractiveCanvas';
+import { Handle } from '../diagram/Handle';
 
 enum MouseButtons {
   LEFT = 1,
@@ -21,7 +22,7 @@ export class HTML5Canvas extends InteractiveCanvas {
   private _isMoving: boolean;
   private _startedX: number;
   private _startedY: number;
-  private _mouseDownElement: DiagramElement<any> | null;
+  private _clickedElement: DiagramElement<any> | null;
 
   get width(): number {
     return this._element.width;
@@ -40,6 +41,7 @@ export class HTML5Canvas extends InteractiveCanvas {
     element.addEventListener('mousedown', event => this.onMouseDown(event));
     element.addEventListener('mouseup'  , event => this.onMouseUp(event));
     element.addEventListener('mousemove', event => this.onMouseMove(event));
+    element.addEventListener('contextmenu', event => this.onContextMenu(event));
     element.addEventListener('mousewheel', event => this.onMouseWheelScroll(event.wheelDeltaY, event.offsetX, event.offsetY));
     element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheelScroll(-event.detail, event.offsetX, event.offsetY));
 
@@ -60,7 +62,7 @@ export class HTML5Canvas extends InteractiveCanvas {
     this._isMoving = false;
     this._startedX = offsetX / this.zoom;
     this._startedY = offsetY / this.zoom;
-    this._mouseDownElement = this.getElementByPosition(offsetX, offsetY);
+    this._clickedElement = this.getElementByPosition(offsetX, offsetY);
   }
 
   /**
@@ -69,24 +71,20 @@ export class HTML5Canvas extends InteractiveCanvas {
   onMouseUp(event: MouseEvent): void {
     if (this._isMoving) return;
 
-    const { offsetX, offsetY, shiftKey } = event;
+    const { offsetX, offsetY, button } = event;
     const element = this.getElementByPosition(offsetX, offsetY);
 
-    // Clear selection first
-    if (!shiftKey) {
-      this.clearSelection();
+    switch (button) {
+      case 0:
+        this.onLeftClick(element, event);
+        break;
+      case 1:
+        this.onMiddleClick(element, event);
+        break;
+      case 2:
+        this.onRightClick(element, event);
+        break;
     }
-
-    // Add or remove specific element
-    if (element) {
-      if (shiftKey && this.isSelected(element)) {
-        this.deleteSelection(element);
-      } else {
-        this.addSelection(element);
-      }
-    }
-
-    this.rerender();
   }
 
   /**
@@ -105,9 +103,9 @@ export class HTML5Canvas extends InteractiveCanvas {
     let dy = (offsetY / this.zoom) - this._startedY;
 
     // Extract a new waypoint
-    if (!this._isMoving && this.selectedElements.size < 2 && this._mouseDownElement instanceof Edge) {
+    if (!this._isMoving && this.selectedElements.size < 2 && this._clickedElement instanceof Edge) {
       this._isMoving = true;
-      this.extractNewEdgeWaypoint(this._mouseDownElement, offsetX, offsetY);
+      this.extractNewEdgeWaypoint(this._clickedElement, offsetX, offsetY);
       return;
     }
 
@@ -126,13 +124,21 @@ export class HTML5Canvas extends InteractiveCanvas {
     this._isMoving = true;
     this._startedX += dx;
     this._startedY += dy;
-    if (this.selectedElements.size < 2 && this._mouseDownElement) {
-      this._mouseDownElement.move(dx, dy);
+    if (this.selectedElements.size < 2 && this._clickedElement) {
+      this._clickedElement.move(dx, dy);
     } else {
       this.selectedElements.forEach(element => this.moveElement(element, dx, dy));
     }
 
     this.rerender();
+  }
+
+  /**
+   * Handles context menu events on the element
+   */
+  onContextMenu(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   /**
@@ -143,6 +149,62 @@ export class HTML5Canvas extends InteractiveCanvas {
       this.zoomIn(x, y);
     } else {
       this.zoomOut(x, y);
+    }
+  }
+
+  /**
+   * Handles a left click in the canvas
+   *
+   * @param clickedElement The clicked element or null, if no element was hit
+   * @param event The mouse event triggered
+   */
+  onLeftClick(clickedElement: DiagramElement<any> | null, event: MouseEvent) {
+    const shiftKey = event.shiftKey;
+
+    // Clear selection first
+    if (!shiftKey) {
+      this.clearSelection();
+    }
+
+    // Add or remove specific element
+    if (clickedElement) {
+      if (shiftKey && this.isSelected(clickedElement)) {
+        this.deleteSelection(clickedElement);
+      } else {
+        this.addSelection(clickedElement);
+      }
+    }
+
+    this.rerender();
+  }
+
+  /**
+   * Handles a middle click in the canvas
+   *
+   * @param clickedElement The clicked element or null, if no element was hit
+   * @param event The mouse event triggered
+   */
+  onMiddleClick(clickedElement: DiagramElement<any> | null, event: MouseEvent) {
+  }
+
+  /**
+   * Handles a right click in the canvas
+   *
+   * @param clickedElement The clicked element or null, if no element was hit
+   * @param event The mouse event triggered
+   */
+  onRightClick(clickedElement: DiagramElement<any> | null, event: MouseEvent) {
+    // Remove waypoint on right click
+    if (clickedElement instanceof Handle) {
+      const handleOwner = clickedElement.owningElement;
+      if (handleOwner instanceof Edge) {
+        const number = handleOwner.waypoint.indexOf(clickedElement.attachedTo);
+        if (number >= 0) {
+          handleOwner.waypoint.splice(number, 1);
+          this.updateHandles(handleOwner);
+          this.rerender();
+        }
+      }
     }
   }
 

@@ -1,5 +1,7 @@
 import { Cursor } from './Cursor';
 import { Bounds } from './Bounds';
+import { Point } from './Point';
+
 export class Directions {
   static NORTH = 0;
   static NORTH_EAST = 1;
@@ -14,9 +16,9 @@ export class Directions {
   private static ys = [0, 0, 1, 2, 2, 2, 1, 0];
   private static cursors = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw'];
 
-  static rect(bounds: Bounds, direction: number) {
+  static rect(bounds: Bounds, direction: number): Point {
     const { x, y, width, height } = bounds;
-    return [x + width * Directions.xs[direction] / 2, y + height * Directions.ys[direction] / 2];
+    return new Point(x + width * Directions.xs[direction] / 2, y + height * Directions.ys[direction] / 2);
   }
 
   static cursor(direction: number): Cursor {

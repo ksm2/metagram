@@ -17,6 +17,14 @@ export class LineStroke extends Element {
     this._lines = value;
   }
 
+  get from(): Point {
+    return this._lines[0].from;
+  }
+
+  get to(): Point {
+    return this._lines[this._lines.length - 1].to;
+  }
+
   get svgPath(): string {
     let x = this._lines[0].from.x, y = this._lines[0].from.y;
 
