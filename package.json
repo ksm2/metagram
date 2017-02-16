@@ -25,8 +25,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf dest",
     "prebuild": "npm run clean",
-    "build": "npm run build:model && npm run copy:assets && npm run copy:package",
-    "build:model": "tsc -p .",
+    "build": "npm run build:typescript && npm run copy:assets && npm run copy:package",
+    "build:typescript": "tsc -p tsconfig.json",
+    "watch": "npm run watch:typescript",
+    "watch:typescript": "tsc -p tsconfig.watch.json",
     "start": "http-server out",
     "copy:package": "copyfiles -u 1 ./src/package.json ./dest",
     "copy:assets": "copyfiles ./public/**/* ./dest"
