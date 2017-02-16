@@ -76,10 +76,10 @@ export abstract class InteractiveCanvas extends Canvas {
   addSelection(element: DiagramElement<any>): void {
     this._selectedElements.add(element);
     // Add handles of the element
-    this._handles.set(element, element.createHandles(this));
+    this.updateHandles(element);
     element.select();
     element.on('resize', () => {
-      this._handles.set(element, element.createHandles(this));
+      this.updateHandles(element);
     });
   }
 
@@ -105,7 +105,7 @@ export abstract class InteractiveCanvas extends Canvas {
     element.move(dx, dy);
     // Update the element's handles
     if (this._handles.has(element)) {
-      this._handles.set(element, element.createHandles(this));
+      this.updateHandles(element);
     }
   }
 
@@ -147,5 +147,14 @@ export abstract class InteractiveCanvas extends Canvas {
    */
   zoom100(x?: number, y?: number) {
     this.zoomCanvas(1, x, y);
+  }
+
+  /**
+   * Updates the handles of a given element
+   *
+   * @param element The element who's handles are updated
+   */
+  protected updateHandles(element: DiagramElement<any>) {
+    this._handles.set(element, element.createHandles(this));
   }
 }

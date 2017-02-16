@@ -93,8 +93,8 @@ export class HTML5Canvas extends InteractiveCanvas {
    * Handles when a mouse is moved over the canvas
    */
   onMouseMove(event: MouseEvent): void {
-    const { offsetX, offsetY } = event;
-    const leftButtonIsPressed = event.buttons & MouseButtons.LEFT;
+    const { offsetX, offsetY, buttons } = event;
+    const leftButtonIsPressed = buttons & MouseButtons.LEFT;
 
     if (!leftButtonIsPressed) {
       this.hoveredElement = this.getElementByPosition(offsetX, offsetY);
@@ -106,12 +106,7 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     // Extract a new waypoint
     if (!this._isMoving && this.selectedElements.size < 2 && this._mouseDownElement instanceof Edge) {
-      this._isMoving = true;
-      const x = Math.round(offsetX / this.gridX) * this.gridX;
-      const y = Math.round(offsetY / this.gridY) * this.gridY;
-      this._mouseDownElement.waypoint.push(new Point(x, y));
-      this.rerender();
-
+      this.extractNewEdgeWaypoint(this._mouseDownElement, offsetX, offsetY);
       return;
     }
 
@@ -124,14 +119,17 @@ export class HTML5Canvas extends InteractiveCanvas {
     }
 
     // Round to raster
-    dx = Math.round(dx / this.gridX) * this.gridX;
-    dy = Math.round(dy / this.gridY) * this.gridY;
+    [dx, dy] = this.snapToGrid(dx, dy);
     if (!dx && !dy) return;
 
     this._isMoving = true;
     this._startedX += dx;
     this._startedY += dy;
-    this.selectedElements.forEach(element => this.moveElement(element, dx, dy));
+    if (this.selectedElements.size < 2 && this._mouseDownElement) {
+      this._mouseDownElement.move(dx, dy);
+    } else {
+      this.selectedElements.forEach(element => this.moveElement(element, dx, dy));
+    }
 
     this.rerender();
   }
@@ -149,5 +147,34 @@ export class HTML5Canvas extends InteractiveCanvas {
 
   protected changeCursor(cursor: Cursor): void {
     this._element.style.cursor = cursor;
+  }
+
+  /**
+   * Extracts a new edge waypoint
+   *
+   * @param edge The edge who receives the new waypoint
+   * @param px X position
+   * @param py Y position
+   */
+  private extractNewEdgeWaypoint(edge: Edge<any>, px: number, py: number) {
+    this._isMoving = true;
+    const [x, y] = this.snapToGrid(px, py);
+    edge.waypoint.push(new Point(x, y));
+    this.updateHandles(edge);
+    this.rerender();
+  }
+
+  /**
+   * Snaps coordinates to the grid
+   *
+   * @param px Original X coordinate
+   * @param py Original Y coordinate
+   * @returns Coordinates on the grid
+   */
+  private snapToGrid(px: number, py: number): [number, number] {
+    return [
+      Math.round(px / this.gridX) * this.gridX,
+      Math.round(py / this.gridY) * this.gridY,
+    ];
   }
 }
