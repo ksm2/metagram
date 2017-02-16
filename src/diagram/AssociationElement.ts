@@ -1,22 +1,24 @@
 import { Association } from '../models';
-import { arrow, ArrowTipKind } from '../rendering';
 import { Canvas } from '../canvas/Canvas';
 import { Color } from './Color';
 import { Edge } from './Edge';
 import { Line } from './Line';
 import { AggregationKind } from '../models/uml/AggregationKind';
 import { Property } from '../models/uml/Property';
+import { LineTip } from '../rendering/LineTip';
 
 export class AssociationElement extends Edge<Association> {
-  renderLineSegment(canvas: Canvas, line: Line, index: number, isLast: boolean): void {
+  renderLineSegment(canvas: Canvas, line: Line, index: number, lastIndex: number): void {
     const isFirst = index === 0;
+    const isLast = index === lastIndex;
+    const isMid = index === ~~(lastIndex / 2);
     let stroke = this.stroke;
     if (this.hovered) {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
     // Check arrow tips and end labels
-    let [arrowStart, arrowEnd] = [ArrowTipKind.NONE, ArrowTipKind.NONE];
+    let [arrowStart, arrowEnd] = [LineTip.NONE, LineTip.NONE];
     if (isFirst) {
       arrowStart = this.getArrowTip(this.modelElement.memberEnd[0]);
     }
@@ -24,22 +26,28 @@ export class AssociationElement extends Edge<Association> {
       arrowEnd = this.getArrowTip(this.modelElement.memberEnd[1]);
     }
 
-    arrow(canvas.ctx, line, stroke, arrowEnd, arrowStart, this.font, this.label, isFirst ? this.sourceLabel : null, isLast ? this.targetLabel : null);
+    canvas.drawLine(line, stroke, arrowEnd, arrowStart);
+    if (isMid && this.label)
+      canvas.labelLine(line, this.font, this.label);
+    if (isFirst && this.sourceLabel)
+      canvas.labelLine(line, this.font, this.sourceLabel, 25);
+    if (isLast && this.targetLabel)
+      canvas.labelLine(line, this.font, this.targetLabel, -25);
   }
 
-  private getArrowTip(property: Property): ArrowTipKind {
+  private getArrowTip(property: Property): LineTip {
     if (this.modelElement.ownedEnd.has(property)) {
-      return ArrowTipKind.PEAK;
+      return LineTip.PEAK;
     }
 
     const aggregation = property.aggregation;
     switch (aggregation) {
       case AggregationKind.COMPOSITE:
-        return ArrowTipKind.DIAMOND_FILLED;
+        return LineTip.DIAMOND_FILLED;
       case AggregationKind.SHARED:
-        return ArrowTipKind.DIAMOND;
+        return LineTip.DIAMOND;
       default:
-        return ArrowTipKind.NONE;
+        return LineTip.NONE;
     }
   }
 }

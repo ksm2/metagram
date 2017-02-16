@@ -1,9 +1,9 @@
 import { PackageImport } from '../models';
-import { arrow, ArrowTipKind } from '../rendering';
 import { Canvas } from '../canvas/Canvas';
 import { Color } from './Color';
 import { Edge } from './Edge';
 import { Line } from './Line';
+import { LineTip } from '../rendering/LineTip';
 
 export class PackageImportElement extends Edge<PackageImport> {
   constructor() {
@@ -18,6 +18,6 @@ export class PackageImportElement extends Edge<PackageImport> {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
-    arrow(canvas.ctx, line, stroke, ArrowTipKind.NONE, ArrowTipKind.NONE, this.font, this.modelElement && this.modelElement.name);
+    canvas.drawLine(line, stroke, LineTip.NONE, LineTip.NONE);
   }
 }

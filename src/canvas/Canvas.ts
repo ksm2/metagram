@@ -2,9 +2,13 @@ import { DiagramElement } from '../diagram';
 import { ModelElement } from '../models';
 import { Diagram } from '../diagram';
 import { Cursor } from '../diagram/Cursor';
-import { Handle } from '../diagram/Handle';
 import { Bounds } from '../diagram/Bounds';
 import { Point } from '../diagram/Point';
+import { Line } from '../diagram/Line';
+import { LineHelper } from '../rendering/LineHelper';
+import { LineTip } from '../rendering/LineTip';
+import { Stroke } from '../diagram/Stroke';
+import { Font } from '../diagram/Font';
 
 export interface ResolveFunction<M extends ModelElement> {
   (m: M): DiagramElement<M>;
@@ -133,6 +137,14 @@ export abstract class Canvas {
   clipRectangle(bounds: Bounds) {
     this.drawRectangle(bounds);
     this.ctx.clip();
+  }
+
+  drawLine(line: Line, stroke: Stroke, sourceTip: LineTip, targetTip: LineTip) {
+    LineHelper.drawLine(this.ctx, line, stroke, sourceTip, targetTip);
+  }
+
+  labelLine(line: Line, font: Font, label: string, position: number = 0) {
+    LineHelper.labelLine(this.ctx, line, font, label, position);
   }
 
   /**

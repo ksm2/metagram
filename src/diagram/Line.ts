@@ -52,6 +52,10 @@ export class Line extends Element {
     return this._to.y - this._from.y;
   }
 
+  get angle(): number {
+    return Math.atan2(this.dy, this.dx);
+  }
+
   get length(): number {
     return Math.hypot(this.dx, this.dy);
   }

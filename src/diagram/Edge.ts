@@ -104,7 +104,7 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     const lastIndex = lines.length - 1;
     for (let i = 0; i <= lastIndex; i += 1) {
       const line = lines[i];
-      this.renderLineSegment(canvas, line, i, i === lastIndex);
+      this.renderLineSegment(canvas, line, i, lastIndex);
     }
   }
 
@@ -159,5 +159,5 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     }
   }
 
-  protected abstract renderLineSegment(canvas: Canvas, line: Line, index: number, isLastSegment: boolean): void;
+  protected abstract renderLineSegment(canvas: Canvas, line: Line, index: number, lastIndex: number): void;
 }

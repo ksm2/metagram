@@ -85,19 +85,20 @@ export class BresenhamService {
     let doCheckShape1 = true;
     let lx1: number = x1;
     let ly1: number = y1;
-    let oldX: number | undefined, oldY: number | undefined;
 
     let x = x1, y = y1, e = dx - dy;
+    let oldX = x, oldY = y;
+
     while (x !== x2 || y !== y2) {
       if (doCheckShape1 && !touches1(x, y)) {
-        lx1 = x;
-        ly1 = y;
+        lx1 = sx > 0 ? x : oldX;
+        ly1 = sy > 0 ? y : oldY;
         doCheckShape1 = false;
       }
 
       if (lx1 && ly1 && touches2(x, y)) {
-        const lx2 = oldX || x;
-        const ly2 = oldY || y;
+        const lx2 = sx > 0 ? x : oldX;
+        const ly2 = sy > 0 ? y : oldY;
         return Line.fromCoordinates({ x1: lx1, x2: lx2, y1: ly1, y2: ly2 });
       }
 
