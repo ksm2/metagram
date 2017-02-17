@@ -7,16 +7,16 @@ import { Line } from '../diagram/Line';
 import { LineHelper } from '../rendering/LineHelper';
 import { LineTip } from '../rendering/LineTip';
 import { Stroke } from '../diagram/Stroke';
-import { Font } from '../diagram/Font';
+import { Baseline, Font, TextAlign } from '../diagram/Font';
 import { Shape } from '../diagram/Shape';
+import { Fill } from '../diagram/Fill';
 
 export interface ResolveFunction<M extends ModelElement> {
   (m: M): DiagramElement<M>;
 }
 
 export abstract class Canvas {
-  ctx: CanvasRenderingContext2D;
-
+  protected _ctx: CanvasRenderingContext2D;
   private _grid: boolean;
   private _gridX: number;
   private _gridY: number;
@@ -27,8 +27,7 @@ export abstract class Canvas {
   private _diagram: Diagram | null;
 
   constructor(ctx: CanvasRenderingContext2D) {
-    this.ctx = ctx;
-
+    this._ctx = ctx;
     this._grid = false;
     this._gridX = 25;
     this._gridY = 25;
@@ -112,25 +111,80 @@ export abstract class Canvas {
    * Pushes the canvas stack
    */
   pushCanvasStack() {
-    this.ctx.save();
+    this._ctx.save();
   }
 
   /**
    * Pops the canvas stack
    */
   popCanvasStack() {
-    this.ctx.restore();
+    this._ctx.restore();
   }
 
   translate(offset: Point) {
-    this.ctx.translate(offset.x, offset.y);
+    this._ctx.translate(offset.x, offset.y);
   }
 
   /**
    * Draws a rectangle within the given bounds
    */
   drawRectangle(bounds: Bounds) {
-    this.ctx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    this._ctx.rect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+
+  /**
+   * Fills a rectangle
+   *
+   * @param bounds The rectangle's bounds
+   * @param fill The fill to use
+   */
+  fillRectangle(bounds: Bounds, fill: Fill) {
+    fill.apply(this._ctx);
+    this._ctx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+
+  /**
+   * Strokes a rectangle
+   *
+   * @param bounds The rectangle's outer bounds
+   * @param stroke The fill to use
+   */
+  strokeRectangle(bounds: Bounds, stroke: Stroke) {
+    stroke.apply(this._ctx);
+    bounds = bounds.inset(stroke.width / 2);
+    this._ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+  }
+
+  /**
+   * Draws a text
+   *
+   * @param text The text to draw
+   * @param x The text X position
+   * @param y The text Y position
+   * @param font The font to use
+   * @param maxWidth The maximum width of the text
+   * @param hAlign The horizontal alignment
+   * @param vAlign The vertical alignment
+   */
+  drawText(text: string, x: number, y: number, font: Font, maxWidth?: number, hAlign: TextAlign = 'left', vAlign: Baseline = 'middle') {
+    font.apply(this._ctx, hAlign, vAlign);
+    this._ctx.fillText(text, x, y, maxWidth);
+  }
+
+  /**
+   * Measures the width of a text
+   *
+   * @param text The text to measure
+   * @param font The font to use
+   * @returns {number}
+   */
+  measureTextWidth(text: string, font: Font): number {
+    this._ctx.save();
+    font.apply(this._ctx);
+    const { width } = this._ctx.measureText(text);
+    this._ctx.restore();
+
+    return width;
   }
 
   /**
@@ -138,15 +192,26 @@ export abstract class Canvas {
    */
   clipRectangle(bounds: Bounds) {
     this.drawRectangle(bounds);
-    this.ctx.clip();
+    this._ctx.clip();
+  }
+
+  /**
+   * Draws a simple line from four coordinates
+   */
+  drawSimpleLine(x1: number, y1: number, x2: number, y2: number, stroke: Stroke) {
+    stroke.apply(this._ctx);
+    this._ctx.beginPath();
+    this._ctx.moveTo(x1, y1);
+    this._ctx.lineTo(x2, y2);
+    this._ctx.stroke();
   }
 
   drawLine(line: Line, stroke: Stroke, sourceTip: LineTip, targetTip: LineTip) {
-    LineHelper.drawLine(this.ctx, line, stroke, sourceTip, targetTip);
+    LineHelper.drawLine(this._ctx, line, stroke, sourceTip, targetTip);
   }
 
   labelLine(line: Line, font: Font, label: string, position: number = 0) {
-    LineHelper.labelLine(this.ctx, line, font, label, position);
+    LineHelper.labelLine(this._ctx, line, font, label, position);
   }
 
   /**
@@ -180,8 +245,8 @@ export abstract class Canvas {
   protected render(): this {
     this.pushCanvasStack();
     if (this._grid) this.renderGrid();
-    this.ctx.scale(this.zoom, this.zoom);
-    this.ctx.translate(this._offsetX, this._offsetY);
+    this._ctx.scale(this.zoom, this.zoom);
+    this._ctx.translate(this._offsetX, this._offsetY);
     if (this._diagram) this._diagram.render(this);
     this.popCanvasStack();
     return this;
@@ -192,10 +257,10 @@ export abstract class Canvas {
    */
   protected invalidate(): void {
     if (this._background) {
-      this.ctx.fillStyle = this._background;
-      this.ctx.fillRect(0, 0, this.width, this.height);
+      this._ctx.fillStyle = this._background;
+      this._ctx.fillRect(0, 0, this.width, this.height);
     } else {
-      this.ctx.clearRect(0, 0, this.width, this.height);
+      this._ctx.clearRect(0, 0, this.width, this.height);
     }
   }
 
@@ -229,12 +294,12 @@ export abstract class Canvas {
    * Renders a grid in the background
    */
   private renderGrid(): void {
-    const { ctx, width, height } = this;
+    const { _ctx, width, height } = this;
 
     // Set grid properties
-    ctx.save();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+    _ctx.save();
+    _ctx.lineWidth = 1;
+    _ctx.strokeStyle = 'rgba(0,0,0,0.2)';
 
     // Render vertical lines
     let dx = this._gridX * this._zoom;
@@ -242,10 +307,10 @@ export abstract class Canvas {
 
     const sx = (this._offsetX * this._zoom) % dx;
     for (let x = sx; x < width - 1; x += dx) {
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
+      _ctx.beginPath();
+      _ctx.moveTo(x, 0);
+      _ctx.lineTo(x, height);
+      _ctx.stroke();
     }
 
     // Render horizontal lines
@@ -254,11 +319,11 @@ export abstract class Canvas {
 
     const sy = (this._offsetY * this._zoom) % dy;
     for (let y = sy; y < height - 1; y += dy) {
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(width, y);
-      ctx.stroke();
+      _ctx.beginPath();
+      _ctx.moveTo(0, y);
+      _ctx.lineTo(width, y);
+      _ctx.stroke();
     }
-    ctx.restore();
+    _ctx.restore();
   }
 }

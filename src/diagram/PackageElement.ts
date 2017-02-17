@@ -1,44 +1,41 @@
 import { Package } from '../models/uml/Package';
 import { Shape } from './Shape';
-import { measureTextWidth, rect, strokeRect, text, fillRect } from '../rendering';
 import { Canvas } from '../canvas/Canvas';
 import { Fill } from './Fill';
 import { Color } from './Color';
 import { Class } from '../decorators/index';
+import { Bounds } from './Bounds';
 
 @Class('PackageElement', Shape)
 export class PackageElement extends Shape<Package> {
-  render(canvas: Canvas): void {
-    const { ctx } = canvas;
-
-    ctx.save();
-    ctx.translate(this.bounds.x, this.bounds.y);
+  renderContents(canvas: Canvas): void {
     const { modelElement, selected, hovered } = this;
-    const { width, height } = this.bounds;
+    const { width } = this.bounds;
 
     const stereotypeFont = this.font;
     const stereotypeText = `«${this.modelElement.stereotype || 'Package'}»`;
     const nameFont = this.font;
     const nameText = modelElement.name || '';
 
-    const nameWidth = measureTextWidth(ctx, nameText, nameFont);
-    const stereotypeWidth = measureTextWidth(ctx, stereotypeText, stereotypeFont);
+    const nameWidth = canvas.measureTextWidth(nameText, nameFont);
+    const stereotypeWidth = canvas.measureTextWidth(stereotypeText, stereotypeFont);
 
     const labelWidth = Math.min(width, Math.max(nameWidth, stereotypeWidth, 100) + 25);
     const labelHeight = 50;
-    rect(ctx, { width: labelWidth, height: labelHeight }, this.stroke, this.fill);
-    text(ctx, stereotypeText, { x: 10, y: 16 }, stereotypeFont);
-    text(ctx, nameText, { x: 10, y: 34 }, nameFont);
+    const labelBounds = new Bounds(0, 0, labelWidth, labelHeight);
+    canvas.fillRectangle(labelBounds, this.fill);
+    canvas.strokeRectangle(labelBounds, this.stroke);
+    canvas.drawText(stereotypeText, 10, 16, stereotypeFont);
+    canvas.drawText(nameText, 10, 34, nameFont);
 
-    strokeRect(ctx, { width, height }, this.stroke);
+    canvas.strokeRectangle(this.bounds.dimension, this.stroke);
 
-    if (selected || hovered) fillRect(ctx, { width: labelWidth, height: labelHeight }, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
+    // Draw a black overlay if selected or hovered
+    if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
 
     // Render contained elements
     for (let element of this.ownedElements) {
       element.render(canvas);
     }
-
-    ctx.restore();
   }
 }

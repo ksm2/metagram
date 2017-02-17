@@ -1,15 +1,12 @@
 import { Classifier } from '../models/uml/Classifier';
-import { Property, VisibilityKind, Operation, Parameter, ParameterDirectionKind } from '../models';
+import { Property, VisibilityKind, Operation, Parameter } from '../models';
 import { Shape } from './Shape';
-import { rect, text, measureTextWidth, fillRect } from '../rendering';
 import { Canvas } from '../canvas/Canvas';
 import { Cursor } from './Cursor';
 import { Color } from './Color';
 import { Fill } from './Fill';
 import { Class as Clazz } from '../decorators';
 import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
-import { Bounds } from './Bounds';
-import { DiagramElement } from './DiagramElement';
 
 const ENTRY_Y_OFFSET = 25 / 2;
 
@@ -18,46 +15,41 @@ export class ClassifierElement extends Shape<Classifier> {
   cursor: Cursor = 'pointer';
   selectedProperty: Property | null = null;
 
-  render(canvas: Canvas): void {
-    const { ctx } = canvas;
-
-    ctx.save();
-    ctx.translate(this.bounds.x, this.bounds.y);
-
+  renderContents(canvas: Canvas): void {
     // Draw background
     const { width, height } = this.bounds;
     const { modelElement, selected, hovered } = this;
 
-    rect(ctx, { width, height }, this.stroke, this.fill);
+    canvas.fillRectangle(this.bounds.dimension, this.fill);
+    canvas.strokeRectangle(this.bounds.dimension, this.stroke);
 
     // Draw label
     const x = width / 2;
     let offsetY = 16;
     if (modelElement.stereotype) {
-      text(ctx, `«${modelElement.stereotype}»`, { x, y: offsetY }, this.font, width, 'center');
+      canvas.drawText(`«${modelElement.stereotype}»`, x, offsetY, this.font, width, 'center');
       offsetY += 18;
     }
-    text(ctx, modelElement.name || '', { x, y: offsetY }, this.font.boldFont, width, 'center');
+    canvas.drawText(modelElement.name || '', x, offsetY, this.font.boldFont, width, 'center');
 
     offsetY += 16;
 
     // Draw attributes
     const attributes = modelElement.ownedAttributes;
     if (attributes.size) {
-      offsetY = this.renderSeparator(ctx, offsetY);
-      offsetY = this.renderProperties(attributes, ctx, offsetY);
+      offsetY = this.renderSeparator(canvas, offsetY);
+      offsetY = this.renderProperties(attributes, canvas, offsetY);
     }
 
     // Draw operations
     const operations = modelElement.ownedOperations;
     if (operations.size) {
-      offsetY = this.renderSeparator(ctx, offsetY);
-      offsetY = this.renderOperations(operations, ctx, offsetY);
+      offsetY = this.renderSeparator(canvas, offsetY);
+      offsetY = this.renderOperations(operations, canvas, offsetY);
     }
 
-    if (selected || hovered) fillRect(ctx, { width, height }, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
-
-    ctx.restore();
+    // Draw a black overlay if selected or hovered
+    if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
   }
 
   onMouseMove(x: number, y: number, i: InteractiveCanvas) {
@@ -95,25 +87,25 @@ export class ClassifierElement extends Shape<Classifier> {
     }
   }
 
-  private renderProperties(attributes: Set<Property>, ctx: CanvasRenderingContext2D, offsetY: number): number {
+  private renderProperties(attributes: Set<Property>, canvas: Canvas, offsetY: number): number {
     let y = offsetY;
 
     for (let attribute of attributes) {
-      y = this.renderProperty(attribute, ctx, y);
+      y = this.renderProperty(attribute, canvas, y);
     }
 
     return y;
   }
 
-  private renderProperty(attribute: Property, ctx: CanvasRenderingContext2D, offsetY: number) {
-    const visibilityWidth = measureTextWidth(ctx, '~', this.font);
+  private renderProperty(attribute: Property, canvas: Canvas, offsetY: number) {
+    const visibilityWidth = canvas.measureTextWidth('~', this.font);
     const sepX = 5;
     let x = 10, y = offsetY;
     y += ENTRY_Y_OFFSET;
 
     // Draw visibility
     if (attribute.visibility) {
-      text(ctx, this.getVisibilitySymbol(attribute.visibility), { x: x + visibilityWidth / 2, y }, this.font, visibilityWidth, 'center');
+      canvas.drawText(this.getVisibilitySymbol(attribute.visibility), x + visibilityWidth / 2, y, this.font, visibilityWidth, 'center');
     }
     x += visibilityWidth;
     x += sepX;
@@ -124,22 +116,22 @@ export class ClassifierElement extends Shape<Classifier> {
     if (this.selectedProperty == attribute) {
       font = font.boldFont;
     }
-    text(ctx, attributeName, { x, y }, font);
-    x += measureTextWidth(ctx, attributeName, font);
+    canvas.drawText(attributeName, x, y, font);
+    x += canvas.measureTextWidth(attributeName, font);
 
     // Draw type
     if (attribute.type) {
       const label = ': ' + attribute.type.name;
-      text(ctx, label, { x, y }, this.font);
-      x += measureTextWidth(ctx, label, this.font);
+      canvas.drawText(label, x, y, this.font);
+      x += canvas.measureTextWidth(label, this.font);
     }
 
     // Draw default value
     if (attribute.defaultValue) {
       x += sepX;
       const label = '= ' + attribute.defaultValue;
-      text(ctx, label, { x, y }, this.font);
-      x += measureTextWidth(ctx, label, this.font);
+      canvas.drawText(label, x, y, this.font);
+      x += canvas.measureTextWidth(label, this.font);
     }
 
     y += ENTRY_Y_OFFSET;
@@ -147,10 +139,10 @@ export class ClassifierElement extends Shape<Classifier> {
     return y;
   }
 
-  private renderOperations(operations: Set<Operation>, ctx: CanvasRenderingContext2D, offsetY: number): number {
+  private renderOperations(operations: Set<Operation>, canvas: Canvas, offsetY: number): number {
     const offsetX = 10;
     const sepX = 5;
-    const visibilityWidth = measureTextWidth(ctx, '~', this.font);
+    const visibilityWidth = canvas.measureTextWidth('~', this.font);
     let y = offsetY;
 
     for (let operation of operations) {
@@ -159,30 +151,30 @@ export class ClassifierElement extends Shape<Classifier> {
 
       // Draw visibility
       if (operation.visibility) {
-        text(ctx, this.getVisibilitySymbol(operation.visibility), { x: x + visibilityWidth/2, y }, this.font, visibilityWidth, 'center');
+        canvas.drawText(this.getVisibilitySymbol(operation.visibility), x + visibilityWidth/2, y, this.font, visibilityWidth, 'center');
       }
       x += visibilityWidth;
       x += sepX;
 
       // Draw name
       const nameText = operation.name + '(';
-      text(ctx, nameText, { x, y }, this.font);
-      x += measureTextWidth(ctx, nameText, this.font);
+      canvas.drawText(nameText, x, y, this.font);
+      x += canvas.measureTextWidth(nameText, this.font);
 
       if (operation.ownedParameters.size) {
-        x = this.renderParameters([...operation.ownedParameters], ctx, x, y);
+        x = this.renderParameters([...operation.ownedParameters], canvas, x, y);
       }
 
       // Draw closing parenthesis
-      text(ctx, ')', { x, y }, this.font);
-      x += measureTextWidth(ctx, ')', this.font);
+      canvas.drawText(')', x, y, this.font);
+      x += canvas.measureTextWidth(')', this.font);
 
       // Draw return type
       if (operation.type) {
         x += sepX;
         const label = ':' + operation.type.name;
-        text(ctx, label, { x, y }, this.font);
-        x += measureTextWidth(ctx, label, this.font);
+        canvas.drawText(label, x, y, this.font);
+        x += canvas.measureTextWidth(label, this.font);
       }
 
       y += ENTRY_Y_OFFSET;
@@ -191,7 +183,7 @@ export class ClassifierElement extends Shape<Classifier> {
     return y;
   }
 
-  private renderParameters(parameters: Parameter[], ctx: CanvasRenderingContext2D, offsetX: number, y: number): number {
+  private renderParameters(parameters: Parameter[], canvas: Canvas, offsetX: number, y: number): number {
     let x = offsetX;
     const sepX = 5;
 
@@ -200,54 +192,48 @@ export class ClassifierElement extends Shape<Classifier> {
 
       // Draw comma
       if (i > 0) {
-        text(ctx, ',', { x, y }, this.font);
-        x += measureTextWidth(ctx, ',', this.font);
+        canvas.drawText(',', x, y, this.font);
+        x += canvas.measureTextWidth(',', this.font);
         x += sepX;
       }
 
       // Draw type
       if (parameter.direction) {
         const label = parameter.direction.toLowerCase();
-        text(ctx, label, { x, y }, this.font);
-        x += measureTextWidth(ctx, label, this.font);
+        canvas.drawText(label, x, y, this.font);
+        x += canvas.measureTextWidth(label, this.font);
         x += sepX;
       }
 
       // Draw name
-      text(ctx, parameter.name || '', { x, y }, this.font);
-      x += measureTextWidth(ctx, parameter.name || '', this.font);
+      canvas.drawText(parameter.name || '', x, y, this.font);
+      x += canvas.measureTextWidth(parameter.name || '', this.font);
 
       // Draw type
       if (parameter.type) {
         x += sepX;
         const label = ':' + parameter.type.name;
-        text(ctx, label, { x, y }, this.font);
-        x += measureTextWidth(ctx, label, this.font);
+        canvas.drawText(label, x, y, this.font);
+        x += canvas.measureTextWidth(label, this.font);
       }
 
       // Draw default value
       if (parameter.defaultValue) {
         x += sepX;
         const label = '= ' + parameter.defaultValue;
-        text(ctx, label, { x, y }, this.font);
-        x += measureTextWidth(ctx, label, this.font);
+        canvas.drawText(label, x, y, this.font);
+        x += canvas.measureTextWidth(label, this.font);
       }
     }
 
     return x;
   }
 
-  private renderSeparator(ctx: CanvasRenderingContext2D, offsetY: number): number {
-    let y = offsetY;
-    y += .5;
-    this.stroke.apply(ctx);
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(this.bounds.width, y);
-    ctx.stroke();
-    y += .5;
+  private renderSeparator(canvas: Canvas, offsetY: number): number {
+    const y = offsetY + .5;
+    canvas.drawSimpleLine(0, y, this.bounds.width, y, this.stroke);
 
-    return y;
+    return offsetY + 1;
   }
 
   private getVisibilitySymbol(kind: string): string {

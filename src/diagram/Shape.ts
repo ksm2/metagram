@@ -48,7 +48,6 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   render(canvas: Canvas): void {
     canvas.pushCanvasStack();
     canvas.translate(this._bounds.topLeft);
-    canvas.clipRectangle(this._bounds.dimension.bounds);
     this.renderContents(canvas);
     for (let child of this.ownedElements) {
       child.render(canvas);

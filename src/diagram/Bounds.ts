@@ -1,7 +1,6 @@
 import { Element } from '../models/Element';
 import { Class, Attribute } from '../decorators';
 import { Point } from './Point';
-import { Dimension } from './Dimension';
 
 @Class('Bounds', Element)
 export class Bounds extends Element {
@@ -62,8 +61,8 @@ export class Bounds extends Element {
     return new Point(this._x, this._y);
   }
 
-  get dimension(): Dimension {
-    return new Dimension(this._width, this._height);
+  get dimension(): Bounds {
+    return new Bounds(0, 0, this._width, this._height);
   }
 
   /**

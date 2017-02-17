@@ -58,8 +58,8 @@ export abstract class InteractiveCanvas extends Canvas {
   protected render(): this {
     super.render();
     this.pushCanvasStack();
-    this.ctx.scale(this.zoom, this.zoom);
-    this.ctx.translate(this.offsetX, this.offsetY);
+    this._ctx.scale(this.zoom, this.zoom);
+    this._ctx.translate(this.offsetX, this.offsetY);
     this._handles.forEach(handles => handles.forEach(handle => handle.render(this)));
     this.popCanvasStack();
     return this;

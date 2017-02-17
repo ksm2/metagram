@@ -1,9 +1,6 @@
 import { Element } from '../models/Element';
 import { Class, Attribute } from '../decorators';
 import { Point } from './Point';
-import { Canvas } from '../canvas/Canvas';
-import { Shape } from './Shape';
-import { destructPoint } from '../rendering/Geometry';
 
 @Class('Line', Element)
 export class Line extends Element {

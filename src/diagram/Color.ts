@@ -8,8 +8,11 @@ export class Color extends Style {
 
   static readonly PRINT = Color.fromRGB(55, 58, 60);
   static readonly RED = Color.fromRGB(255, 0, 0);
+  static readonly YELLOW = Color.fromRGB(255, 255, 0);
   static readonly GREEN = Color.fromRGB(0, 255, 0);
+  static readonly CYAN = Color.fromRGB(0, 255, 255);
   static readonly BLUE = Color.fromRGB(0, 0, 255);
+  static readonly MAGENTA = Color.fromRGB(255, 0, 255);
   static readonly WHITE = Color.fromRGB(255, 255, 255);
   static readonly BLACK = Color.fromRGB(0, 0, 0);
 

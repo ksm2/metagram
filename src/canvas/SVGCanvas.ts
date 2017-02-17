@@ -2,7 +2,7 @@ import C2S = require('canvas2svg');
 import { Canvas } from './Canvas';
 
 export class SVGCanvas extends Canvas {
-  ctx: C2S;
+  _ctx: C2S;
   private _width: number;
   private _height: number;
 
@@ -22,7 +22,7 @@ export class SVGCanvas extends Canvas {
   }
 
   get svg(): string {
-    return this.ctx.getSerializedSvg(true);
+    return this._ctx.getSerializedSvg(true);
   }
 
   resize(width: number, height: number): this {

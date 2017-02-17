@@ -2,8 +2,6 @@ import { Line } from '../diagram/Line';
 import { Shape } from '../diagram/Shape';
 import { Point } from '../diagram/Point';
 import { Edge } from '../diagram/Edge';
-import { Canvas } from '../canvas/Canvas';
-import { destructPoint } from '../rendering/Geometry';
 import { LineStroke } from '../diagram/LineStroke';
 
 export class BresenhamService {
@@ -53,7 +51,7 @@ export class BresenhamService {
   }
 
   connectShapeWithPoint(shape: Shape<any>, point: Point): Line {
-    const [x1, y1] = destructPoint(shape.center());
+    const [x1, y1] = shape.center().getTuple();
     const [x2, y2] = [point.x, point.y];
     const touches1 = (x: number, y: number) => shape.containsPoint(x, y);
     const touches2 = (x: number, y: number) => false;
@@ -63,7 +61,7 @@ export class BresenhamService {
 
   connectPointWithShape(point: Point, shape: Shape<any>): Line {
     const [x1, y1] = [point.x, point.y];
-    const [x2, y2] = destructPoint(shape.center());
+    const [x2, y2] = shape.center().getTuple();
     const touches1 = (x: number, y: number) => false;
     const touches2 = (x: number, y: number) => shape.containsPoint(x, y);
 
@@ -71,8 +69,8 @@ export class BresenhamService {
   }
 
   connectShapeWithShape(el1: Shape<any>, el2: Shape<any>): Line {
-    const [x1, y1] = destructPoint(el1.center());
-    const [x2, y2] = destructPoint(el2.center());
+    const [x1, y1] = el1.center().getTuple();
+    const [x2, y2] = el2.center().getTuple();
     const touches1 = (x: number, y: number) => el1.containsPoint(x, y);
     const touches2 = (x: number, y: number) => el2.containsPoint(x, y);
 

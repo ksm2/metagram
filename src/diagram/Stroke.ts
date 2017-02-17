@@ -3,10 +3,18 @@ import { Style } from './Style';
 import { Color } from './Color';
 
 export class Stroke extends Element {
-  style: Style = Color.BLACK;
-  width: number = 2;
-  cap: string = 'butt';
-  dashOffset: number = 0;
+  style: Style;
+  width: number;
+  cap: string;
+  dashOffset: number;
+
+  constructor(style: Style = Color.BLACK, width: number = 2, cap: string = 'butt', dashOffset: number = 0) {
+    super();
+    this.style = style;
+    this.width = width;
+    this.cap = cap;
+    this.dashOffset = dashOffset;
+  }
 
   clone(): Stroke {
     const cl = new Stroke();
