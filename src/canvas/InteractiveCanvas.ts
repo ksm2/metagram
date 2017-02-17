@@ -1,11 +1,11 @@
-import { Canvas } from './Canvas';
+import { AbstractCanvas } from './AbstractCanvas';
 import { Handle } from '../diagram/Handle';
 import { DiagramElement } from '../diagram/DiagramElement';
 import { Cursor } from '../diagram/Cursor';
 
 const zoomLevels = [1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 2/3, 1, 3/2, 2, 3, 4, 5, 6, 7, 8];
 
-export abstract class InteractiveCanvas extends Canvas {
+export abstract class InteractiveCanvas extends AbstractCanvas {
   private _selectedElements: Set<DiagramElement<any>>;
   private _handles: Map<DiagramElement<any>, Handle[]>;
   private _hoveredElement: DiagramElement<any> | null;

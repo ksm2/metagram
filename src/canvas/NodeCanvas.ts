@@ -1,7 +1,7 @@
 import fs = require('fs');
 import path = require('path');
 import Canvas = require('canvas');
-import { Canvas as BaseCanvas } from './Canvas';
+import { AbstractCanvas } from './AbstractCanvas';
 import { WriteStream } from 'fs';
 
 export enum ImageFormat {
@@ -11,7 +11,7 @@ export enum ImageFormat {
   JPEG
 }
 
-export class NodeCanvas extends BaseCanvas {
+export class NodeCanvas extends AbstractCanvas {
   private _canvas: Canvas;
   private _vectorFormat?: string;
 
