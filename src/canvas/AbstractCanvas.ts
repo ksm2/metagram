@@ -202,8 +202,8 @@ export abstract class AbstractCanvas implements Canvas {
     this._ctx.stroke();
   }
 
-  drawLine(line: Line, stroke: Stroke, sourceTip: LineTip, targetTip: LineTip) {
-    LineHelper.drawLine(this._ctx, line, stroke, sourceTip, targetTip);
+  drawLine(line: Line, stroke: Stroke, targetTip: LineTip, sourceTip: LineTip) {
+    LineHelper.drawLine(this._ctx, line, stroke, targetTip, sourceTip);
   }
 
   labelLine(line: Line, font: Font, label: string, position: number = 0) {

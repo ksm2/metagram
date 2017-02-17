@@ -74,9 +74,9 @@ export interface Canvas {
   drawSimpleLine(x1: number, y1: number, x2: number, y2: number, stroke: Stroke): void;
 
   /**
-   * Draws a cmplex line
+   * Draws a complex line
    */
-  drawLine(line: Line, stroke: Stroke, sourceTip: LineTip, targetTip: LineTip): void;
+  drawLine(line: Line, stroke: Stroke, targetTip: LineTip, sourceTip: LineTip): void;
 
   /**
    * Labels a line

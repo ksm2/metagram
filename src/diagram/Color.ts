@@ -24,8 +24,13 @@ export class Color extends Style {
     return Color.fromRGBA(red, green, blue, 1);
   }
 
-  toCanvasStyle(): string|CanvasGradient|CanvasPattern {
+  toCanvasStyle(): string | CanvasGradient | CanvasPattern {
     const { red, green, blue, alpha } = this;
     return `rgba(${red},${green},${blue},${alpha})`;
+  }
+
+  toHex(): string {
+    const { red, green, blue, alpha } = this;
+    return `#${red.toString(16)}${green.toString(16)}${blue.toString(16)}`;
   }
 }

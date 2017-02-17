@@ -20,6 +20,10 @@ export class Font extends Element {
     this._italic = italic;
   }
 
+  get clone(): Font {
+    return new Font(this._family, this._size, this._style, this._bold, this._italic);
+  }
+
   get boldFont(): Font {
     return new Font(this._family, this._size, this._style, true, this._italic);
   }

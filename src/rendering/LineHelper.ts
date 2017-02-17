@@ -44,7 +44,7 @@ export class LineHelper {
   /**
    * Labels a given line
    */
-  static labelLine(ctx: CanvasRenderingContext2D, line: Line, font: Font, label: string, position: number) {
+  static labelLine(ctx: CanvasRenderingContext2D, line: Line, font: Font, label: string, position: number, usePdfFix: boolean = false) {
     const { angle, length } = line;
     const flip = angle > Math.PI / 2 || angle < -Math.PI / 2;
     const textAngle = flip ? Math.PI : 0;
@@ -55,7 +55,11 @@ export class LineHelper {
 
     LineHelper.calculateTextPos(ctx, flip, length, position);
     ctx.rotate(textAngle);
-    ctx.fillText(label, 0, -10);
+    let x = 0;
+    if (usePdfFix) {
+      x -= ctx.textAlign == 'right' ? ctx.measureText(label).width : ctx.textAlign == 'center' ? ctx.measureText(label).width / 2 : 0;
+    }
+    ctx.fillText(label, x, usePdfFix ? -20 : -10);
 
     ctx.restore();
   }
@@ -152,6 +156,7 @@ export class LineHelper {
     ctx.moveTo(-18.32, 10);
     ctx.lineTo(-2, 0);
     ctx.lineTo(-18.32, -10);
+    ctx.lineTo(-18.32, 10);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();

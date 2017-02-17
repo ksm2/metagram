@@ -5,6 +5,7 @@ import { Point } from '../diagram/Point';
 import { InteractiveCanvas } from './InteractiveCanvas';
 import { Handle } from '../diagram/Handle';
 import { SVGCanvas } from './SVGCanvas';
+import { PDFCanvas } from './PDFCanvas';
 
 enum MouseButtons {
   LEFT = 1,
@@ -240,6 +241,10 @@ export class HTML5Canvas extends InteractiveCanvas {
     // No diagram present?
     if (!this.diagram) return 'data:,';
 
+    if (format == 'application/pdf') {
+      return this.generatePDF(zoom);
+    }
+
     if (format == 'image/svg+xml') {
       return this.generateSVG(zoom);
     }
@@ -286,6 +291,24 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     // Extract blob
     return 'data:image/svg+xml,' + canvas.svg;
+  }
+
+  /**
+   * Generates an SVG data URL from the canvas
+   *
+   * @param zoom The zoom factor used for the generated image
+   * @returns A data URL covering the image data
+   */
+  generatePDF(zoom: number): string {
+    // No diagram present?
+    const diagram = this.diagram;
+    if (!diagram) return 'data:,';
+
+    // Draw the contents
+    const canvas = new PDFCanvas(diagram, zoom);
+    const stream = canvas.generatePDF();
+
+    return `data:application/pdf;base64,${btoa(stream)}`;
   }
 
   /**
