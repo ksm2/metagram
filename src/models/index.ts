@@ -8,6 +8,7 @@ export { Element } from './Element';
 export { Enumeration } from './uml/Enumeration';
 export { EnumerationLiteral } from './uml/EnumerationLiteral';
 export { Generalization } from './uml/Generalization';
+export { Metamodel } from './Metamodel';
 export { ModelElement } from './uml/ModelElement';
 export { Operation } from './uml/Operation';
 export { Package } from './uml/Package';

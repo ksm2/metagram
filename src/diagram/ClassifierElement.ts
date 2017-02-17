@@ -9,6 +9,9 @@ import { Class as Clazz } from '../decorators';
 import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
 import defineProperty = Reflect.defineProperty;
 import { Stroke } from './Stroke';
+import { Metamodel } from '../models/Metamodel';
+import { Bounds } from './Bounds';
+import { Type } from '../models/uml/Type';
 
 const ENTRY_Y_OFFSET = 25 / 2;
 
@@ -17,6 +20,10 @@ export class ClassifierElement extends Shape<Classifier> {
   cursor: Cursor = 'pointer';
   selectedProperty: Property | null = null;
   caret: boolean = false;
+  newProperty: Property | null = null;
+  typeEditing: boolean = false;
+  typeComplete: string = '';
+  typeCompleteSelection: string = '';
 
   renderContents(canvas: Canvas): void {
     // Draw background
@@ -59,6 +66,7 @@ export class ClassifierElement extends Shape<Classifier> {
     super.deselect();
     this.caret = false;
     this.selectedProperty = null;
+    this.typeEditing = false;
   }
 
   onMouseMove(x: number, y: number, i: InteractiveCanvas) {
@@ -83,26 +91,99 @@ export class ClassifierElement extends Shape<Classifier> {
   }
 
   onKeyPress(key: string, i: InteractiveCanvas) {
-    if (!this.selectedProperty) return super.onKeyPress(key, i);
+    if (!this.selectedProperty) {
+      // Enter is pressed?
+      if (key == 'Enter') {
+        this.newProperty = new Property();
+        this.newProperty.name = '';
+        this.modelElement.ownedAttributes.add(this.newProperty);
+        this.selectedProperty = this.newProperty;
+      }
 
-    // A single letter is pressed?
-    if (key.length == 1) {
-      this.selectedProperty.name += key;
+      return super.onKeyPress(key, i);
+    }
+
+    // Switch mode
+    if (key == 'Tab' && this.newProperty) {
+      this.typeEditing = !this.typeEditing;
+      this.caret = true;
       return;
     }
 
-    // Enter is pressed?
-    if (key == 'Enter') {
-      const property = this.selectedProperty;
-      i.deleteSelection(this);
-      property.emit('rename', property);
-    }
+    if (this.typeEditing) {
+      const hints = this.getTypeHints();
 
-    // A backspace is pressed?
-    if (key == 'Backspace' && this.selectedProperty.name) {
-      const name = this.selectedProperty.name;
-      this.selectedProperty.name = name.substr(0, name.length - 1);
-      return;
+      // A single letter is pressed?
+      if (key.length == 1) {
+        const old = this.typeComplete;
+        this.typeComplete += key;
+        if (!hints.length) {
+          this.typeComplete = old;
+          return;
+        }
+
+        if (hints.indexOf(this.typeCompleteSelection) < 0)
+          this.typeCompleteSelection = hints[0];
+
+        return;
+      }
+
+      // Select next type from list
+      if (key == 'ArrowDown') {
+        const index = hints.indexOf(this.typeCompleteSelection);
+        if (index > -1 && index < hints.length - 1)
+          this.typeCompleteSelection = hints[index + 1];
+        return;
+      }
+
+      // Select last type from list
+      if (key == 'ArrowUp') {
+        const index = hints.indexOf(this.typeCompleteSelection);
+        if (index > 0)
+          this.typeCompleteSelection = hints[index - 1];
+        return;
+      }
+
+      // Enter is pressed?
+      if (key == 'Enter') {
+        const type = Metamodel.getModel('/db/' + this.typeCompleteSelection) as Type;
+        this.selectedProperty.type = type;
+        this.typeComplete = type.name || '';
+        const property = this.selectedProperty;
+        i.deleteSelection(this);
+        this.emit('addProperty', property);
+        this.newProperty = null;
+        return;
+      }
+
+      // A backspace is pressed?
+      if (key == 'Backspace') {
+        this.selectedProperty.type = null;
+        this.typeComplete = '';
+      }
+    } else {
+      // A single letter is pressed?
+      if (key.length == 1) {
+        this.selectedProperty.name += key;
+        return;
+      }
+
+      // Enter is pressed?
+      if (key == 'Enter') {
+        const property = this.selectedProperty;
+        i.deleteSelection(this);
+        property.emit('rename', property);
+        return;
+      }
+
+      // A backspace is pressed?
+      if (key == 'Backspace') {
+        if (this.selectedProperty.name) {
+          const name = this.selectedProperty.name;
+          this.selectedProperty.name = name.substr(0, name.length - 1);
+          return;
+        }
+      }
     }
   }
 
@@ -139,15 +220,31 @@ export class ClassifierElement extends Shape<Classifier> {
     x += canvas.measureTextWidth(attributeName, this.font);
 
     // Draw caret
-    if (this.selectedProperty == attribute && this.caret) {
-      canvas.drawSimpleLine(x, y - 10, x, y + 10, new Stroke(this.font.style, 1));
+    if (this.selectedProperty == attribute && this.caret && !this.typeEditing) {
+      this.drawCaret(canvas, x, y);
+    }
+
+    canvas.drawText(': ', x, y, this.font);
+    x += canvas.measureTextWidth(': ', this.font);
+
+    if (this.selectedProperty == attribute && this.typeEditing) {
+      this.drawCompletion(canvas, x, y + ENTRY_Y_OFFSET);
     }
 
     // Draw type
     if (attribute.type) {
-      const label = ': ' + attribute.type.name;
+      const label = attribute.type.name || '';
       canvas.drawText(label, x, y, this.font);
       x += canvas.measureTextWidth(label, this.font);
+    } else if (this.typeComplete) {
+      canvas.drawText(this.typeComplete, x, y, this.font);
+      x += canvas.measureTextWidth(this.typeComplete, this.font);
+    }
+
+    // Draw caret
+    if (this.selectedProperty == attribute && this.typeEditing) {
+      if (this.caret)
+        this.drawCaret(canvas, x, y);
     }
 
     // Draw default value
@@ -165,6 +262,10 @@ export class ClassifierElement extends Shape<Classifier> {
     }
 
     return y;
+  }
+
+  private drawCaret(canvas: Canvas, x: number, y: number) {
+    canvas.drawSimpleLine(x, y - 10, x, y + 10, new Stroke(this.font.style, 1));
   }
 
   private renderOperations(operations: Set<Operation>, canvas: Canvas, offsetY: number): number {
@@ -257,6 +358,25 @@ export class ClassifierElement extends Shape<Classifier> {
     return x;
   }
 
+  private drawCompletion(canvas: Canvas, x: number, y: number) {
+    const entries = this.getTypeHints();
+    const bounds = new Bounds(x, y, 300, entries.length * ENTRY_Y_OFFSET * 2);
+    canvas.fillRectangle(bounds, Fill.fromStyle(Color.YELLOW));
+    canvas.strokeRectangle(bounds, new Stroke(Color.BLACK, 1));
+
+    for (let entry of entries) {
+      let font = this.font.clone;
+      if (entry == this.typeCompleteSelection) {
+        canvas.fillRectangle(new Bounds(x, y, 300, ENTRY_Y_OFFSET * 2), Fill.fromStyle(Color.BLACK));
+        font.style = Color.WHITE;
+      }
+
+      y += ENTRY_Y_OFFSET;
+      canvas.drawText(entry, x + 5, y, font, 290);
+      y += ENTRY_Y_OFFSET;
+    }
+  }
+
   private renderSeparator(canvas: Canvas, offsetY: number): number {
     const y = offsetY + .5;
     canvas.drawSimpleLine(0, y, this.bounds.width, y, this.stroke);
@@ -272,5 +392,11 @@ export class ClassifierElement extends Shape<Classifier> {
       case VisibilityKind.PUBLIC: return '+';
       default: return '';
     }
+  }
+
+  private getTypeHints(): string[] {
+    return Array.from(Metamodel.getModels())
+      .map((model: any) => model.name)
+      .filter(it => it.indexOf(this.typeComplete) === 0);
   }
 }

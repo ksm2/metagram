@@ -74,6 +74,7 @@ export class HTML5Canvas extends InteractiveCanvas {
   }
 
   onKeyPress(event: KeyboardEvent): void {
+    event.preventDefault();
     this.selectedElements.forEach(element => element.onKeyPress(event.key, this));
     this.rerender();
   }
