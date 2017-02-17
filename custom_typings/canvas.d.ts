@@ -51,3 +51,12 @@ declare module 'canvas' {
 
   export = Canvas;
 }
+
+declare module 'canvas2svg' {
+  class C2S extends CanvasRenderingContext2D {
+    constructor(width: number, height: number);
+    getSerializedSvg(numbers?: boolean): string;
+  }
+
+  export = C2S;
+}

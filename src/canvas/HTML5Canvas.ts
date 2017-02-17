@@ -4,6 +4,7 @@ import { Edge } from '../diagram/Edge';
 import { Point } from '../diagram/Point';
 import { InteractiveCanvas } from './InteractiveCanvas';
 import { Handle } from '../diagram/Handle';
+import { SVGCanvas } from './SVGCanvas';
 
 enum MouseButtons {
   LEFT = 1,
@@ -239,6 +240,10 @@ export class HTML5Canvas extends InteractiveCanvas {
     // No diagram present?
     if (!this.diagram) return 'data:,';
 
+    if (format == 'image/svg+xml') {
+      return this.generateSVG(zoom);
+    }
+
     // Retrieve diagram dimensions
     const dim = this.diagram.calcAllElementBounds();
 
@@ -258,6 +263,29 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     // Extract data URL
     return el.toDataURL(format, quality);
+  }
+
+  /**
+   * Generates an SVG data URL from the canvas
+   *
+   * @param zoom The zoom factor used for the generated image
+   * @returns A data URL covering the image data
+   */
+  generateSVG(zoom: number): string {
+    // No diagram present?
+    if (!this.diagram) return 'data:,';
+
+    // Retrieve diagram dimensions
+    const dim = this.diagram.calcAllElementBounds();
+
+    // Draw the contents
+    const canvas = new SVGCanvas(zoom * dim.width, zoom * dim.height);
+    canvas.moveOffset(-dim.x, -dim.y);
+    canvas.zoom = zoom;
+    canvas.diagram = this.diagram;
+
+    // Extract blob
+    return 'data:image/svg+xml,' + canvas.svg;
   }
 
   /**

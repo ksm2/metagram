@@ -29,7 +29,6 @@ export class ClassifierElement extends Shape<Classifier> {
     const { modelElement, selected, hovered } = this;
 
     rect(ctx, { width, height }, this.stroke, this.fill);
-    ctx.clip();
 
     // Draw label
     const x = width / 2;

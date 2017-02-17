@@ -21,7 +21,8 @@ export class Stroke extends Element {
     ctx.strokeStyle = this.style.toCanvasStyle();
     ctx.lineWidth = this.width;
     ctx.lineCap = this.cap;
-    ctx.setLineDash(this.dashOffset === 0 ? [] : [this.dashOffset]);
+    if (ctx.setLineDash)
+      ctx.setLineDash(this.dashOffset === 0 ? [] : [this.dashOffset]);
   }
 
   withStyle(style: Style) {

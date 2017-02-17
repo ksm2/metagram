@@ -157,7 +157,6 @@ export abstract class Canvas {
    */
   abstract resize(width: number, height: number): this;
 
-
   /**
    * Invalidates and renders the canvas
    */
@@ -165,6 +164,16 @@ export abstract class Canvas {
     this.invalidate();
     return this.render();
   }
+
+  /**
+   * Move the offset point of the canvas
+   */
+  moveOffset(dx: number, dy: number) {
+    this._offsetX += dx;
+    this._offsetY += dy;
+    this.rerender();
+  }
+
   /**
    * Renders the canvas
    */
@@ -197,15 +206,6 @@ export abstract class Canvas {
     const d = (oldZoom / newZoom - 1);
     this._zoom = newZoom;
     this.moveOffset(centerX * d, centerY * d);
-  }
-
-  /**
-   * Move the offset point of the canvas
-   */
-  protected moveOffset(dx: number, dy: number) {
-    this._offsetX += dx;
-    this._offsetY += dy;
-    this.rerender();
   }
 
   /**

@@ -14,19 +14,15 @@ export function rect(ctx: CanvasRenderingContext2D, rect: Rectangle, stroke: Str
  * Strokes a given rectangle with some stroke properties
  */
 export function strokeRect(ctx: CanvasRenderingContext2D, rect: Rectangle, stroke: Stroke) {
-  ctx.beginPath();
   stroke.apply(ctx);
   const hlw = stroke.width / 2;
-  ctx.rect((rect.x || 0) + hlw, (rect.y || 0) + hlw, rect.width - stroke.width, rect.height - stroke.width);
-  ctx.stroke();
+  ctx.strokeRect((rect.x || 0) + hlw, (rect.y || 0) + hlw, rect.width - stroke.width, rect.height - stroke.width);
 }
 
 /**
  * Fills a given rectangle with some fill properties
  */
 export function fillRect(ctx: CanvasRenderingContext2D, rect: Rectangle, fill: Fill) {
-  ctx.beginPath();
   fill.apply(ctx);
-  ctx.rect(rect.x || 0, rect.y || 0, rect.width, rect.height);
-  ctx.fill();
+  ctx.fillRect(rect.x || 0, rect.y || 0, rect.width, rect.height);
 }
