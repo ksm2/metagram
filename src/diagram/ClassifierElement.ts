@@ -7,6 +7,8 @@ import { Color } from './Color';
 import { Fill } from './Fill';
 import { Class as Clazz } from '../decorators';
 import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
+import defineProperty = Reflect.defineProperty;
+import { Stroke } from './Stroke';
 
 const ENTRY_Y_OFFSET = 25 / 2;
 
@@ -14,6 +16,7 @@ const ENTRY_Y_OFFSET = 25 / 2;
 export class ClassifierElement extends Shape<Classifier> {
   cursor: Cursor = 'pointer';
   selectedProperty: Property | null = null;
+  caret: boolean = false;
 
   renderContents(canvas: Canvas): void {
     // Draw background
@@ -52,8 +55,16 @@ export class ClassifierElement extends Shape<Classifier> {
     if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
   }
 
+  deselect() {
+    super.deselect();
+    this.caret = false;
+    this.selectedProperty = null;
+  }
+
   onMouseMove(x: number, y: number, i: InteractiveCanvas) {
     const prop = Math.floor((y - 33) / (ENTRY_Y_OFFSET * 2));
+
+    if (this.selected && this.selectedProperty) return;
 
     this.selectedProperty = null;
     if (prop >= 0) {
@@ -67,7 +78,8 @@ export class ClassifierElement extends Shape<Classifier> {
   }
 
   onMouseLeave(i: InteractiveCanvas) {
-    this.selectedProperty = null;
+    if (!this.selected)
+      this.selectedProperty = null;
   }
 
   onKeyPress(key: string, i: InteractiveCanvas) {
@@ -79,12 +91,23 @@ export class ClassifierElement extends Shape<Classifier> {
       return;
     }
 
+    // Enter is pressed?
+    if (key == 'Enter') {
+      const property = this.selectedProperty;
+      i.deleteSelection(this);
+      property.emit('rename', property);
+    }
+
     // A backspace is pressed?
     if (key == 'Backspace' && this.selectedProperty.name) {
       const name = this.selectedProperty.name;
       this.selectedProperty.name = name.substr(0, name.length - 1);
       return;
     }
+  }
+
+  onTick(time: number, i: InteractiveCanvas) {
+    this.caret = time % 2 == 1;
   }
 
   private renderProperties(attributes: Set<Property>, canvas: Canvas, offsetY: number): number {
@@ -112,12 +135,13 @@ export class ClassifierElement extends Shape<Classifier> {
 
     // Draw name
     const attributeName = attribute.name || '';
-    let font = this.font;
-    if (this.selectedProperty == attribute) {
-      font = font.boldFont;
+    canvas.drawText(attributeName, x, y, this.font);
+    x += canvas.measureTextWidth(attributeName, this.font);
+
+    // Draw caret
+    if (this.selectedProperty == attribute && this.caret) {
+      canvas.drawSimpleLine(x, y - 10, x, y + 10, new Stroke(this.font.style, 1));
     }
-    canvas.drawText(attributeName, x, y, font);
-    x += canvas.measureTextWidth(attributeName, font);
 
     // Draw type
     if (attribute.type) {
@@ -135,6 +159,10 @@ export class ClassifierElement extends Shape<Classifier> {
     }
 
     y += ENTRY_Y_OFFSET;
+
+    if (this.selectedProperty == attribute) {
+      canvas.drawSimpleLine(10, y, x, y, new Stroke(this.font.style, 1));
+    }
 
     return y;
   }

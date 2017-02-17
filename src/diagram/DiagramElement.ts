@@ -117,7 +117,7 @@ export class DiagramElement<M extends ModelElement> extends Element {
    *
    * @param x X position on element
    * @param y Y position on element
-   * @param i The interactive canvas which is accepts drawing commands
+   * @param i The interactive canvas which is accepting drawing commands
    */
   onMouseMove(x: number, y: number, i: InteractiveCanvas) {
   }
@@ -125,7 +125,7 @@ export class DiagramElement<M extends ModelElement> extends Element {
   /**
    * Called when the mouse is leaving the element
    *
-   * @param i The interactive canvas which is accepts drawing commands
+   * @param i The interactive canvas which is accepting drawing commands
    */
   onMouseLeave(i: InteractiveCanvas) {
   }
@@ -134,9 +134,18 @@ export class DiagramElement<M extends ModelElement> extends Element {
    * Called when a key is pressed on the element
    *
    * @param key The key being pressed
-   * @param i The interactive canvas which is accepts drawing commands
+   * @param i The interactive canvas which is accepting drawing commands
    */
   onKeyPress(key: string, i: InteractiveCanvas) {
+  }
+
+  /**
+   * Called when a key is pressed on the element
+   *
+   * @param time An integer representing the clock
+   * @param i The interactive canvas which is accepting drawing commands
+   */
+  onTick(time: number, i: InteractiveCanvas) {
   }
 
   /**

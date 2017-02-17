@@ -94,7 +94,7 @@ export class Element {
   /**
    * Emit a change on a property
    */
-  protected emit(key: string, newValue: any): void {
+  emit(key: string, newValue: any): void {
     let listeners = this._listeners.get(key) || [];
     listeners = listeners.concat(this._listeners.get('*') || []);
     for (let listener of listeners) {

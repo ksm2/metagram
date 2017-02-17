@@ -16,6 +16,8 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    * @param element The new element
    */
   set hoveredElement(element: DiagramElement<any> | null) {
+    if (this._hoveredElement == element) return;
+
     if (this._hoveredElement) {
       this._hoveredElement.hover(false);
       this._hoveredElement.onMouseLeave(this);

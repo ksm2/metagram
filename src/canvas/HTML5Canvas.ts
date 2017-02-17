@@ -56,6 +56,14 @@ export class HTML5Canvas extends InteractiveCanvas {
     element.addEventListener('mousewheel', event => this.onMouseWheelScroll(event.wheelDeltaY, event.offsetX, event.offsetY));
     element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheelScroll(-event.detail, event.offsetX, event.offsetY));
 
+    // Init clock
+    let clock = 0;
+    setInterval(() => {
+      this.selectedElements.forEach(element => element.onTick(clock, this));
+      clock += 1;
+      this.rerender();
+    }, 500);
+
     this._element = element;
   }
 

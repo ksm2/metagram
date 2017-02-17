@@ -17,6 +17,7 @@ export class ModelElement extends Element {
 
   set name(value: string | null) {
     this._name = value;
+    this.emit('name', value);
   }
 
   @Attribute({ type: VisibilityKind })
