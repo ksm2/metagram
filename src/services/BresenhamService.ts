@@ -87,7 +87,13 @@ export class BresenhamService {
     let x = x1, y = y1, e = dx - dy;
     let oldX = x, oldY = y;
 
-    while (x !== x2 || y !== y2) {
+    let [minX, maxX] = [x1, x2];
+    if (sx < 0) [minX, maxX] = [maxX, minX];
+
+    let [minY, maxY] = [y1, y2];
+    if (sy < 0) [minY, maxY] = [maxY, minY];
+
+    while (minX <= x && maxX >= x && minY <= y && maxY >= y) {
       if (doCheckShape1 && !touches1(x, y)) {
         lx1 = sx > 0 ? x : oldX;
         ly1 = sy > 0 ? y : oldY;
