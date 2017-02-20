@@ -66,7 +66,7 @@ export class DiagramElement<M extends ModelElement> extends Element {
    * Returns the element's top left point
    */
   get topLeft(): Point {
-    return new Point();;
+    return new Point();
   }
 
   render(canvas: Canvas): void {

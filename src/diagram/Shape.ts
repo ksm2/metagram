@@ -19,7 +19,10 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
 
   constructor() {
     super();
-    this._bounds.on('*', this.onBoundsChange.bind(this));
+    this._bounds.on('x', () => this.emit('resize', this._bounds));
+    this._bounds.on('y', () => this.emit('resize', this._bounds));
+    this._bounds.on('width', () => this.emit('resize', this._bounds));
+    this._bounds.on('height', () => this.emit('resize', this._bounds));
   }
 
   @Attribute({ type: Fill })
@@ -78,14 +81,6 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
   }
 
   /**
-   * Draws the outline of this solid element
-   */
-  outline(ctx: CanvasRenderingContext2D): void {
-    ctx.beginPath();
-    ctx.rect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height);
-  }
-
-  /**
    * Returns the center point of this element
    */
   center(): Point {
@@ -94,17 +89,30 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     return new Point(x, y);
   }
 
+  /**
+   * @override
+   */
   containsPoint(px: number, py: number): boolean {
     const { x, y, width, height } = this.bounds;
     return px >= x && px < x + width && py >= y && py < y + height;
   }
 
+  /**
+   * @override
+   */
   move(dx: number, dy: number): void {
     this.bounds.x += dx;
     this.bounds.y += dy;
   }
 
-  onHandleMoved(d: number, newX: number, newY: number) {
+  /**
+   * Called when the handle is moved
+   *
+   * @param d The direction of the handle
+   * @param newX Handle's new X coordinate
+   * @param newY Handle's new Y coordinate
+   */
+  private onHandleMoved(d: number, newX: number, newY: number) {
     const { x, y } = this.bounds;
     if (d >= Directions.SOUTH_WEST && d <= Directions.NORTH_WEST) {
       this.bounds.width += x - newX;
@@ -120,9 +128,5 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     if (d >= Directions.SOUTH_EAST && d <= Directions.SOUTH_WEST) {
       this.bounds.height = newY - y;
     }
-  }
-
-  onBoundsChange() {
-    this.emit('resize', this.bounds);
   }
 }

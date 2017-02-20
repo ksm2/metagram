@@ -1,13 +1,13 @@
-import { Class, Attribute } from '../decorators';
+import { EventEmitter } from 'events';
+import { Class } from '../decorators';
 import { ModelElement } from './uml/ModelElement';
-import { strictEqual } from 'assert';
 
 export interface ElementListener {
   (newValue: any, key: string): void;
 }
 
 @Class('Element')
-export class Element {
+export class Element extends EventEmitter {
   private _contents = new Set<Element>();
   private _origin: string | undefined;
   private _ID: string | undefined;
@@ -16,16 +16,6 @@ export class Element {
 
   get contents(): Set<Element> {
     return this._contents;
-  }
-
-  on(key: string, listener: ElementListener) {
-    const listeners = this._listeners.get(key) || [];
-    listeners.push(listener);
-    this._listeners.set(key, listeners);
-  }
-
-  off(key: string) {
-    this._listeners.delete(key);
   }
 
   /**
@@ -89,16 +79,5 @@ export class Element {
    */
   getInstanceOf(): ModelElement | undefined {
     return this._instanceOf;
-  }
-
-  /**
-   * Emit a change on a property
-   */
-  emit(key: string, newValue: any): void {
-    let listeners = this._listeners.get(key) || [];
-    listeners = listeners.concat(this._listeners.get('*') || []);
-    for (let listener of listeners) {
-      listener(newValue, key);
-    }
   }
 }

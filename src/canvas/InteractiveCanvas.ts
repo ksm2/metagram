@@ -2,12 +2,15 @@ import { AbstractCanvas } from './AbstractCanvas';
 import { Handle } from '../diagram/Handle';
 import { DiagramElement } from '../diagram/DiagramElement';
 import { Cursor } from '../diagram/Cursor';
+import { Shape } from '../diagram/Shape';
+import { Bounds } from '../diagram/Bounds';
 
 const zoomLevels = [1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 2/3, 1, 3/2, 2, 3, 4, 5, 6, 7, 8];
 
 export abstract class InteractiveCanvas extends AbstractCanvas {
   private _selectedElements: Set<DiagramElement<any>>;
   private _handles: Map<DiagramElement<any>, Handle[]>;
+  private _resizeListeners: Map<DiagramElement<any>, Function>;
   private _hoveredElement: DiagramElement<any> | null;
 
   /**
@@ -50,6 +53,7 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
     super(ctx);
 
     this._handles = new Map();
+    this._resizeListeners = new Map();
     this._selectedElements = new Set();
     this._hoveredElement = null;
   }
@@ -97,11 +101,14 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
   addSelection(element: DiagramElement<any>): void {
     this._selectedElements.add(element);
     // Add handles of the element
-    this.updateHandles(element);
     element.select();
-    element.on('resize', () => {
+
+    const onElementResize = () => {
       this.updateHandles(element);
-    });
+    };
+    this._resizeListeners.set(element, onElementResize);
+    element.addListener('resize', onElementResize);
+    onElementResize();
   }
 
   /**
@@ -111,7 +118,7 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
     // Remove handles
     this._handles.delete(element);
     element.deselect();
-    element.off('resize');
+    element.removeListener('resize', this._resizeListeners.get(element)!);
     return this._selectedElements.delete(element);
   }
 
@@ -141,11 +148,9 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    * Clears the selection of all canvas elements
    */
   clearSelection() {
-    this._handles.clear();
-    this._selectedElements.forEach((element) => {
-      element.deselect();
-      element.off('resize');
-    });
+    for (let element of this._selectedElements) {
+      this.deleteSelection(element);
+    }
     this._selectedElements.clear();
   }
 

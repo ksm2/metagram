@@ -6,6 +6,7 @@
   "dependencies": {
     "canvas": "^1.6.2",
     "canvas2svg": "^1.0.16",
+    "events": "^1.1.1",
     "jspdf": "^1.3.2",
     "mkdirp": "^0.5.1",
     "ncp": "^2.0.0",
