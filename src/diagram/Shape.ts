@@ -42,6 +42,10 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     return this._bounds;
   }
 
+  get topLeft(): Point {
+    return this._bounds.topLeft;
+  }
+
   /**
    * Render the shape and its children
    */

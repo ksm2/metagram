@@ -21,6 +21,10 @@ export class Handle extends DiagramElement<ModelElement> {
     return this._attachedTo;
   }
 
+  get topLeft(): Point {
+    return this._attachedTo;
+  }
+
   render(canvas: Canvas): void {
     const { x, y } = this._attachedTo;
     const { hovered } = this;

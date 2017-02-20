@@ -10,6 +10,7 @@ import { Stroke } from '../diagram/Stroke';
 import { Baseline, Font, TextAlign } from '../diagram/Font';
 import { Shape } from '../diagram/Shape';
 import { Fill } from '../diagram/Fill';
+import { Handle } from '../diagram/Handle';
 
 export abstract class AbstractCanvas implements Canvas {
   protected _ctx: CanvasRenderingContext2D;
@@ -276,10 +277,8 @@ export abstract class AbstractCanvas implements Canvas {
     let element: DiagramElement<any> | null = target;
     let x = 0, y = 0;
     do {
-      if (element instanceof Shape) {
-        x += element.bounds.x;
-        y += element.bounds.y;
-      }
+      x += element.topLeft.x;
+      y += element.topLeft.y;
       element = element.owningElement;
     } while (element);
 

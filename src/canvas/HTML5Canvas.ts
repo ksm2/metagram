@@ -155,6 +155,9 @@ export class HTML5Canvas extends InteractiveCanvas {
     this._startedX += dx;
     this._startedY += dy;
     if (this.selectedElements.size < 2 && this._clickedElement) {
+      const [x, y] = this.getElementCoordinates(this._clickedElement);
+      [dx, dy] = this.snapToGrid(x + dx, y + dy);
+      dx -= x; dy -= y;
       this._clickedElement.move(dx, dy);
     } else {
       this.selectedElements.forEach(element => this.moveElement(element, dx, dy));

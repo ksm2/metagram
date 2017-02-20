@@ -7,6 +7,7 @@ import { Class, Attribute } from '../decorators/index';
 import { Bounds } from './Bounds';
 import { Shape } from './Shape';
 import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
+import { Point } from './Point';
 
 @Class('DiagramElement', Element)
 export class DiagramElement<M extends ModelElement> extends Element {
@@ -59,6 +60,13 @@ export class DiagramElement<M extends ModelElement> extends Element {
 
   get hovered(): boolean {
     return this._hovered;
+  }
+
+  /**
+   * Returns the element's top left point
+   */
+  get topLeft(): Point {
+    return new Point();;
   }
 
   render(canvas: Canvas): void {
