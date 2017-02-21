@@ -19,10 +19,26 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
 
   constructor() {
     super();
-    this._bounds.on('x', () => this.emit('resize', this._bounds));
-    this._bounds.on('y', () => this.emit('resize', this._bounds));
-    this._bounds.on('width', () => this.emit('resize', this._bounds));
-    this._bounds.on('height', () => this.emit('resize', this._bounds));
+    this._bounds.on('x', (value: number, oldValue: number) => {
+      const oldBounds = this._bounds.clone;
+      oldBounds.x = oldValue;
+      this.emit('resize', this._bounds, oldBounds);
+    });
+    this._bounds.on('y', (value: number, oldValue: number) => {
+      const oldBounds = this._bounds.clone;
+      oldBounds.y = oldValue;
+      this.emit('resize', this._bounds, oldBounds);
+    });
+    this._bounds.on('width', (value: number, oldValue: number) => {
+      const oldBounds = this._bounds.clone;
+      oldBounds.width = oldValue;
+      this.emit('resize', this._bounds, oldBounds);
+    });
+    this._bounds.on('height', (value: number, oldValue: number) => {
+      const oldBounds = this._bounds.clone;
+      oldBounds.height = oldValue;
+      this.emit('resize', this._bounds, oldBounds);
+    });
   }
 
   @Attribute({ type: Fill })
@@ -68,8 +84,8 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
       const handlePosition = Directions.rect(this.bounds, d);
       const handle = new Handle(this, handlePosition);
       handle.cursor = Directions.cursor(d);
-      handle.on('move', (p: Point) => {
-        this.onHandleMoved(d, p.x, p.y);
+      handle.on('move', () => {
+        this.onHandleMoved(d, handle.attachedTo.x, handle.attachedTo.y);
       });
       handles[d] = handle;
     }

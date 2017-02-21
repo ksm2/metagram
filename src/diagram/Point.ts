@@ -38,4 +38,37 @@ export class Point extends Element {
   getTuple(): [number, number] {
     return [this._x, this._y];
   }
+
+  /**
+   * Divides the point's coordinates by two divisors
+   *
+   * @param dx Divisor in X direction
+   * @param dy Divisor in Y direction
+   * @returns A new point instance
+   */
+  divide(dx: number, dy: number): Point {
+    return new Point(this._x / dx, this._y / dy);
+  }
+
+  /**
+   * Multiplies the point's coordinates by two factors
+   *
+   * @param fx Factor in X direction
+   * @param fy Factor in Y direction
+   * @returns A new point instance
+   */
+  multiply(fx: number, fy: number): Point {
+    return new Point(this._x * fx, this._y * fy);
+  }
+
+  /**
+   * Adds the point's coordinates with two addends
+   *
+   * @param ax Addend in X direction
+   * @param ay Addend in Y direction
+   * @returns A new point instance
+   */
+  add(ax: number, ay: number): Point {
+    return new Point(this._x + ax, this._y + ay);
+  }
 }

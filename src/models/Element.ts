@@ -18,6 +18,11 @@ export class Element extends EventEmitter {
     return this._contents;
   }
 
+  constructor() {
+    super();
+    this.setMaxListeners(200);
+  }
+
   /**
    * Appends a child to this element
    */

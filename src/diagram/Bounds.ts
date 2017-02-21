@@ -23,8 +23,8 @@ export class Bounds extends Element {
   }
 
   set x(value: number) {
-    this._x = value;
-    this.emit('x', value);
+    [value, this._x] = [this._x, value];
+    this.emit('x', this._x, value);
   }
 
   @Attribute({ type: Number })
@@ -33,8 +33,8 @@ export class Bounds extends Element {
   }
 
   set y(value: number) {
-    this._y = value;
-    this.emit('y', value);
+    [value, this._y] = [this._y, value];
+    this.emit('y', this._y, value);
   }
 
   @Attribute({ type: Number })
@@ -43,8 +43,8 @@ export class Bounds extends Element {
   }
 
   set width(value: number) {
-    this._width = value;
-    this.emit('width', value);
+    [value, this._width] = [this._width, value];
+    this.emit('width', this._width, value);
   }
 
   @Attribute({ type: Number })
@@ -53,16 +53,26 @@ export class Bounds extends Element {
   }
 
   set height(value: number) {
-    this._height = value;
-    this.emit('height', value);
+    [value, this._height] = [this._height, value];
+    this.emit('height', this._height, value);
   }
 
   get topLeft(): Point {
     return new Point(this._x, this._y);
   }
 
+  /**
+   * Returns dimensions of these bounds
+   */
   get dimension(): Bounds {
     return new Bounds(0, 0, this._width, this._height);
+  }
+
+  /**
+   * Returns a clone of these bounds
+   */
+  get clone(): Bounds {
+    return new Bounds(this._x, this._y, this._width, this._height);
   }
 
   /**

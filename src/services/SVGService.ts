@@ -3,7 +3,39 @@ export interface SVGCommand {
   args: number[];
 }
 
+export class SVGPath {
+
+  constructor(private cmds: string, private x?: number, private y?: number) {
+  }
+
+  toString(): string {
+    return this.cmds;
+  }
+
+  moveTo(x: number, y: number) {
+    const cmds = this.cmds ? this.cmds + ' ' : '';
+    this.cmds = `${cmds}M${x} ${y}`;
+    this.x = x; this.y = y;
+  }
+
+  lineTo(x: number, y: number) {
+    const cmds = this.cmds ? this.cmds + ' ' : '';
+    if (x === this.x) {
+      this.cmds = `${cmds}V${y}`;
+    } else if (y === this.y) {
+      this.cmds = `${cmds}H${x}`;
+    } else {
+      this.cmds = `${cmds}L${x} ${y}`;
+    }
+    this.x = x; this.y = y;
+  }
+}
+
 export class SVGService {
+
+  static createSVGPath(): SVGPath {
+    return new SVGPath('');
+  }
 
   static parseSVGPathCommands(path: string): SVGCommand[] {
     const commands: SVGCommand[] = [];

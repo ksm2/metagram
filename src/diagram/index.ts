@@ -3,6 +3,7 @@ export { Bounds } from './Bounds';
 export { ClassDiagram } from './ClassDiagram';
 export { ClassifierElement } from './ClassifierElement';
 export { Color } from './Color';
+export { Connector } from './Connector';
 export { Cursor } from './Cursor';
 export { DiagramElement } from './DiagramElement';
 export { Diagram } from './Diagram';

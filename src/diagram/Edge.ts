@@ -10,13 +10,15 @@ import { Point } from './Point';
 import { BresenhamService } from '../services/BresenhamService';
 import { Line } from './Line';
 import { LineStroke } from './LineStroke';
+import { Connector } from './Connector';
+import { SVGService } from '../services/SVGService';
 
 @Class('Edge', DiagramElement)
 export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   private _stroke: Stroke = new Stroke();
   private _font: Font = new Font();
-  private _source: Shape<any> | Point;
-  private _target: Shape<any> | Point;
+  private _source: Connector;
+  private _target: Connector;
   private _waypoint: Point[] = [];
   private _label: string | null = null;
   private _sourceLabel: string | null = null;
@@ -40,22 +42,22 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     this._font = value;
   }
 
-  @Attribute({ type: Shape })
-  get source(): Shape<any> | Point {
-    return this._source;
+  @Attribute({ type: Shape, lower: 0 })
+  get source(): Shape<any> | null {
+    return this._source.shape;
   }
 
-  set source(value: Shape<any> | Point) {
-    this._source = value;
+  set source(value: Shape<any> | null) {
+    this._source.shape = value;
   }
 
-  @Attribute({ type: Shape })
-  get target(): Shape<any> | Point {
-    return this._target;
+  @Attribute({ type: Shape, lower: 0 })
+  get target(): Shape<any> | null {
+    return this._target.shape;
   }
 
-  set target(value: Shape<any> | Point) {
-    this._target = value;
+  set target(value: Shape<any> | null) {
+    this._target.shape = value;
   }
 
   @Attribute({ type: Point, lower: 0, upper: Infinity })
@@ -94,6 +96,28 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     this._targetLabel = value;
   }
 
+  /**
+   * Returns the source connector of this edge
+   */
+  get sourceConnector(): Connector {
+    return this._source;
+  }
+
+  /**
+   * Returns the target connector of this edge
+   */
+  get targetConnector(): Connector {
+    return this._target;
+  }
+
+  constructor() {
+    super();
+    this._source = new Connector();
+    this._source.on('location', () => this.emit('resize'));
+    this._target = new Connector();
+    this._target.on('location', () => this.emit('resize'));
+  }
+
   containsPoint(px: number, py: number): boolean {
     return this.waylines.calculateDistanceToPoint(new Point(px, py)) < 10;
   }
@@ -109,27 +133,19 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   }
 
   createHandles(canvas: Canvas): Handle[] {
-    const lines = this.waylines;
-
-    const sourceHandle = new Handle(this, lines.from);
-    sourceHandle.on('move', (p: Point) => {
-      this._source = p;
+    const sourceHandle = new Handle(this, this._source.absoluteLocation);
+    sourceHandle.on('move', (dx: number, dy: number) => {
+      this._source.location = this._source.location.add(dx, dy);
     });
 
     const handles = [sourceHandle];
     for (let point of this._waypoint) {
-      const handle = new Handle(this, point);
-      handle.on('move', (p: Point) => {
-        point.x = p.x;
-        point.y = p.y;
-      });
-
-      handles.push(handle);
+      handles.push(new Handle(this, point));
     }
 
-    const targetHandle = new Handle(this, lines.to);
-    targetHandle.on('move', (p: Point) => {
-      this._target = p;
+    const targetHandle = new Handle(this, this._target.absoluteLocation);
+    targetHandle.on('move', (dx: number, dy: number) => {
+      this._target.location = this._target.location.add(dx, dy);
     });
     handles.push(targetHandle);
 
@@ -137,7 +153,13 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   }
 
   get svgPath(): string {
-    return this.waylines.svgPath;
+    const path = SVGService.createSVGPath();
+    path.moveTo(this._source.absoluteLocation.x, this._source.absoluteLocation.y);
+    for (let point of this._waypoint) {
+      path.lineTo(point.x, point.y);
+    }
+    path.lineTo(this._target.absoluteLocation.x, this._target.absoluteLocation.y);
+    return path.toString();
   }
 
   set svgPath(value: string) {
@@ -151,11 +173,11 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
 
   set waylines(lines: LineStroke) {
     this._waypoint = [];
-    this._source = lines.lines[0].from;
-    this._target = lines.lines[0].to;
+    this._source.absoluteLocation = lines.lines[0].from;
+    this._target.absoluteLocation = lines.lines[0].to;
     for (let line of lines.lines.slice(1)) {
       this._waypoint.push(line.from);
-      this._target = line.to;
+      this._target.absoluteLocation = line.to;
     }
   }
 

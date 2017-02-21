@@ -40,6 +40,6 @@ export class Handle extends DiagramElement<ModelElement> {
   move(dx: number, dy: number): void {
     this._attachedTo.x += dx;
     this._attachedTo.y += dy;
-    this.emit('move', this._attachedTo);
+    this.emit('move', dx, dy);
   }
 }

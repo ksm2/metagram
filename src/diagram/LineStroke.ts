@@ -25,28 +25,6 @@ export class LineStroke extends Element {
     return this._lines[this._lines.length - 1].to;
   }
 
-  get svgPath(): string {
-    let x = this._lines[0].from.x, y = this._lines[0].from.y;
-
-    // First segment
-    let svg = `M${x} ${y}`;
-
-    // Following segments
-    for (let line of this._lines) {
-      let nx = line.to.x, ny = line.to.y;
-      if (nx === x) {
-        svg += ` V${ny}`;
-      } else if (ny === y) {
-        svg += ` H${nx}`;
-      } else {
-        svg += ` L${nx} ${ny}`;
-      }
-      x = nx; y = ny;
-    }
-
-    return svg;
-  }
-
   constructor(lines: Line[] = []) {
     super();
     this._lines = lines;
