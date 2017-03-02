@@ -1,14 +1,15 @@
 #!/usr/bin/env node
-const mi = require('../dest/server');
+const { FileService, XMIDecoder } = require('@metagram/node');
+const { Renderer } = require('@metagram/htmldoc');
 const path = require('path');
 const fs = require('fs');
 
 const cacheDir = path.join(__dirname, '../var');
 const outputDir = path.join(__dirname, '../out/XMIdoc/');
 
-const fileService = new mi.FileService();
-const decoder = new mi.XMIDecoder(fileService, cacheDir);
-const renderer = new mi.Renderer(fileService, '/XMIdoc/', outputDir);
+const fileService = new FileService();
+const decoder = new XMIDecoder(fileService, cacheDir);
+const renderer = new Renderer(fileService, '/XMIdoc/', outputDir);
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(reason.name + ' in Promise occurred!');
