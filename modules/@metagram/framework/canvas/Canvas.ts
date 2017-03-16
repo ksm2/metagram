@@ -57,7 +57,8 @@ export interface Canvas {
    * @param hAlign The horizontal alignment
    * @param vAlign The vertical alignment
    */
-  drawText(text: string, x: number, y: number, font: Font, maxWidth?: number, hAlign?: TextAlign, vAlign?: Baseline): void;
+  drawText(text: string, x: number, y: number, font: Font, maxWidth?: number,
+           hAlign?: TextAlign, vAlign?: Baseline): void;
 
   /**
    * Measures the width of a text

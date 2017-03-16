@@ -1,17 +1,17 @@
 import { FileService } from './FileService';
 import { Association, ModelElement, Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from '@metagram/framework';
-import { cssClass } from './views/html/helpers';
+import { cssClass } from './renderers/html/helpers';
 
-import overviewRenderer from './views/html/overview.html';
-import associationRenderer from './views/html/association.html';
-import dataTypeRenderer from './views/html/dataType.html';
-import enumerationRenderer from './views/html/enumeration.html';
-import enumerationLiteralRenderer from './views/html/enumerationLiteral.html';
-import indexRenderer from './views/html/index.html';
-import classRenderer from './views/html/class.html';
-import packageRenderer from './views/html/package.html';
-import propertyRenderer from './views/html/property.html';
-import primitiveTypeRenderer from './views/html/primitiveType.html';
+import overviewRenderer from './renderers/html/overview.html';
+import associationRenderer from './renderers/html/association.html';
+import dataTypeRenderer from './renderers/html/dataType.html';
+import enumerationRenderer from './renderers/html/enumeration.html';
+import enumerationLiteralRenderer from './renderers/html/enumerationLiteral.html';
+import indexRenderer from './renderers/html/index.html';
+import classRenderer from './renderers/html/class.html';
+import packageRenderer from './renderers/html/package.html';
+import propertyRenderer from './renderers/html/property.html';
+import primitiveTypeRenderer from './renderers/html/primitiveType.html';
 
 export class Renderer {
   private rendered: Set<ModelElement>;
