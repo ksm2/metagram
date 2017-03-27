@@ -1,8 +1,8 @@
-import { Classifier } from '../models/uml/Classifier';
-import { Class } from '../models/uml/Class';
-import { Enumeration } from '../models/uml/Enumeration';
-import { Property } from '../models/uml/Property';
-import AnnotationReader, { ClassDecorator, AttributeDecorator, EnumerationDecorator } from '../.';
+import { Classifier } from '@metagram/models';
+import { Class } from '@metagram/models';
+import { Enumeration } from '@metagram/models';
+import { Property } from '@metagram/models';
+import AnnotationReader, { ClassDecorator, AttributeDecorator, EnumerationDecorator } from '@metagram/models';
 import { PrimitiveType } from '../models/uml/PrimitiveType';
 
 export class Reflector {

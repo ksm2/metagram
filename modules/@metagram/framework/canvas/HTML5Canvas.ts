@@ -290,19 +290,12 @@ export class HTML5Canvas extends InteractiveCanvas {
    */
   generateSVG(zoom: number): string {
     // No diagram present?
-    if (!this.diagram) return 'data:,';
-
-    // Retrieve diagram dimensions
-    const dim = this.diagram.calcAllElementBounds();
+    const diagram = this.diagram;
+    if (!diagram) return 'data:,';
 
     // Draw the contents
-    const canvas = new SVGCanvas(zoom * dim.width, zoom * dim.height);
-    canvas.moveOffset(-dim.x, -dim.y);
-    canvas.zoom = zoom;
-    canvas.diagram = this.diagram;
-
-    // Extract blob
-    return 'data:image/svg+xml,' + canvas.svg;
+    const canvas = new SVGCanvas(diagram, zoom);
+    return canvas.toDataURL();
   }
 
   /**
@@ -318,9 +311,7 @@ export class HTML5Canvas extends InteractiveCanvas {
 
     // Draw the contents
     const canvas = new PDFCanvas(diagram, zoom);
-    const stream = canvas.generatePDF();
-
-    return `data:application/pdf;base64,${btoa(stream)}`;
+    return canvas.toDataURL();
   }
 
   /**

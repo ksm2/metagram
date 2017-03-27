@@ -7,8 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@metagram/htmldoc": "^1.0.0",
-    "@metagram/node": "^1.0.0"
+    "@metagram/framework": "^1.0.0",
   },
   "author": "",
   "license": "ISC"

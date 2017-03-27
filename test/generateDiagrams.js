@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const mi = require('../dest/server');
+const mi = require('@metagram/framework');
 const path = require('path');
 const fs = require('fs');
 
@@ -7,8 +7,8 @@ const cacheDir = path.join(__dirname, '../var');
 const outputDir = path.join(__dirname, '../out');
 
 const fileService = new mi.FileService();
-const decoder = new mi.XMIDecoder(fileService, cacheDir);
-const reflector = new mi.Reflector();
+const fetchService = new mi.FetchService(fileService, cacheDir);
+const decoder = new mi.XMIDecoder(fetchService);
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(reason.name + ' in Promise occurred!');
@@ -21,9 +21,7 @@ decoder.loadURL('https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi')
   const diagrams = xmi.contents;
   return Promise.all(Array.from(diagrams).map((diagram) => {
     if (!(diagram instanceof mi.Diagram)) return Promise.resolve();
-    const bounds = diagram.calcAllElementBounds();
-    const canvas = new mi.NodeCanvas(bounds.x + bounds.width, bounds.y + bounds.height, 'svg');
-    canvas.diagram = diagram;
+    const canvas = new mi.SVGCanvas(diagram, 1);
     return canvas.saveToFile(path.join(outputDir, `${diagram.name}.svg`));
   }));
 })

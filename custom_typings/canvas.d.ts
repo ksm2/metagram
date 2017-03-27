@@ -14,8 +14,6 @@ declare interface CanvasRenderingContext2D {
 }
 
 declare module 'canvas' {
-  type CanvasMimeType = 'image/png' | 'image/jpeg';
-
   interface CanvasFontOpts {
     family: string;
     weight?: string;
@@ -42,8 +40,10 @@ declare module 'canvas' {
     static registerFont(fontName: string, fontOpts: CanvasFontOpts): void;
     getContext(contextId: '2d', contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
     toBuffer(format?: string): Buffer;
-    toDataURL(type: CanvasMimeType, opts: any, cb: (err: any, url: string) => void): void;
-    toDataURL(type: CanvasMimeType, cb: (err: any, url: string) => void): void;
+    toDataURL(): string;
+    toDataURL(type: string): string;
+    toDataURL(type: string, opts: any, cb: (err: any, url: string) => void): void;
+    toDataURL(type: string, cb: (err: any, url: string) => void): void;
     toDataURL(cb: (err: any, url: string) => void): void;
     jpegStream(opts?: JPEGOptions): NodeJS.ReadableStream;
     pngStream(): NodeJS.ReadableStream;

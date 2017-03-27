@@ -16,15 +16,15 @@
     "emitDecoratorMetadata": true,
     "outDir": "./dest",
     "paths": {
-      "@metagram/framework": ["modules/@metagram/framework"],
-      "@metagram/models": ["modules/@metagram/models"],
-      "@metagram/server": ["modules/@metagram/server"]
+      "@metagram/models": ["modules/@metagram/models"]
     }
   },
   "files": [
     "./custom_typings/canvas.d.ts",
     "./modules/@metagram/framework/index.ts",
-    "./modules/@metagram/models/index.ts",
-    "./modules/@metagram/server/index.ts"
+    "./modules/@metagram/framework/canvas/BrowserPDFCanvas.ts",
+    "./modules/@metagram/framework/canvas/BrowserSVGCanvas.ts",
+    "./modules/@metagram/framework/services/BrowserFetchService.ts",
+    "./modules/@metagram/models/index.ts"
   ]
 }

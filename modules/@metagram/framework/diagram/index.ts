@@ -8,7 +8,6 @@ export { Cursor } from './Cursor';
 export { DiagramElement } from './DiagramElement';
 export { Diagram } from './Diagram';
 export { Directions } from './Directions';
-export { Document } from './Document';
 export { Edge } from './Edge';
 export { Fill } from './Fill';
 export { Font } from './Font';

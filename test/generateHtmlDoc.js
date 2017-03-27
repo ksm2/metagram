@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-const { FileService, XMIDecoder } = require('@metagram/node');
-const { Renderer } = require('@metagram/htmldoc');
+const { FetchService, FileService, XMIDecoder, Renderer } = require('@metagram/framework');
 const path = require('path');
 const fs = require('fs');
 
@@ -8,7 +7,8 @@ const cacheDir = path.join(__dirname, '../var');
 const outputDir = path.join(__dirname, '../out/XMIdoc/');
 
 const fileService = new FileService();
-const decoder = new XMIDecoder(fileService, cacheDir);
+const fetchService = new FetchService(fileService, cacheDir);
+const decoder = new XMIDecoder(fetchService);
 const renderer = new Renderer(fileService, '/XMIdoc/', outputDir);
 
 process.on('unhandledRejection', (reason, promise) => {

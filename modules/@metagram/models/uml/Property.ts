@@ -1,3 +1,4 @@
+import { Element } from '../Element';
 import { TypedElement } from './TypedElement';
 import { Class, Attribute } from '../decorators';
 import { EnumerationLiteral } from './EnumerationLiteral';
