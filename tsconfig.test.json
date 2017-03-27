@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./test"
+  },
+  "include": [
+    "./custom_typings/canvas.d.ts",
+    "./modules/@metagram/framework/index.ts",
+    "./modules/@metagram/models/index.ts",
+    "./modules/**/*.spec.ts"
+  ]
+}

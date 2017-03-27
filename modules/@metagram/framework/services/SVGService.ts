@@ -12,13 +12,14 @@ export class SVGPath {
     return this.cmds;
   }
 
-  moveTo(x: number, y: number) {
+  moveTo(x: number, y: number): this {
     const cmds = this.cmds ? this.cmds + ' ' : '';
     this.cmds = `${cmds}M${x} ${y}`;
     this.x = x; this.y = y;
+    return this;
   }
 
-  lineTo(x: number, y: number) {
+  lineTo(x: number, y: number): this {
     const cmds = this.cmds ? this.cmds + ' ' : '';
     if (x === this.x) {
       this.cmds = `${cmds}V${y}`;
@@ -28,6 +29,7 @@ export class SVGPath {
       this.cmds = `${cmds}L${x} ${y}`;
     }
     this.x = x; this.y = y;
+    return this;
   }
 }
 
@@ -68,6 +70,7 @@ export class SVGService {
         case 'Z':
           i += 1;
           commands.push({ cmd: 'Z', args: [] });
+          break;
         default:
           throw new Error(`Error in SVG path: Illegal character found in command arguments at pos ${i}:\n${path}\n${' '.repeat(i)}^`);
       }

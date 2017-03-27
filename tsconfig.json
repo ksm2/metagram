@@ -19,12 +19,10 @@
       "@metagram/models": ["modules/@metagram/models"]
     }
   },
-  "files": [
+  "include": [
     "./custom_typings/canvas.d.ts",
     "./modules/@metagram/framework/index.ts",
-    "./modules/@metagram/framework/canvas/BrowserPDFCanvas.ts",
-    "./modules/@metagram/framework/canvas/BrowserSVGCanvas.ts",
-    "./modules/@metagram/framework/services/BrowserFetchService.ts",
-    "./modules/@metagram/models/index.ts"
+    "./modules/@metagram/models/index.ts",
+    "./modules/**/*.browser.ts"
   ]
 }
