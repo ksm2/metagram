@@ -74,6 +74,6 @@ export class Property extends TypedElement {
    * The query isMultivalued() checks whether this multiplicity has an upper bound greater than one.
    */
   isMultivalued(): boolean {
-    return this._upperValue > 1;
+    return this._upperValue ? this._upperValue > 1 : false;
   }
 }
