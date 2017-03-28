@@ -1,5 +1,5 @@
 import layout from './layout.html';
-import { ModelElement, Package } from '@metagram/models';
+import { ModelElement, Package } from '../../models';
 import { forEach, cssClass } from './helpers';
 
 export default function (model: Package, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

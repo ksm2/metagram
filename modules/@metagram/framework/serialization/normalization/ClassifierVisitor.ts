@@ -1,7 +1,7 @@
-import { Element } from '@metagram/models';
-import { Property } from '@metagram/models';
-import { Classifier } from '@metagram/models';
-import { Operation } from '@metagram/models';
+import { Element } from '../../models';
+import { Property } from '../../models';
+import { Classifier } from '../../models';
+import { Operation } from '../../models';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';

@@ -1,4 +1,4 @@
-import { ModelElement, Property, EnumerationLiteral, Operation, ParameterDirectionKind } from '@metagram/models';
+import { ModelElement, Property, EnumerationLiteral, Operation, ParameterDirectionKind } from '../../models';
 import { forEach, cssClass } from './helpers';
 
 export default function (operations: Set<Operation>, ref: (m: ModelElement) => string) {

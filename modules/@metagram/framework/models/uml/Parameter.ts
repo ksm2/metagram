@@ -1,7 +1,7 @@
 import { TypedElement } from './TypedElement';
 import { DefaultValueType } from './Property';
 import { ParameterDirectionKind } from './ParameterDirectionKind';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 
 @Class('http://www.omg.org/spec/UML/20131001:Parameter', TypedElement)
 export class Parameter extends TypedElement {

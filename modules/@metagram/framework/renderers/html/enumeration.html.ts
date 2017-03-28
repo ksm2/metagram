@@ -1,5 +1,5 @@
 import layout from './layout.html';
-import { ModelElement, Enumeration } from '@metagram/models';
+import { ModelElement, Enumeration } from '../../models';
 import { forEach, cssClass } from './helpers';
 
 export default function (model: Enumeration, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

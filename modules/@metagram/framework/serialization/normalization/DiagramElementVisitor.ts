@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../../models';
 import { DiagramElement } from '../../diagram/DiagramElement';
 import { Visitor } from './Visitor';
 import { XMIDecoder } from '../encoding/XMIDecoder';

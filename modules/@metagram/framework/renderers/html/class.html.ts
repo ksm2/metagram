@@ -1,7 +1,7 @@
 import layout from './layout.html';
 import attributes from './attributes.html';
 import operations from './operations.html';
-import { ModelElement, Class } from '@metagram/models';
+import { ModelElement, Class } from '../../models';
 import { forEach } from './helpers';
 
 export default function (model: Class, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

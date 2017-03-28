@@ -1,6 +1,6 @@
 import { ModelElement } from './ModelElement';
 import { Type } from './Type';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 
 @Class('http://www.omg.org/spec/UML/20131001:TypedElement', ModelElement)
 export class TypedElement extends ModelElement {

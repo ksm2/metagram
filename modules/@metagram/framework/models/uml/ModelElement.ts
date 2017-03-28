@@ -1,4 +1,4 @@
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { VisibilityKind } from './VisibilityKind';
 import { Element } from '../Element';
 

@@ -1,7 +1,7 @@
 import { Type } from './Type';
 import { Property } from './Property';
 import { Operation } from './Operation';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 
 @Class('http://www.omg.org/spec/UML/20131001:Classifier', Type)
 export class Classifier extends Type {

@@ -1,5 +1,5 @@
 import main from './main.html';
-import { ModelElement, XMI } from '@metagram/models';
+import { ModelElement, XMI } from '../../models';
 import { forEach, cssClass } from './helpers';
 
 export default function (model: XMI, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {

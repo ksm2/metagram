@@ -1,5 +1,5 @@
-import { Element } from '@metagram/models';
-import { Class } from '@metagram/models';
+import { Element } from '../../models';
+import { Class } from '../../models';
 import { ClassifierVisitor } from './ClassifierVisitor';
 import { XMIDecoder } from '../encoding/XMIDecoder';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';

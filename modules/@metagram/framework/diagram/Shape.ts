@@ -1,4 +1,4 @@
-import { ModelElement } from '@metagram/models';
+import { ModelElement } from '../models';
 import { DiagramElement } from './DiagramElement';
 import { Canvas } from '../canvas/Canvas';
 import { Directions } from './Directions';
@@ -7,7 +7,7 @@ import { Fill } from './Fill';
 import { Stroke } from './Stroke';
 import { Font } from './Font';
 import { Bounds } from './Bounds';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Class, Attribute } from '../decorators';
 import { Point } from './Point';
 
 @Class('Shape', DiagramElement)

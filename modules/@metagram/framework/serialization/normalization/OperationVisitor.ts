@@ -1,6 +1,6 @@
-import { Element } from '@metagram/models';
-import { Operation } from '@metagram/models';
-import { Parameter } from '@metagram/models';
+import { Element } from '../../models';
+import { Operation } from '../../models';
+import { Parameter } from '../../models';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';

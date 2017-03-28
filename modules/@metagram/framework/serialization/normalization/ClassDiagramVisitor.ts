@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../../models';
 import { Diagram } from '../../diagram/Diagram';
 import { ClassDiagram } from '../../diagram/ClassDiagram';
 import { DiagramElementVisitor } from './DiagramElementVisitor';

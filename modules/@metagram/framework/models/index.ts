@@ -21,7 +21,6 @@ export { Type } from './uml/Type';
 export { TypedElement } from './uml/TypedElement';
 export { VisibilityKind } from './uml/VisibilityKind';
 export { XMI } from './xmi/XMI';
-export { Class as Clazz, Attribute, Enumeration as Enum } from './decorators';
 
 export const KNOWN_MODELS = new Map([
   ['http://www.omg.org/spec/XMI/20131001', { xmi: 'http://www.omg.org/spec/XMI/20131001/XMI-model.xmi', name: 'XMI', version: '2.5.1' }],

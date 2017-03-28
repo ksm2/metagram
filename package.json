@@ -50,15 +50,15 @@
     "clean:test": "rimraf test",
     "prebuild": "npm run clean:dest",
     "build": "npm run build:dest && npm run copy:dest",
-    "link": "npm run link:models && npm run link:framework",
-    "link:framework": "cd dest/framework && npm link @metagram/models && npm link",
-    "link:models": "cd dest/models && npm link",
+    "publish": "cd dest && npm publish",
+    "link": "npm run link:framework",
+    "link:framework": "cd dest && npm link",
     "build:dest": "tsc -p tsconfig.json",
     "build:test": "tsc -p tsconfig.test.json",
     "watch:dest": "tsc -p tsconfig.json -w",
     "watch:test": "tsc -p tsconfig.test.json -w",
-    "copy:dest": "copyfiles ./public/**/* ./dest && copyfiles -u 2 ./modules/@metagram/*/package.json ./dest && copyfiles ./{README.md,LOGO.png,LICENSE} ./dest/framework",
-    "copy:test": "copyfiles ./public/**/* ./test && copyfiles -u 2 ./modules/@metagram/*/package.json ./test && copyfiles ./README.md ./test/framework"
+    "copy:dest": "copyfiles ./public/**/* ./dest && copyfiles -u 3 ./modules/@metagram/*/package.json ./dest && copyfiles ./{README.md,LOGO.png,LICENSE} ./dest",
+    "copy:test": "copyfiles ./public/**/* ./test && copyfiles -u 3 ./modules/@metagram/*/package.json ./test && copyfiles ./README.md ./test"
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",

@@ -1,5 +1,5 @@
-import { KNOWN_MODELS } from '@metagram/models';
 import { DOMParser } from 'xmldom';
+import { KNOWN_MODELS } from '../../models';
 import { XMITree } from './XMITree';
 import { ResolvedXMINode } from './ResolvedXMINode';
 import { FetchService } from '../../services/FetchService';

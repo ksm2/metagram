@@ -1,8 +1,8 @@
-import { Element } from '@metagram/models';
-import { Type } from '@metagram/models';
-import { Parameter } from '@metagram/models';
-import { ParameterDirectionKind } from '@metagram/models';
-import { EnumerationLiteral } from '@metagram/models';
+import { Element } from '../../models';
+import { Type } from '../../models';
+import { Parameter } from '../../models';
+import { ParameterDirectionKind } from '../../models';
+import { EnumerationLiteral } from '../../models';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';

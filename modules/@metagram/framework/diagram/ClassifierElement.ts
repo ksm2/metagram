@@ -1,7 +1,7 @@
-import { Classifier, Property, VisibilityKind, Operation, Parameter } from '@metagram/models';
-import { Metamodel } from '@metagram/models';
-import { Clazz } from '@metagram/models';
-import { Type } from '@metagram/models';
+import { Classifier, Property, VisibilityKind, Operation, Parameter } from '../models';
+import { Metamodel } from '../models';
+import { Class as Clazz } from '../decorators';
+import { Type } from '../models';
 import { Shape } from './Shape';
 import { Canvas } from '../canvas/Canvas';
 import { Cursor } from './Cursor';

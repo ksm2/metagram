@@ -1,9 +1,9 @@
-import { Element } from '@metagram/models';
-import { ModelElement } from '@metagram/models';
+import { Element } from '../models';
+import { ModelElement } from '../models';
 import { Canvas } from '../canvas/Canvas';
 import { Handle } from './Handle';
 import { Cursor } from './Cursor';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Class, Attribute } from '../decorators';
 import { Bounds } from './Bounds';
 import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
 import { Point } from './Point';

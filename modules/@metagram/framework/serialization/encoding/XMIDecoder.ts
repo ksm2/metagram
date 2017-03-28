@@ -1,4 +1,4 @@
-import { Element, ModelElement, XMI } from '@metagram/models';
+import { Element, ModelElement, XMI } from '../../models';
 import { FetchService } from '../../services/FetchService';
 import { Visitor } from '../normalization/Visitor';
 import { XMIResolver } from './XMIResolver';

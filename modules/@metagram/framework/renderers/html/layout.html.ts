@@ -1,5 +1,5 @@
 import main from './main.html';
-import { ModelElement, Package } from '@metagram/models';
+import { ModelElement, Package } from '../../models';
 import { cssClass, forEach, uriNameFor } from './helpers';
 
 export default function (model: ModelElement, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string, body: string) {

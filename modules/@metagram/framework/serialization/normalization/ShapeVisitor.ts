@@ -1,5 +1,5 @@
 import { DiagramElementVisitor } from './DiagramElementVisitor';
-import { Element } from '@metagram/models';
+import { Element } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
 import { Shape } from '../../diagram/Shape';

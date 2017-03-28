@@ -1,6 +1,6 @@
 import { Element } from '../Element';
 import { TypedElement } from './TypedElement';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { EnumerationLiteral } from './EnumerationLiteral';
 import { Association } from './Association';
 import { AggregationKind } from './AggregationKind';

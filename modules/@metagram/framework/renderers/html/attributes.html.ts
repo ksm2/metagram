@@ -1,4 +1,4 @@
-import { ModelElement, EnumerationLiteral, Property } from '@metagram/models';
+import { ModelElement, EnumerationLiteral, Property } from '../../models';
 import { forEach, cssClass } from './helpers';
 
 export default function (properties: Set<Property>, ref: (m: ModelElement) => string) {

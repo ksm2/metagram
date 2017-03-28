@@ -1,5 +1,5 @@
 import { Classifier } from './Classifier';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { Property } from './Property';
 
 @Class('http://www.omg.org/spec/UML/20131001:Association', Classifier)

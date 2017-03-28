@@ -1,6 +1,6 @@
 import { TypedElement } from './TypedElement';
 import { Parameter } from './Parameter';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 import { Type } from './Type';
 import { ParameterDirectionKind } from './ParameterDirectionKind';
 

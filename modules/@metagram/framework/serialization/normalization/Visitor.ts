@@ -1,4 +1,4 @@
-import { Element, ModelElement } from '@metagram/models';
+import { Element, ModelElement } from '../../models';
 import { Diagram } from '../../diagram/Diagram';
 import { XMIDecoder } from '../encoding/XMIDecoder';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';

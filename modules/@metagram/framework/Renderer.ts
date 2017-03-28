@@ -1,4 +1,4 @@
-import { Association, ModelElement, Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from '@metagram/models';
+import { Association, ModelElement, Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
 import { FileService } from './services/FileService';
 import { cssClass } from './renderers/html/helpers';
 

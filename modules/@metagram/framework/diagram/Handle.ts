@@ -1,5 +1,5 @@
 import { DiagramElement } from './DiagramElement';
-import { ModelElement } from '@metagram/models';
+import { ModelElement } from '../models';
 import { Canvas } from '../canvas/Canvas';
 import { Point } from './Point';
 import { Bounds } from './Bounds';

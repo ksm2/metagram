@@ -1,5 +1,5 @@
 import { Element } from '../Element';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 
 @Class('http://www.omg.org/spec/XMI/20131001:XMI', Element)
 export class XMI extends Element {

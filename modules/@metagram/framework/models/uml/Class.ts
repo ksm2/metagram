@@ -1,5 +1,5 @@
 import { Classifier } from './Classifier';
-import { Class as Clazz, Attribute } from '../decorators';
+import { Class as Clazz, Attribute } from '../../decorators';
 import { Property } from './Property';
 
 @Clazz('http://www.omg.org/spec/UML/20131001:Class', Classifier)

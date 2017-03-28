@@ -1,4 +1,4 @@
-import { PackageImport } from '@metagram/models';
+import { PackageImport } from '../models';
 import { Canvas } from '../canvas/Canvas';
 import { Color } from './Color';
 import { Edge } from './Edge';

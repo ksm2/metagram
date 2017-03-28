@@ -1,6 +1,6 @@
-import { Package } from '@metagram/models';
+import { Package } from '../models';
 import { Shape } from './Shape';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Class, Attribute } from '../decorators';
 import { Canvas } from '../canvas/Canvas';
 import { DiagramElement } from './DiagramElement';
 

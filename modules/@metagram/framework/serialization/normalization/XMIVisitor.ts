@@ -1,5 +1,5 @@
 import { Visitor } from './Visitor';
-import { Element, ModelElement, XMI } from '@metagram/models';
+import { Element, ModelElement, XMI } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
 

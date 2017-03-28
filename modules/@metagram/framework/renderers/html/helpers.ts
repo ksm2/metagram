@@ -1,4 +1,4 @@
-import { KNOWN_MODELS, Element, ModelElement, Package } from '@metagram/models';
+import { KNOWN_MODELS, Element, ModelElement, Package } from '../../models';
 
 export function lowerCaseFirst(str: string) {
   return `${str[0].toLowerCase()}${str.substring(1)}`;

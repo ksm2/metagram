@@ -1,6 +1,6 @@
-import { Association } from '@metagram/models';
-import { AggregationKind } from '@metagram/models';
-import { Property } from '@metagram/models';
+import { Association } from '../models';
+import { AggregationKind } from '../models';
+import { Property } from '../models';
 import { Canvas } from '../canvas/Canvas';
 import { Color } from './Color';
 import { Edge } from './Edge';

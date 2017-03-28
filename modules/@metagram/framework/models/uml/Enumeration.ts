@@ -1,6 +1,6 @@
 import { Classifier } from './Classifier';
 import { EnumerationLiteral } from './EnumerationLiteral';
-import { Class, Attribute } from '../decorators';
+import { Class, Attribute } from '../../decorators';
 
 @Class('http://www.omg.org/spec/UML/20131001:Enumeration', Classifier)
 export class Enumeration extends Classifier {

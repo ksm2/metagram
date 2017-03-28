@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../models';
 
 export abstract class Style extends Element {
   /**
