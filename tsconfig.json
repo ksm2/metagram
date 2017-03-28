@@ -20,8 +20,9 @@
     }
   },
   "include": [
-    "./custom_typings/canvas.d.ts",
+    "./custom_typings/*.d.ts",
     "./modules/@metagram/framework/index.ts",
+    "./modules/@metagram/framework/bin/metagram.ts",
     "./modules/@metagram/models/index.ts",
     "./modules/**/*.browser.ts"
   ]

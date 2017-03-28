@@ -29,9 +29,11 @@ export class Renderer {
   /**
    * Renders any kind of element
    */
-  async render(element: ModelElement): Promise<void> {
-    if (this.rendered.has(element)) return;
-    this.rendered.add(element);
+  async render(element: Element): Promise<void> {
+    if (element instanceof ModelElement) {
+      if (this.rendered.has(element)) return;
+      this.rendered.add(element);
+    }
 
     if (element instanceof Class) {
       await this.renderClass(element);

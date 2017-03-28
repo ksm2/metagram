@@ -1,8 +1,15 @@
 {
   "name": "@metagram/framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Metagram browser and server framework",
   "typings": "index.d.ts",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/ksm2/metagram.git"
+  },
+  "bin": {
+    "metagram": "bin/metagram.js"
+  },
   "dependencies": {
     "@metagram/models": "^1.0.0",
     "canvas": "^1.6.2",
