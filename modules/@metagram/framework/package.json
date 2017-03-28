@@ -1,11 +1,11 @@
 {
   "name": "@metagram/framework",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "The Metagram browser and server framework",
   "typings": "index.d.ts",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/ksm2/metagram.git"
+    "type": "git",
+    "url": "https://github.com/ksm2/metagram.git"
   },
   "bin": {
     "metagram": "bin/metagram.js"
@@ -28,6 +28,9 @@
     "./canvas/NodeCanvas.js": false,
     "./canvas/PDFCanvas.js": "./canvas/PDFCanvas.browser.js",
     "./canvas/SVGCanvas.js": "./canvas/SVGCanvas.browser.js",
+    "./cli/CLIApplication.js": false,
+    "./cli/Command.js": false,
+    "./cli/HTMLDocCommand.js": false,
     "./services/FetchService.js": "./services/FetchService.browser.js",
     "./services/FileService.js": false
   },
