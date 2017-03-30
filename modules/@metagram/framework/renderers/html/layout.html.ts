@@ -1,14 +1,15 @@
 import main from './main.html';
 import { ModelElement, Package } from '../../models';
 import { cssClass, forEach, uriNameFor } from './helpers';
+import { Renderer } from '../../Renderer';
 
-export default function (model: ModelElement, baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string, body: string) {
-  return main(model.name!, baseHref, roots, model.getRoot().name!, `
+export default function (model: ModelElement, baseHref: string, renderer: Renderer, body: string) {
+  return main(model.name!, baseHref, renderer.roots, model.getRoot().name!, `
     <header>
       <h1 class="name name-${cssClass(model)}">${model.name}</h1>
       <p>
-      ${model.getInstanceOf() ? `
-        <strong>instance of <a href="${ref(model.getInstanceOf()!)}">${model.getInstanceOf()!.name}</strong></a> from ${uriNameFor(model.getInstanceOf()!)}
+      ${renderer.instanceOf.has(model) ? `
+        <strong>instance of <a href="${renderer.ref(renderer.instanceOf.get(model)!)}">${renderer.instanceOf.get(model)!.name}</strong></a> from ${uriNameFor(renderer.instanceOf.get(model)!)}
       ` : ``}
       </p>
       ${forEach(model.comments, (comment) => `
@@ -24,7 +25,7 @@ export default function (model: ModelElement, baseHref: string, roots: Set<Model
         </li>
         ${forEach(model.allOwningElements(), (parent) => `
           <li class="breadcrumb-item">
-            <a class="name-ref name-${cssClass(parent)}" href="${ref(parent)}">${parent.name}</a>
+            <a class="name-ref name-${cssClass(parent)}" href="${renderer.ref(parent)}">${parent.name}</a>
           </li>
         `)}
         <li class="breadcrumb-item active">

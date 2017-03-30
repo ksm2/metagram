@@ -8,11 +8,11 @@ export interface ElementListener {
 
 @Class('Element')
 export class Element extends EventEmitter {
+  _typeName: string | undefined;
+  _typeURI: string | undefined;
   private _contents = new Set<Element>();
   private _origin: string | undefined;
   private _ID: string | undefined;
-  private _instanceOf: ModelElement | undefined;
-  private _listeners: Map<string, ElementListener[]> = new Map();
 
   get contents(): Set<Element> {
     return this._contents;
@@ -73,16 +73,30 @@ export class Element extends EventEmitter {
   }
 
   /**
-   * Sets the element's type
+   * Sets the element's type URI
    */
-  setInstanceOf(type: ModelElement | undefined) {
-    this._instanceOf = type;
+  setTypeURI(uri: string | undefined) {
+    this._typeURI = uri;
   }
 
   /**
-   * Returns the URI of this element
+   * Returns the TypeURI of this element
    */
-  getInstanceOf(): ModelElement | undefined {
-    return this._instanceOf;
+  getTypeURI(): string | undefined {
+    return this._typeURI;
+  }
+
+  /**
+   * Sets the element's type name
+   */
+  setTypeName(name: string | undefined) {
+    this._typeName = name;
+  }
+
+  /**
+   * Returns the TypeName of this element
+   */
+  getTypeName(): string | undefined {
+    return this._typeName;
   }
 }

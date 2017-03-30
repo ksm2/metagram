@@ -24,8 +24,7 @@ export class XMITree {
   async resolve(resolver: XMIResolver): Promise<ResolvedXMINode> {
     const resolveSet = new Set<XMIElementNode>();
     await this.resolveRefNodes(this.root, resolver, resolveSet);
-    const tree = ResolvedXMINode.createTree(this.root)!;
-    return tree;
+    return ResolvedXMINode.createTree(this.root)!;
   }
 
   /**

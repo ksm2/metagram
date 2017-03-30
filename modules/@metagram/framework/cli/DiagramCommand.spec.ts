@@ -51,9 +51,7 @@ describe('DiagramCommand', function () {
     p.stdin.end();
   });
 
-  it('should generate SVG image files', function (done) {
-    this.timeout(60000);
-
+  it('should generate SVG image files', (done) => {
     execFile('node', [bin, 'diagram', '-f', 'svg', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
       expect(error).to.be.null;
       expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.svg');

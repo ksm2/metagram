@@ -21,14 +21,15 @@ export class HTMLDocCommand extends Command {
 
     const urls = result.input;
     const xmi = await this.decoder.loadURLs(...urls);
-    this.decoder.printErrors();
 
     if (!xmi) throw new Error('No XMI source URLs specified');
 
-    const renderer = new Renderer(this.ioService, baseHref, outputDir);
+    const renderer = new Renderer(this.decoder, this.ioService, baseHref, outputDir);
 
     await renderer.render(xmi);
     await renderer.copyAssets();
     await renderer.renderOverview();
+
+    this.decoder.printErrors();
   }
 }

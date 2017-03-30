@@ -1,3 +1,4 @@
+import chalk = require('chalk');
 import { DOMParser } from 'xmldom';
 import { KNOWN_MODELS } from '../../models';
 import { XMITree } from './XMITree';
@@ -41,8 +42,9 @@ export class XMIResolver {
    * Resolves an XMI tree from stdin stream
    */
   async resolveStdin(): Promise<ResolvedXMINode> {
+    console.info(`Resolving ${chalk.yellow('stdin')} ...`);
     const xmiString = await this.fetchService.getIOService().readStdin();
-    return this.resolveString('stdin://', xmiString);
+    return await this.resolveString('stdin', xmiString);
   }
 
   /**
@@ -60,6 +62,9 @@ export class XMIResolver {
     // Create a tree of XMI elements
     const element = xmiElements.item(0);
     const tree = new XMITree(origin, element);
-    return await tree.resolve(this);
+    const node = await tree.resolve(this);
+    console.info(`Resolved  ${chalk.yellow(origin)}`);
+
+    return node;
   }
 }
