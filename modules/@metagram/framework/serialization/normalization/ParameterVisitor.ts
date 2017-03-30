@@ -48,7 +48,7 @@ export class ParameterVisitor extends Visitor {
             return;
         }
 
-        console.error(`Unexpected default value type: ${childNode.typeName}`);
+        // console.error(`Unexpected default value type: ${childNode.typeName}`);
         return;
       }
 

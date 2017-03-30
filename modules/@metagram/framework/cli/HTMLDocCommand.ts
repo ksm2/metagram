@@ -30,6 +30,7 @@ export class HTMLDocCommand extends Command {
     await renderer.copyAssets();
     await renderer.renderOverview();
 
+    // Finish terminal
     this.decoder.printErrors();
   }
 }

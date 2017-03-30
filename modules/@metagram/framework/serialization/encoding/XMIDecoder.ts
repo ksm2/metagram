@@ -1,5 +1,5 @@
 import { Element, ModelElement, XMI } from '../../models';
-import { FetchService } from '../../services/FetchService';
+import { FetchService, LogService } from '../../services';
 import { Visitor } from '../normalization/Visitor';
 import { XMIResolver } from './XMIResolver';
 import { ResolvedXMINode } from './ResolvedXMINode';
@@ -19,8 +19,8 @@ export class XMIDecoder {
   private resolvedMap: WeakMap<ResolvedXMINode, Element>;
   private promises: Promise<Element>[];
 
-  constructor(private fetchService: FetchService) {
-    this.xmiResolver = new XMIResolver(fetchService);
+  constructor(private fetchService: FetchService, private logService: LogService) {
+    this.xmiResolver = new XMIResolver(fetchService, logService);
     this.visitors = new Map();
     this.resolvedMap = new WeakMap();
     this.promises = [];
@@ -41,6 +41,10 @@ export class XMIDecoder {
    * Load multiple URLs
    */
   async loadURLs(...urls: string[]): Promise<XMI | null> {
+    for (let url of urls) {
+      this.logService.setInfo(url, 'pending');
+    }
+
     let p: Promise<XMI | null> = Promise.resolve(null);
     while (urls.length) {
       const url = urls.shift()!;
@@ -105,6 +109,7 @@ export class XMIDecoder {
    * Print errors which occurred during decoding
    */
   printErrors(): void {
+    this.logService.finish();
     if (this.unsupportedTypeURIs.size) {
       console.error(`Unsupported URIs during decoding:\n${[...this.unsupportedTypeURIs].reduce((x, uri) => `${x}  - ${uri}\n`, '')}`);
     }

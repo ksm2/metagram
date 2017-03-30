@@ -27,7 +27,7 @@ export class ClassVisitor extends ClassifierVisitor {
             generalClass.specializations.add(parent);
           }
         } else {
-          console.error(`Could not find generalization: ${general}`);
+          // console.error(`Could not find generalization: ${general}`);
         }
 
         return;

@@ -2,18 +2,19 @@ import meow = require('meow');
 import chalk = require('chalk');
 import { HTMLDocCommand } from './HTMLDocCommand';
 import { Command } from './Command';
-import { IOService } from '../services/IOService';
+import { FetchService, IOService, LogService } from '../services';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
-import { FetchService } from '../services/FetchService';
 import { DiagramCommand } from './DiagramCommand';
 
 export class CLIApplication {
   private fetchService: FetchService;
+  private logService: LogService;
   private commands: Command[];
 
   constructor(private ioService: IOService) {
     this.fetchService = new FetchService(ioService);
-    const decoder = new XMIDecoder(this.fetchService);
+    this.logService = new LogService();
+    const decoder = new XMIDecoder(this.fetchService, this.logService);
 
     this.commands = [
       new DiagramCommand(decoder),

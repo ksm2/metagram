@@ -1,5 +1,4 @@
 import path = require('path');
-import chalk = require('chalk');
 import fetch from 'node-fetch';
 import { IOService } from './IOService';
 
@@ -45,19 +44,15 @@ export class FetchService {
 
       const exists = await this.ioService.fileExists(filename);
       if (!exists) {
-        console.info(`Resolving ${chalk.yellow(url)} from ${chalk.cyan('download')} ...`);
         const res = await fetch(url);
         const text = await res.text();
-        console.info(`Caching ${chalk.yellow(url)}`);
         await this.ioService.writeFile(text, filename, encoding);
         return text;
       }
 
-      console.info(`Resolving ${chalk.yellow(url)} from ${chalk.cyan('cache')} ...`);
       return this.ioService.readFile(filename, encoding);
     }
 
-    console.info(`Resolving ${chalk.yellow(url)} from ${chalk.cyan('download')} ...`);
     const res = await fetch(url);
     return await res.text();
   }

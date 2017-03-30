@@ -89,7 +89,7 @@ export class PropertyVisitor extends Visitor {
             return;
         }
 
-        console.error(`Unexpected default value type: ${childNode.typeName}`);
+        // console.error(`Unexpected default value type: ${childNode.typeName}`);
         return;
       }
 
