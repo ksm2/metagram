@@ -85,7 +85,7 @@ export class XMITree {
         }
 
         if (child instanceof HRefLeaf) {
-          const resolved = await resolver.resolveTree(child.href);
+          const resolved = await resolver.resolveURL(child.href);
           const nodeByID = resolved.getNodeByID(child.id);
           if (!nodeByID) throw new Error(`Could not resolve HRef: ${child.href}#${child.id}`);
           children[i] = nodeByID;

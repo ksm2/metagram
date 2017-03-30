@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./test"
+    "outDir": "./test",
+    "declaration": false,
+    "sourceMap": true
   },
   "include": [
     "./custom_typings/*.d.ts",

@@ -1,24 +1,31 @@
 import path = require('path');
 import chalk = require('chalk');
 import fetch from 'node-fetch';
-import { FileService } from './FileService';
+import { IOService } from './IOService';
 
 export class FetchService {
   private cacheDir: string | null;
 
-  constructor(private fileService: FileService, cacheDir?: string) {
+  constructor(private ioService: IOService, cacheDir?: string) {
     this.setCacheDir(cacheDir);
   }
 
   /**
-   * Sets the cache directory.
+   * Returns the IO service
+   */
+  getIOService(): IOService {
+    return this.ioService;
+  }
+
+  /**
+   * Sets the cache directory
    */
   setCacheDir(dir?: string): void {
     this.cacheDir = dir ? path.normalize(dir) : null;
   }
 
   /**
-   * Gets the cache directory.
+   * Gets the cache directory
    */
   getCacheDir(): string | null {
     return this.cacheDir;
@@ -36,18 +43,18 @@ export class FetchService {
     if (this.cacheDir) {
       const filename = path.join(this.cacheDir, url.replace(/[^\w.]/g, '-'));
 
-      const exists = await this.fileService.fileExists(filename);
+      const exists = await this.ioService.fileExists(filename);
       if (!exists) {
         console.info(`Resolving ${chalk.yellow(url)} from ${chalk.cyan('download')} ...`);
         const res = await fetch(url);
         const text = await res.text();
         console.info(`Caching ${chalk.yellow(url)}`);
-        await this.fileService.writeFile(text, filename, encoding);
+        await this.ioService.writeFile(text, filename, encoding);
         return text;
       }
 
       console.info(`Resolving ${chalk.yellow(url)} from ${chalk.cyan('cache')} ...`);
-      return this.fileService.readFile(filename, encoding);
+      return this.ioService.readFile(filename, encoding);
     }
 
     console.info(`Resolving ${chalk.yellow(url)} from ${chalk.cyan('download')} ...`);

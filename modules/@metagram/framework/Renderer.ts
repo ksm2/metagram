@@ -1,5 +1,5 @@
 import { Association, ModelElement, Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
-import { FileService } from './services/FileService';
+import { IOService } from './services/IOService';
 import { cssClass } from './renderers/html/helpers';
 
 import overviewRenderer from './renderers/html/overview.html';
@@ -18,7 +18,7 @@ export class Renderer {
   private roots: Set<ModelElement>;
 
   constructor(
-    private fileService: FileService,
+    private ioService: IOService,
     private baseHref: string,
     private outputDir: string,
   ) {
@@ -57,7 +57,7 @@ export class Renderer {
   }
 
   async copyAssets(): Promise<void> {
-    await this.fileService.copyDirectory(__dirname + '/../public', this.outputDir);
+    await this.ioService.copyDirectory(__dirname + '/../public', this.outputDir);
   }
 
   async renderOverview(): Promise<void>  {
@@ -67,8 +67,8 @@ export class Renderer {
     const str = overviewRenderer(models, this.baseHref, this.roots, (model: ModelElement) => {
       return this.generateFilename(model);
     });
-    await this.fileService.ensureDirectoryExists(fn);
-    return this.fileService.writeFile(str, fn);
+    await this.ioService.ensureDirectoryExists(fn);
+    return this.ioService.writeFile(str, fn);
   }
 
   async renderIndex(model: XMI): Promise<void>  {
@@ -119,8 +119,8 @@ export class Renderer {
       return this.generateFilename(model);
     });
     await Promise.all(promises);
-    await this.fileService.ensureDirectoryExists(fn);
-    return this.fileService.writeFile(str, fn);
+    await this.ioService.ensureDirectoryExists(fn);
+    return this.ioService.writeFile(str, fn);
   }
 
   private generateFilename(model: Element): string {

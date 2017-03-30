@@ -1,4 +1,4 @@
 export { FetchService } from './FetchService';
 export { BresenhamService } from './BresenhamService';
-export { FileService } from './FileService';
+export { IOService } from './IOService';
 export { SVGService } from './SVGService';

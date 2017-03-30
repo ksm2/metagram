@@ -10,7 +10,7 @@ sourceMaps.install();
 process.chdir(path.resolve(__dirname));
 process.setMaxListeners(0);
 
-describe('CLIApplication', function () {
+describe('HTMLDocCommand', function () {
   let pkg: any;
   let bin: string;
 
@@ -27,29 +27,21 @@ describe('CLIApplication', function () {
     process.emit('cleanup');
   });
 
-  it('should return the version', (done) => {
-    execFile('node', [bin, '--version'], (error, stdout) => {
-      expect(error).to.be.null;
-      expect(stdout.replace(/\r\n|\n/g, '')).to.equal(pkg.version);
-      done();
-    });
-  });
-
   it('should print the help', (done) => {
-    execFile('node', [bin, '--help'], (error, stdout) => {
+    execFile('node', [bin, 'html-doc', '--help'], (error, stdout) => {
       expect(error).to.be.not.null;
-      expect(stdout).to.include('metagram');
-      expect(stdout).to.include('Commands');
-      expect(stdout).to.include('Examples');
+      expect(stdout).to.include('metagram html-doc');
+      expect(stdout).to.include('Description');
+      expect(stdout).to.include('Options');
       expect(error).to.have.property('code', 2);
       done();
     });
   });
 
-  it('should error when executing wrong command', (done) => {
-    execFile('node', [bin, 'wrong', '--help'], (error, stdout, stderr) => {
+  it('should error when executing without source', (done) => {
+    execFile('node', [bin, 'html-doc'], (error, stdout, stderr) => {
       expect(error).to.be.not.null;
-      expect(chalk.stripColor(stderr).replace(/\r\n|\n/g, '')).to.equal('Invalid command: wrong');
+      expect(chalk.stripColor(stderr).replace(/\r\n|\n/g, '')).to.equal('No XMI source URLs specified');
       expect(error).to.have.property('code', 1);
       done();
     });

@@ -1,5 +1,4 @@
 import { Result } from 'meow';
-import getStdin = require('get-stdin');
 
 export interface CommandOption {
   name: string,
@@ -10,10 +9,10 @@ export interface CommandOption {
 export class Command {
   private options: CommandOption[];
 
-  constructor(private name: string, private description: string) {
+  constructor(private name: string, private usageHelp: string, private description: string) {
     this.options = [];
     this.addOption({ name: '--help', description: 'Shows this help text.', shorthand: '-h' });
-    this.addOption({ name: '--cache-dir', description: 'Specifies the cache directory.' });
+    this.addOption({ name: '--cache-dir', description: 'Specifies the cache directory.', shorthand: '-c' });
   }
 
   /**
@@ -28,6 +27,13 @@ export class Command {
    */
   getDescription(): string {
     return this.description;
+  }
+
+  /**
+   * Returns the usage help
+   */
+  getUsageHelp(): string {
+    return this.usageHelp;
   }
 
   /**
@@ -48,16 +54,5 @@ export class Command {
    */
   protected addOption(option: CommandOption): void {
     this.options.push(option);
-  }
-
-  /**
-   * Returns the contents of std-in
-   */
-  protected async loadStdin(): Promise<string> {
-    // Get input file
-    const input = await getStdin();
-    if (!input) throw new Error('Please specify an input file');
-
-    return input;
   }
 }

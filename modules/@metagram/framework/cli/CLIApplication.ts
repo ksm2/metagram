@@ -2,20 +2,22 @@ import meow = require('meow');
 import chalk = require('chalk');
 import { HTMLDocCommand } from './HTMLDocCommand';
 import { Command } from './Command';
-import { FileService } from '../services/FileService';
+import { IOService } from '../services/IOService';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { FetchService } from '../services/FetchService';
+import { DiagramCommand } from './DiagramCommand';
 
 export class CLIApplication {
   private fetchService: FetchService;
   private commands: Command[];
 
-  constructor(private fileService: FileService) {
-    this.fetchService = new FetchService(fileService);
+  constructor(private ioService: IOService) {
+    this.fetchService = new FetchService(ioService);
     const decoder = new XMIDecoder(this.fetchService);
 
     this.commands = [
-      new HTMLDocCommand(decoder, fileService),
+      new DiagramCommand(decoder),
+      new HTMLDocCommand(decoder, ioService),
     ];
   }
 
@@ -48,8 +50,9 @@ export class CLIApplication {
     }
 
     // Specified cache dir?
-    if (result.flags['cacheDir']) {
-      this.fetchService.setCacheDir(result.flags['cacheDir']);
+    const cacheDir = result.flags['cacheDir'] || result.flags['c'] || null;
+    if (cacheDir) {
+      this.fetchService.setCacheDir(cacheDir);
       console.info(`Setting cache dir to ${chalk.cyan(this.fetchService.getCacheDir() || '')}`);
     }
 
@@ -86,7 +89,7 @@ ${chalk.bold('Examples')}
 
     const optionStr = this.generateTable(options);
     const help = `
-metagram ${command.getName()} <input>
+metagram ${command.getName()} ${command.getUsageHelp()}
 
 ${chalk.bold('Description')}
   ${command.getDescription()}

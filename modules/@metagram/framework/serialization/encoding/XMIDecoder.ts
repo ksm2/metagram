@@ -66,15 +66,35 @@ export class XMIDecoder {
    * @returns Promise for a model element
    */
   async loadURL(url: string, encoding: string = 'utf8'): Promise<XMI> {
-    const tree = await this.xmiResolver.resolveTree(url, encoding);
+    const tree = await this.xmiResolver.resolveURL(url, encoding);
     const element = this.decodeNode(tree);
     if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
 
     return element;
   }
 
+  /**
+   * Loads a model from stdin stream
+   *
+   * @returns Promise for a model element
+   */
+  async loadStdin(): Promise<XMI> {
+    const tree = await this.xmiResolver.resolveStdin();
+    const element = this.decodeNode(tree);
+    if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
+
+    return element;
+  }
+
+  /**
+   * Loads a node by its type
+   *
+   * @param typeURI The known type's URI
+   * @param typeName The type's name known to the URI namespace
+   * @returns the loaded model element
+   */
   async loadNodeByType(typeURI: string, typeName: string): Promise<ModelElement> {
-    const tree = await this.xmiResolver.resolveURI(typeURI);
+    const tree = await this.xmiResolver.resolveKnownURI(typeURI);
     const element = this.decodeNode(tree.getChildNodeByName(typeName));
     if (!(element instanceof ModelElement)) throw new Error(`Could not resolve: ${typeName} from ${typeURI}`);
 

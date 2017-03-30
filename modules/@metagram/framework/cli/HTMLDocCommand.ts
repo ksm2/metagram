@@ -4,17 +4,17 @@ import { Result } from 'meow';
 import { Command } from './Command';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { Renderer } from '../Renderer';
-import { FileService } from '../services/FileService';
+import { IOService } from '../services/IOService';
 
 export class HTMLDocCommand extends Command {
-  constructor(private decoder: XMIDecoder, private fileService: FileService) {
-    super('html-doc', 'Generates an HTML documentation out of a model.');
+  constructor(private decoder: XMIDecoder, private ioService: IOService) {
+    super('html-doc', '[--base-href] [-o <dir>] URL...', 'Generates an HTML documentation out of a model.');
     this.addOption({ name: '--base-href', description: 'The base HRef to set in the HTML\'s <head>.' });
-    this.addOption({ name: '--output-dir', description: 'Specify the output directory.' });
+    this.addOption({ name: '--output-dir', description: 'Specifies the output directory.', shorthand: '-o' });
   }
 
   async run(result: Result): Promise<void> {
-    const outputDir = path.normalize(result.flags['outputDir'] || '.');
+    const outputDir = path.normalize(result.flags['outputDir'] || result.flags['o'] || '.');
     console.info(`Setting output dir to ${chalk.cyan(outputDir)}`);
     const baseHref = result.flags['baseHref'] || '/';
     console.info(`Setting base href to ${chalk.cyan(baseHref)}`);
@@ -25,7 +25,7 @@ export class HTMLDocCommand extends Command {
 
     if (!xmi) throw new Error('No XMI source URLs specified');
 
-    const renderer = new Renderer(this.fileService, baseHref, outputDir);
+    const renderer = new Renderer(this.ioService, baseHref, outputDir);
 
     await renderer.render(xmi);
     await renderer.copyAssets();

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import { CLIApplication } from '../cli/CLIApplication';
-import { FileService } from '../services/FileService';
+import { IOService } from '../services/IOService';
 
-const fileService = new FileService();
+const fileService = new IOService();
 const cli = new CLIApplication(fileService);
 
 process.on('unhandledRejection', (err: Error) => {
