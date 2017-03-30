@@ -29,9 +29,10 @@
     "./canvas/SVGCanvas.js": "./canvas/SVGCanvas.browser.js",
     "./cli/CLIApplication.js": false,
     "./cli/Command.js": false,
+    "./cli/DiagramCommand.js": false,
     "./cli/HTMLDocCommand.js": false,
     "./services/FetchService.js": "./services/FetchService.browser.js",
-    "./services/FileService.js": false
+    "./services/IOService.js": false
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",
