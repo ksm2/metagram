@@ -1,10 +1,16 @@
 {
   "name": "@metagram/framework",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "The Metagram browser and server framework",
   "typings": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ksm2/metagram.git"
+  },
+  "bin": {
+    "metagram": "bin/metagram.js"
+  },
   "dependencies": {
-    "@metagram/models": "^1.0.0",
     "canvas": "^1.6.2",
     "canvas2svg": "^1.0.16",
     "events": "^1.1.1",
@@ -21,8 +27,12 @@
     "./canvas/NodeCanvas.js": false,
     "./canvas/PDFCanvas.js": "./canvas/PDFCanvas.browser.js",
     "./canvas/SVGCanvas.js": "./canvas/SVGCanvas.browser.js",
+    "./cli/CLIApplication.js": false,
+    "./cli/Command.js": false,
+    "./cli/DiagramCommand.js": false,
+    "./cli/HTMLDocCommand.js": false,
     "./services/FetchService.js": "./services/FetchService.browser.js",
-    "./services/FileService.js": false
+    "./services/IOService.js": false
   },
   "author": {
     "name": "Konstantin Simon Maria Möllers",

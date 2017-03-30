@@ -1,5 +1,5 @@
-import { Element } from '@metagram/models';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Element } from '../models';
+import { Class, Attribute } from '../decorators';
 import { Line } from './Line';
 import { SVGService } from '../services/SVGService';
 import { Point } from './Point';

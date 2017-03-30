@@ -1,4 +1,4 @@
-import { Generalization } from '@metagram/models';
+import { Generalization } from '../models';
 import { Canvas } from '../canvas/Canvas';
 import { Color } from './Color';
 import { Edge } from './Edge';

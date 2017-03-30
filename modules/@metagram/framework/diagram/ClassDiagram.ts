@@ -1,5 +1,5 @@
 import { Diagram } from './Diagram';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Class, Attribute } from '../decorators';
 
 @Class('ClassDiagram', Diagram)
 export class ClassDiagram extends Diagram {

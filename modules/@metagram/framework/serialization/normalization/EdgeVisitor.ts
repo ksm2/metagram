@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../../models';
 import { Edge } from '../../diagram/Edge';
 import { Shape } from '../../diagram/Shape';
 import { PackageImportElement } from '../../diagram/PackageImportElement';

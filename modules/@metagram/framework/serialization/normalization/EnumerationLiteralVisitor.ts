@@ -1,5 +1,5 @@
-import { Element } from '@metagram/models';
-import { EnumerationLiteral } from '@metagram/models';
+import { Element } from '../../models';
+import { EnumerationLiteral } from '../../models';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 

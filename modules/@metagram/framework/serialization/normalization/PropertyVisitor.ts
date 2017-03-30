@@ -1,9 +1,9 @@
-import { Element } from '@metagram/models';
-import { Type } from '@metagram/models';
-import { Property } from '@metagram/models';
-import { Association } from '@metagram/models';
-import { EnumerationLiteral } from '@metagram/models';
-import { AggregationKind } from '@metagram/models';
+import { Element } from '../../models';
+import { Type } from '../../models';
+import { Property } from '../../models';
+import { Association } from '../../models';
+import { EnumerationLiteral } from '../../models';
+import { AggregationKind } from '../../models';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
@@ -89,7 +89,7 @@ export class PropertyVisitor extends Visitor {
             return;
         }
 
-        console.error(`Unexpected default value type: ${childNode.typeName}`);
+        // console.error(`Unexpected default value type: ${childNode.typeName}`);
         return;
       }
 

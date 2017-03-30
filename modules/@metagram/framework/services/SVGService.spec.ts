@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { SVGService } from './SVGService';
 
-describe('The SVG service', () => {
+describe('SVGService', () => {
   it('should generate a valid SVG path using “L”', () => {
     const path1 = SVGService.createSVGPath()
       .moveTo(0, 0)

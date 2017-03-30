@@ -3,6 +3,7 @@ import fs = require('fs');
 import path = require('path');
 import Canvas = require('canvas');
 import { WriteStream } from 'fs';
+import { Diagram } from '../diagram/Diagram';
 
 export type ImageFormat = 'svg' | 'pdf' | 'png' | 'jpeg';
 
@@ -10,15 +11,26 @@ export class NodeCanvas extends AbstractCanvas {
   private _canvas: Canvas;
   private _imageFormat?: string;
 
-  constructor(width: number, height: number, imageFormat?: ImageFormat) {
+  constructor(diagram: Diagram, zoom: number = 1, imageFormat: ImageFormat) {
+    // Get dimensions
+    const dim = diagram.calcAllElementBounds();
+    const width = zoom * dim.width;
+    const height = zoom * dim.height;
+
+    // Create rendering context
     const canvas = new Canvas(width, height, imageFormat);
     const ctx = canvas.getContext('2d');
     if (!ctx) throw 'CanvasRenderingContext2D is not available';
     super(ctx);
-    if (this._imageFormat) ctx.textDrawingMode = 'glyph';
+
+    // Improve text drawing mode
+    ctx.textDrawingMode = 'glyph';
 
     this._canvas = canvas;
     this._imageFormat = imageFormat;
+    this.moveOffset(-dim.x, -dim.y);
+    this.zoom = zoom;
+    this.diagram = diagram;
   }
 
   get width(): number {

@@ -1,6 +1,6 @@
 import { Shape } from './Shape';
 import { Point } from './Point';
-import { Element } from '@metagram/models';
+import { Element } from '../models';
 import { Bounds } from './Bounds';
 
 export class Connector extends Element {

@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../models';
 import { Style } from './Style';
 import { Color } from './Color';
 

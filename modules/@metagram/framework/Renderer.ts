@@ -1,5 +1,5 @@
-import { Association, ModelElement, Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from '@metagram/models';
-import { FileService } from './services/FileService';
+import { Association, ModelElement, Element, XMI, DataType, Class, Package, Enumeration, EnumerationLiteral, Property, PrimitiveType } from './models';
+import { IOService } from './services/IOService';
 import { cssClass } from './renderers/html/helpers';
 
 import overviewRenderer from './renderers/html/overview.html';
@@ -12,26 +12,38 @@ import classRenderer from './renderers/html/class.html';
 import packageRenderer from './renderers/html/package.html';
 import propertyRenderer from './renderers/html/property.html';
 import primitiveTypeRenderer from './renderers/html/primitiveType.html';
+import { XMIDecoder } from './serialization/encoding/XMIDecoder';
+
+export interface Ref {
+  (m: ModelElement): string;
+}
 
 export class Renderer {
+  roots: Set<ModelElement>;
+  instanceOf: WeakMap<ModelElement, ModelElement>;
   private rendered: Set<ModelElement>;
-  private roots: Set<ModelElement>;
+  private promises: Promise<any>[];
 
   constructor(
-    private fileService: FileService,
+    private decoder: XMIDecoder,
+    private ioService: IOService,
     private baseHref: string,
     private outputDir: string,
   ) {
     this.rendered = new Set();
     this.roots = new Set();
+    this.instanceOf = new WeakMap();
+    this.promises = [];
   }
 
   /**
    * Renders any kind of element
    */
-  async render(element: ModelElement): Promise<void> {
-    if (this.rendered.has(element)) return;
-    this.rendered.add(element);
+  async render(element: Element): Promise<void> {
+    if (element instanceof ModelElement) {
+      if (this.rendered.has(element)) return;
+      this.rendered.add(element);
+    }
 
     if (element instanceof Class) {
       await this.renderClass(element);
@@ -55,18 +67,16 @@ export class Renderer {
   }
 
   async copyAssets(): Promise<void> {
-    await this.fileService.copyDirectory(__dirname + '/../public', this.outputDir);
+    await this.ioService.copyDirectory(__dirname + '/../public', this.outputDir);
   }
 
   async renderOverview(): Promise<void>  {
     const fn = `${this.outputDir}/overview.html`;
 
     const models = this.sortModelElements([...this.rendered].filter(m => m.name));
-    const str = overviewRenderer(models, this.baseHref, this.roots, (model: ModelElement) => {
-      return this.generateFilename(model);
-    });
-    await this.fileService.ensureDirectoryExists(fn);
-    return this.fileService.writeFile(str, fn);
+    const str = overviewRenderer(models, this.baseHref, this);
+    await this.ioService.ensureDirectoryExists(fn);
+    return this.ioService.writeFile(str, fn);
   }
 
   async renderIndex(model: XMI): Promise<void>  {
@@ -110,15 +120,22 @@ export class Renderer {
     await this.writeOut(model, `${this.outputDir}/${this.generateFilename(model)}`, associationRenderer).catch(e => { throw e });
   }
 
-  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, roots: Set<ModelElement>, ref: (model: ModelElement) => string) => string): Promise<void> {
-    const promises: Promise<void>[] = [];
-    const str = renderer(model, this.baseHref, this.roots, (model: ModelElement) => {
-      promises.push(this.render(model));
-      return this.generateFilename(model);
-    });
-    await Promise.all(promises);
-    await this.fileService.ensureDirectoryExists(fn);
-    return this.fileService.writeFile(str, fn);
+  async writeOut<T>(model: T, fn: string, renderer: (t: T, b: string, renderer: Renderer) => string): Promise<void> {
+    if (model instanceof ModelElement) {
+      const instanceOf = await this.decoder.loadNodeByType(model.getTypeURI()!, model.getTypeName()!);
+      this.instanceOf.set(model, instanceOf);
+    }
+
+    this.promises = [];
+    const str = renderer(model, this.baseHref, this);
+    await Promise.all(this.promises);
+    await this.ioService.ensureDirectoryExists(fn);
+    return this.ioService.writeFile(str, fn);
+  }
+
+  ref(model: ModelElement) {
+    this.promises.push(this.render(model));
+    return this.generateFilename(model);
   }
 
   private generateFilename(model: Element): string {
@@ -141,8 +158,8 @@ export class Renderer {
     const compare = (str1: string, str2: string) => str1 < str2 ? -1 : str1 > str2 ? 1 : 0;
     const order = ['Class', 'Enumeration', 'DataType', 'PrimitiveType', 'Package'];
     return elements.sort((m1, m2) => {
-      const o1 = m1.getInstanceOf() ? order.indexOf(m1.getInstanceOf()!.name!) : -1;
-      const o2 = m2.getInstanceOf() ? order.indexOf(m2.getInstanceOf()!.name!) : -1;
+      const o1 = m1.getTypeName() ? order.indexOf(m1.getTypeName()!) : -1;
+      const o2 = m2.getTypeName() ? order.indexOf(m2.getTypeName()!) : -1;
 
       return (o2 - o1) || compare(m1.name!.toLowerCase(), m2.name!.toLowerCase())
     });

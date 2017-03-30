@@ -1,9 +1,10 @@
 import main from './main.html';
-import { ModelElement } from '@metagram/models';
+import { ModelElement } from '../../models';
 import { forEach, cssClass } from './helpers';
+import { Renderer } from '../../Renderer';
 
-export default function (models: ModelElement[], baseHref: string, roots: Set<ModelElement>, ref: (m: ModelElement) => string) {
-  return main('Overview', baseHref, roots, 'overview', `
+export default function (models: ModelElement[], baseHref: string, renderer: Renderer) {
+  return main('Overview', baseHref, renderer.roots, 'overview', `
     <main>
       <section>
         <h2>Overview</h2>
@@ -19,7 +20,7 @@ export default function (models: ModelElement[], baseHref: string, roots: Set<Mo
     </main>
     <script>
     $(() => {
-      const elements = [${forEach(models, (ownedElement) => `{"cls":"${cssClass(ownedElement)}","href":"${ref(ownedElement)}","name":"${ownedElement.name}"},`)}];
+      const elements = [${forEach(models, (ownedElement) => `{"cls":"${cssClass(ownedElement)}","href":"${renderer.ref(ownedElement)}","name":"${ownedElement.name}"},`)}];
       
       function updateSearch() {
         const text = window.location.hash.substr(1).toLowerCase();

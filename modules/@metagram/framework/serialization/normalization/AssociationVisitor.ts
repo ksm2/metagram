@@ -1,6 +1,6 @@
-import { Element } from '@metagram/models';
-import { Association } from '@metagram/models';
-import { Property } from '@metagram/models';
+import { Element } from '../../models';
+import { Association } from '../../models';
+import { Property } from '../../models';
 import { ClassifierVisitor } from './ClassifierVisitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';

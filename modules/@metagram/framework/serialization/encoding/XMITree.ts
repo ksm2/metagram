@@ -24,8 +24,7 @@ export class XMITree {
   async resolve(resolver: XMIResolver): Promise<ResolvedXMINode> {
     const resolveSet = new Set<XMIElementNode>();
     await this.resolveRefNodes(this.root, resolver, resolveSet);
-    const tree = ResolvedXMINode.createTree(this.root)!;
-    return tree;
+    return ResolvedXMINode.createTree(this.root)!;
   }
 
   /**
@@ -85,7 +84,7 @@ export class XMITree {
         }
 
         if (child instanceof HRefLeaf) {
-          const resolved = await resolver.resolveTree(child.href);
+          const resolved = await resolver.resolveURL(child.href);
           const nodeByID = resolved.getNodeByID(child.id);
           if (!nodeByID) throw new Error(`Could not resolve HRef: ${child.href}#${child.id}`);
           children[i] = nodeByID;

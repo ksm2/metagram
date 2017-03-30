@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../../models';
 import { Point } from '../../diagram/Point';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';

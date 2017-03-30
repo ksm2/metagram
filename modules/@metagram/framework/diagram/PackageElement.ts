@@ -1,10 +1,10 @@
-import { Package } from '@metagram/models';
+import { Package } from '../models';
 import { Shape } from './Shape';
 import { Canvas } from '../canvas/Canvas';
 import { Fill } from './Fill';
 import { Color } from './Color';
-import { Clazz as Class } from '@metagram/models';
 import { Bounds } from './Bounds';
+import { Class } from '../decorators';
 
 @Class('PackageElement', Shape)
 export class PackageElement extends Shape<Package> {

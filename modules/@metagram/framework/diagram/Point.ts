@@ -1,5 +1,5 @@
-import { Element } from '@metagram/models';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Element } from '../models';
+import { Class, Attribute } from '../decorators';
 
 @Class('Point', Element)
 export class Point extends Element {

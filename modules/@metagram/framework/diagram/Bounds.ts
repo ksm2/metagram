@@ -1,5 +1,5 @@
-import { Element } from '@metagram/models';
-import { Clazz as Class, Attribute } from '@metagram/models';
+import { Element } from '../models';
+import { Class, Attribute } from '../decorators';
 import { Point } from './Point';
 
 @Class('Bounds', Element)

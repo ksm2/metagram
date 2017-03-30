@@ -1,4 +1,4 @@
-import { ModelElement } from '@metagram/models';
+import { ModelElement } from '../../models';
 import { forEach } from './helpers';
 
 export default function (title: string, baseHref: string, roots: Set<ModelElement>, active: string, body: string) {

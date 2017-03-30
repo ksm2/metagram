@@ -18,5 +18,4 @@ src/**/*.js
 
 # Vendor
 node_modules
-xmi
-
+/xmi

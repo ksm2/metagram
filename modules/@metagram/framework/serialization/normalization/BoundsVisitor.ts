@@ -1,4 +1,4 @@
-import { Element } from '@metagram/models';
+import { Element } from '../../models';
 import { Bounds } from '../../diagram/Bounds';
 import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';

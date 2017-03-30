@@ -1,4 +1,4 @@
-import { Element, ModelElement } from '@metagram/models';
+import { Element, ModelElement } from '../../models';
 import { Diagram } from '../../diagram/Diagram';
 import { XMIDecoder } from '../encoding/XMIDecoder';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
@@ -13,9 +13,8 @@ export class Visitor {
   visit(decoder: XMIDecoder, node: ResolvedXMINode, element: Element): Element {
     element.setID(node.id);
     element.setOrigin(node.origin);
-    decoder.loadNodeByType(node.typeURI, node.typeName).then((uriNode) => {
-      element.setInstanceOf(uriNode);
-    });
+    element.setTypeURI(node.typeURI);
+    element.setTypeName(node.typeName);
 
     for (let [name, values] of node.attrs) {
       for (let value of values) {
