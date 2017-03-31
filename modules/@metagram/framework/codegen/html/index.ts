@@ -1,0 +1,9 @@
+export { AssociationTemplate } from './AssociationRenderer';
+export { ClassTemplate } from './ClassRenderer';
+export { DataTypeTemplate } from './DataTypeTemplate';
+export { DefaultTemplate } from './DefaultTemplate';
+export { EnumerationTemplate } from './EnumerationTemplate';
+export { HTMLTemplate } from './HTMLTemplate';
+export { IndexTemplate } from './IndexTemplate';
+export { OverviewTemplate } from './OverviewTemplate';
+export { PackageTemplate } from './PackageTemplate';

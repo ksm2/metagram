@@ -3,8 +3,8 @@ import chalk = require('chalk');
 import { Result } from 'meow';
 import { Command } from './Command';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
-import { Renderer } from '../Renderer';
 import { IOService } from '../services/IOService';
+import { HTMLBundler } from '../codegen/HTMLBundler';
 
 export class HTMLDocCommand extends Command {
   constructor(private decoder: XMIDecoder, private ioService: IOService) {
@@ -24,11 +24,9 @@ export class HTMLDocCommand extends Command {
 
     if (!xmi) throw new Error('No XMI source URLs specified');
 
-    const renderer = new Renderer(this.decoder, this.ioService, baseHref, outputDir);
-
-    await renderer.render(xmi);
-    await renderer.copyAssets();
-    await renderer.renderOverview();
+    // Bundle HTML code into output directory
+    const bundler = new HTMLBundler(this.decoder, this.ioService);
+    await bundler.bundle(xmi, outputDir, { baseHref });
 
     // Finish terminal
     this.decoder.printErrors();

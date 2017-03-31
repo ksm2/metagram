@@ -6,10 +6,14 @@ import { FetchService, IOService, LogService } from '../services';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { DiagramCommand } from './DiagramCommand';
 
+import sourceMaps = require('source-map-support');
+sourceMaps.install();
+
 export class CLIApplication {
   private fetchService: FetchService;
   private logService: LogService;
   private commands: Command[];
+  private command?: Command;
 
   constructor(private ioService: IOService) {
     this.fetchService = new FetchService(ioService);
@@ -36,17 +40,17 @@ export class CLIApplication {
     }
 
     const commandName = result.input[0];
-    const command = this.commands.find(command => command.getName() === commandName);
+    this.command = this.commands.find(command => command.getName() === commandName);
     result.input = result.input.slice(1);
 
     // Command not found?
-    if (!command) {
+    if (!this.command) {
       throw new Error(`Invalid command: ${commandName}`);
     }
 
     // Wanting command's help?
     if (result.flags['help'] || result.flags['h']) {
-      this.showCommandHelp(command);
+      this.showHelp();
       return;
     }
 
@@ -58,30 +62,33 @@ export class CLIApplication {
     }
 
     // Run the command
-    await command.run(result);
+    await this.command.run(result);
   }
 
   showHelp(err?: Error): void {
     if (err) {
       console.error(chalk.bgRed.white(err.message));
+      console.log(err.stack);
+    }
+
+    if (this.command) {
+      this.showCommandHelp(this.command, err);
+      return;
     }
 
     const commandString = this.generateCommandHelp(this.commands);
     const help = `
-metagram <command> <input>
+metagram <command>
   
 ${chalk.bold('Commands')}
 ${commandString} 
-    
-${chalk.bold('Examples')}
-  cat petrinet.xmi | metagram generate html
     `;
 
     console.log(help);
     process.exit(err ? 1 : 2);
   }
 
-  showCommandHelp(command: Command): void {
+  showCommandHelp(command: Command, err?: Error): void {
     const options = command.getOptions().map((option) => [
       option.name,
       option.shorthand,
@@ -100,7 +107,7 @@ ${optionStr}
     `;
 
     console.log(help);
-    process.exit(2);
+    process.exit(err ? 1 : 2);
   }
 
   private generateCommandHelp(commands: Command[]): string {

@@ -38,9 +38,8 @@ describe('CLIApplication', function () {
   it('should print the help', (done) => {
     execFile('node', [bin, '--help'], (error, stdout) => {
       expect(error).to.be.not.null;
-      expect(stdout).to.include('metagram');
+      expect(stdout).to.include('metagram <command>');
       expect(stdout).to.include('Commands');
-      expect(stdout).to.include('Examples');
       expect(error).to.have.property('code', 2);
       done();
     });
