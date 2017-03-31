@@ -59,4 +59,31 @@ describe('DiagramCommand', function () {
       done();
     });
   });
+
+  it('should generate PDF image files', (done) => {
+    execFile('node', [bin, 'diagram', '-f', 'pdf', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+      expect(error).to.be.null;
+      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.pdf');
+      expect(fs.existsSync('Petrinet elements.pdf')).to.be.true;
+      done();
+    });
+  });
+
+  it('should generate PNG image files', (done) => {
+    execFile('node', [bin, 'diagram', '-f', 'png', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+      expect(error).to.be.null;
+      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.png');
+      expect(fs.existsSync('Petrinet elements.png')).to.be.true;
+      done();
+    });
+  });
+
+  it('should generate JPEG image files', (done) => {
+    execFile('node', [bin, 'diagram', '-f', 'jpeg', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+      expect(error).to.be.null;
+      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.jpeg');
+      expect(fs.existsSync('Petrinet elements.jpeg')).to.be.true;
+      done();
+    });
+  });
 });
