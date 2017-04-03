@@ -16,13 +16,34 @@ describe('StringService', () => {
     expect(StringService.upperCaseFirst('hELLO')).to.equal('HELLO');
   });
 
+  it('should detect camel humps', () => {
+    expect(StringService.detectCamelHumps('Hello')).to.deep.equal(['Hello'], 'Error detecting humps of "Hello"');
+    expect(StringService.detectCamelHumps('hello')).to.deep.equal(['hello'], 'Error detecting humps of "hello"');
+    expect(StringService.detectCamelHumps('HelloWorld')).to.deep.equal(['Hello', 'World'], 'Error detecting humps of "HelloWorld"');
+    expect(StringService.detectCamelHumps('helloWorld')).to.deep.equal(['hello', 'World'], 'Error detecting humps of "helloWorld"');
+    expect(StringService.detectCamelHumps('HELLOWorld')).to.deep.equal(['HELLO', 'World'], 'Error detecting humps of "HELLOWorld"');
+    expect(StringService.detectCamelHumps('HELLO')).to.deep.equal(['HELLO'], 'Error detecting humps of "HELLO"');
+    expect(StringService.detectCamelHumps('hELLO')).to.deep.equal(['h', 'ELLO'], 'Error detecting humps of "hELLO"');
+  });
+
   it('should convert camel to hyphen case', () => {
-    expect(StringService.camelToHyphenCase('Hello')).to.equal('hello');
-    expect(StringService.camelToHyphenCase('hello')).to.equal('hello');
-    expect(StringService.camelToHyphenCase('HelloWorld')).to.equal('hello-world');
-    expect(StringService.camelToHyphenCase('helloWorld')).to.equal('hello-world');
-    expect(StringService.camelToHyphenCase('HELLO')).to.equal('h-e-l-l-o');
-    expect(StringService.camelToHyphenCase('hELLO')).to.equal('h-e-l-l-o');
+    expect(StringService.camelToHyphenCase('Hello')).to.equal('hello', 'Error transforming "Hello"');
+    expect(StringService.camelToHyphenCase('hello')).to.equal('hello', 'Error transforming "hello"');
+    expect(StringService.camelToHyphenCase('HelloWorld')).to.equal('hello-world', 'Error transforming "HelloWorld"');
+    expect(StringService.camelToHyphenCase('helloWorld')).to.equal('hello-world', 'Error transforming "helloWorld"');
+    expect(StringService.camelToHyphenCase('HELLOWorld')).to.equal('hello-world', 'Error transforming "HELLOWorld"');
+    expect(StringService.camelToHyphenCase('HELLO')).to.equal('hello', 'Error transforming "HELLO"');
+    expect(StringService.camelToHyphenCase('hELLO')).to.equal('h-ello', 'Error transforming "hELLO"');
+  });
+
+  it('should convert camel to snake case', () => {
+    expect(StringService.camelToSnakeCase('Hello')).to.equal('hello', 'Error transforming "Hello"');
+    expect(StringService.camelToSnakeCase('hello')).to.equal('hello', 'Error transforming "hello"');
+    expect(StringService.camelToSnakeCase('HelloWorld')).to.equal('hello_world', 'Error transforming "HelloWorld"');
+    expect(StringService.camelToSnakeCase('helloWorld')).to.equal('hello_world', 'Error transforming "helloWorld"');
+    expect(StringService.camelToSnakeCase('HELLOWorld')).to.equal('hello_world', 'Error transforming "HELLOWorld"');
+    expect(StringService.camelToSnakeCase('HELLO')).to.equal('hello', 'Error transforming "HELLO"');
+    expect(StringService.camelToSnakeCase('hELLO')).to.equal('h_ello', 'Error transforming "hELLO"');
   });
 
   it('should pluralize words correctly', () => {

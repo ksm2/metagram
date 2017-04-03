@@ -288,7 +288,34 @@ export class StringService {
    * @return A hyphen-cased string
    */
   static camelToHyphenCase(camel: string): string {
-    return this.lowerCaseFirst(camel).replace(/([A-Z])/g, _ => '-' + _.toLowerCase());
+    return StringService.detectCamelHumps(camel).join('-').toLowerCase();
+  }
+
+  /**
+   * Converts a camel-cased string to a hyphen-cased one
+   *
+   * @param camel The camel-cased string
+   * @return A snake-cased string
+   */
+  static camelToSnakeCase(camel: string): string {
+    return StringService.detectCamelHumps(camel).join('_').toLowerCase();
+  }
+
+  /**
+   * Collects all parts of a camel-cased string
+   *
+   * @param camel The camel-cased string
+   * @return An array of the camel case humps
+   */
+  static detectCamelHumps(camel: string): string[] {
+    const result = [];
+    const regExp = /(^[a-z]+|[A-Z][a-z]+|(?:[A-Z](?![a-z]))+)/g;
+    let match;
+    while (match = regExp.exec(camel)) {
+      result.push(match[0]);
+    }
+
+    return result;
   }
 
   /**
