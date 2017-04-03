@@ -39,13 +39,14 @@ export class CLIApplication {
       return;
     }
 
-    const commandName = result.input[0];
-    this.command = this.commands.find(command => command.getName() === commandName);
+    const cmdName = result.input[0];
+    const cmdExp = new RegExp(`^${cmdName.replace(/(.)/g, '$1.*')}$`, 'i');
+    this.command = this.commands.find(command => !!command.getName().match(cmdExp));
     result.input = result.input.slice(1);
 
     // Command not found?
     if (!this.command) {
-      throw new Error(`Invalid command: ${commandName}`);
+      throw new Error(`Invalid command: ${cmdName}`);
     }
 
     // Wanting command's help?
