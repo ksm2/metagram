@@ -1,8 +1,8 @@
 import { AssociationVisitor } from '../normalization/AssociationVisitor';
 import { ClassVisitor } from '../normalization/ClassVisitor';
 import { DataTypeVisitor } from '../normalization/DataTypeVisitor';
-import { EnumerationVisitor } from '../normalization/EnumerationVisitor';
 import { EnumerationLiteralVisitor } from '../normalization/EnumerationLiteralVisitor';
+import { EnumerationVisitor } from '../normalization/EnumerationVisitor';
 import { OperationVisitor } from '../normalization/OperationVisitor';
 import { PackageVisitor } from '../normalization/PackageVisitor';
 import { ParameterVisitor } from '../normalization/ParameterVisitor';

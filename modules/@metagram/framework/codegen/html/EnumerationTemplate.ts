@@ -1,13 +1,13 @@
 import { Element } from '../../models/Element';
-import { HTMLTemplate } from './HTMLTemplate';
 import { Enumeration } from '../../models/uml/Enumeration';
+import { HTMLTemplate } from './HTMLTemplate';
 
 export class EnumerationTemplate extends HTMLTemplate {
   render(element: Element, options: any, next: (element: Element) => void): string {
     const model = element as Enumeration;
 
     // Make all child elements next
-    model.ownedLiterals.forEach(literal => next(literal));
+    model.ownedLiterals.forEach((literal) => next(literal));
 
     return this.layout(model, options, `
       ${model.ownedLiterals.size ? `<section>

@@ -1,10 +1,10 @@
 import path = require('path');
 import chalk = require('chalk');
 import { Result } from 'meow';
-import { Command } from './Command';
+import { TypeScriptBundler } from '../codegen/ts/TypeScriptBundler';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { IOService } from '../services/IOService';
-import { TypeScriptBundler } from '../codegen/ts/TypeScriptBundler';
+import { Command } from './Command';
 
 export class TypeScriptCommand extends Command {
   constructor(private decoder: XMIDecoder, private ioService: IOService) {
@@ -13,15 +13,17 @@ export class TypeScriptCommand extends Command {
   }
 
   async run(result: Result): Promise<void> {
-    const outputDir = path.normalize(result.flags['outputDir'] || result.flags['o'] || '.');
-    console.info(`Setting output dir to ${chalk.cyan(outputDir)}`);
-
     const urls = result.input;
+    if (!urls.length) throw new Error('No XMI source URLs specified');
+
+    const outputDir = path.normalize(result.flags.outputDir || result.flags.o || '.');
+    process.stderr.write(`Setting output dir to ${chalk.cyan(outputDir)}\n`);
+
+    // Load models
     const xmi = await this.decoder.loadURLs(...urls);
+    if (!xmi) throw new Error('Error while loading models');
 
-    if (!xmi) throw new Error('No XMI source URLs specified');
-
-    // Bundle HTML code into output directory
+    // Bundle TypeScript code into output directory
     const bundler = new TypeScriptBundler(this.ioService);
     await bundler.bundle(xmi, outputDir);
 

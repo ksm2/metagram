@@ -1,14 +1,14 @@
 import { ModelElement, XMI } from '../../models';
 import { Element } from '../../models/Element';
-import { HTMLTemplate } from './HTMLTemplate';
 import { XMIImpl } from '../../models/xmi/XMIImpl';
+import { HTMLTemplate } from './HTMLTemplate';
 
 export class IndexTemplate extends HTMLTemplate {
   render(model: XMIImpl, options: any, next: (element: Element) => void): string {
     const { baseHref, roots } = options;
 
     // Make all child elements next
-    model.contents.forEach(content => next(content));
+    model.contents.forEach((content) => next(content));
 
     return this.main('Home', baseHref, roots, 'index', `
       <header>
@@ -18,7 +18,7 @@ export class IndexTemplate extends HTMLTemplate {
       ${model.contents.size ? `<section>
         <ul class="list-unstyled">
           ${this.forEach(model.contents, (ownedElement) => ownedElement instanceof ModelElement ? `
-            <li class="name-ref name-${this.cssClass(ownedElement)}"><a href="${this.ref(ownedElement)}">${ownedElement.name}</a>` : '')}    
+            <li class="name-ref name-${this.cssClass(ownedElement)}"><a href="${this.ref(ownedElement)}">${ownedElement.name}</a>` : '')}
         </ul>
       </section>` : ``}
       </main>

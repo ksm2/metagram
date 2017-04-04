@@ -1,5 +1,5 @@
-import { Style } from './Style';
 import { Color } from './Color';
+import { Style } from './Style';
 
 export class Fill {
   style: Style = Color.WHITE;

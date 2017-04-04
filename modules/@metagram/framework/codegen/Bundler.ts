@@ -48,7 +48,7 @@ export class Bundler {
    * Finds a matching template for an element
    */
   protected findTemplate(element: Element, options: any): Template | null {
-    for (let template of this._templates) {
+    for (const template of this._templates) {
       if (template.isSupporting(element, options)) {
         return template;
       }
@@ -61,6 +61,6 @@ export class Bundler {
    * Finds a matching template for an element
    */
   protected findTemplates(element: Element, options: any): Template[] {
-    return this._templates.filter(template => template.isSupporting(element, options));
+    return this._templates.filter((template) => template.isSupporting(element, options));
   }
 }

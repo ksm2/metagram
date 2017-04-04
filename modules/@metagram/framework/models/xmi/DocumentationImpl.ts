@@ -1,6 +1,6 @@
-import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '../Collections';
-import { Element as $Elm } from '../Element';
 import { Attribute as $Attr } from '../Attribute';
+import { ArbitraryAmbiguousCollection, ArbitraryUniqueCollection, OrderedAmbiguousCollection, OrderedUniqueCollection } from '../Collections';
+import { Element as $Elm } from '../Element';
 import { Metamodel as $MM } from '../Metamodel';
 import { Documentation } from './Documentation';
 
@@ -18,232 +18,222 @@ export class DocumentationImpl extends $Elm implements Documentation {
   private _notices: $Attr<string> = new $Attr<string>('notice', false, true, 0, Infinity);
   private _owners: $Attr<string> = new $Attr<string>('owner', false, true, 0, Infinity);
   private _timestamps: $Attr<Date> = new $Attr<Date>('timestamp', false, true, 0, 1);
-  
 
-  set contact(value: string | undefined) { 
-    this._contacts.set(value); 
+  set contact(value: string | undefined) {
+    this._contacts.set(value);
   }
-  
+
   get contact(): string | undefined {
-    return this._contacts.get(); 
+    return this._contacts.get();
   }
 
-  getAllContacts(): ArbitraryUniqueCollection<string> { 
-    return this._contacts.asSet(); 
+  getAllContacts(): ArbitraryUniqueCollection<string> {
+    return this._contacts.asSet();
   }
 
-  appendContact(value: string): boolean { 
-    return this._contacts.append(value); 
+  appendContact(value: string): boolean {
+    return this._contacts.append(value);
   }
-  
+
   removeContact(value: string): boolean {
-    return this._contacts.remove(value); 
+    return this._contacts.remove(value);
   }
 
   hasContact(): boolean {
-    return this._contacts.isNotEmpty(); 
+    return this._contacts.isNotEmpty();
   }
 
-
-  set exporter(value: string | undefined) { 
-    this._exporters.set(value); 
+  set exporter(value: string | undefined) {
+    this._exporters.set(value);
   }
-  
+
   get exporter(): string | undefined {
-    return this._exporters.get(); 
+    return this._exporters.get();
   }
 
-  getAllExporters(): ArbitraryUniqueCollection<string> { 
-    return this._exporters.asSet(); 
+  getAllExporters(): ArbitraryUniqueCollection<string> {
+    return this._exporters.asSet();
   }
 
-  appendExporter(value: string): boolean { 
-    return this._exporters.append(value); 
+  appendExporter(value: string): boolean {
+    return this._exporters.append(value);
   }
-  
+
   removeExporter(value: string): boolean {
-    return this._exporters.remove(value); 
+    return this._exporters.remove(value);
   }
 
   hasExporter(): boolean {
-    return this._exporters.isNotEmpty(); 
+    return this._exporters.isNotEmpty();
   }
 
-
-  set exporterVersion(value: string | undefined) { 
-    this._exporterVersions.set(value); 
+  set exporterVersion(value: string | undefined) {
+    this._exporterVersions.set(value);
   }
-  
+
   get exporterVersion(): string | undefined {
-    return this._exporterVersions.get(); 
+    return this._exporterVersions.get();
   }
 
-  getAllExporterVersions(): ArbitraryUniqueCollection<string> { 
-    return this._exporterVersions.asSet(); 
+  getAllExporterVersions(): ArbitraryUniqueCollection<string> {
+    return this._exporterVersions.asSet();
   }
 
-  appendExporterVersion(value: string): boolean { 
-    return this._exporterVersions.append(value); 
+  appendExporterVersion(value: string): boolean {
+    return this._exporterVersions.append(value);
   }
-  
+
   removeExporterVersion(value: string): boolean {
-    return this._exporterVersions.remove(value); 
+    return this._exporterVersions.remove(value);
   }
 
   hasExporterVersion(): boolean {
-    return this._exporterVersions.isNotEmpty(); 
+    return this._exporterVersions.isNotEmpty();
   }
 
-
-  set exporterID(value: string | undefined) { 
-    this._exporterIDs.set(value); 
+  set exporterID(value: string | undefined) {
+    this._exporterIDs.set(value);
   }
-  
+
   get exporterID(): string | undefined {
-    return this._exporterIDs.get(); 
+    return this._exporterIDs.get();
   }
 
-  getAllExporterIDs(): ArbitraryUniqueCollection<string> { 
-    return this._exporterIDs.asSet(); 
+  getAllExporterIDs(): ArbitraryUniqueCollection<string> {
+    return this._exporterIDs.asSet();
   }
 
-  appendExporterID(value: string): boolean { 
-    return this._exporterIDs.append(value); 
+  appendExporterID(value: string): boolean {
+    return this._exporterIDs.append(value);
   }
-  
+
   removeExporterID(value: string): boolean {
-    return this._exporterIDs.remove(value); 
+    return this._exporterIDs.remove(value);
   }
 
   hasExporterID(): boolean {
-    return this._exporterIDs.isNotEmpty(); 
+    return this._exporterIDs.isNotEmpty();
   }
 
-
-  set longDescription(value: string | undefined) { 
-    this._longDescriptions.set(value); 
+  set longDescription(value: string | undefined) {
+    this._longDescriptions.set(value);
   }
-  
+
   get longDescription(): string | undefined {
-    return this._longDescriptions.get(); 
+    return this._longDescriptions.get();
   }
 
-  getAllLongDescriptions(): ArbitraryUniqueCollection<string> { 
-    return this._longDescriptions.asSet(); 
+  getAllLongDescriptions(): ArbitraryUniqueCollection<string> {
+    return this._longDescriptions.asSet();
   }
 
-  appendLongDescription(value: string): boolean { 
-    return this._longDescriptions.append(value); 
+  appendLongDescription(value: string): boolean {
+    return this._longDescriptions.append(value);
   }
-  
+
   removeLongDescription(value: string): boolean {
-    return this._longDescriptions.remove(value); 
+    return this._longDescriptions.remove(value);
   }
 
   hasLongDescription(): boolean {
-    return this._longDescriptions.isNotEmpty(); 
+    return this._longDescriptions.isNotEmpty();
   }
 
-
-  set shortDescription(value: string | undefined) { 
-    this._shortDescriptions.set(value); 
+  set shortDescription(value: string | undefined) {
+    this._shortDescriptions.set(value);
   }
-  
+
   get shortDescription(): string | undefined {
-    return this._shortDescriptions.get(); 
+    return this._shortDescriptions.get();
   }
 
-  getAllShortDescriptions(): ArbitraryUniqueCollection<string> { 
-    return this._shortDescriptions.asSet(); 
+  getAllShortDescriptions(): ArbitraryUniqueCollection<string> {
+    return this._shortDescriptions.asSet();
   }
 
-  appendShortDescription(value: string): boolean { 
-    return this._shortDescriptions.append(value); 
+  appendShortDescription(value: string): boolean {
+    return this._shortDescriptions.append(value);
   }
-  
+
   removeShortDescription(value: string): boolean {
-    return this._shortDescriptions.remove(value); 
+    return this._shortDescriptions.remove(value);
   }
 
   hasShortDescription(): boolean {
-    return this._shortDescriptions.isNotEmpty(); 
+    return this._shortDescriptions.isNotEmpty();
   }
 
-
-  set notice(value: string | undefined) { 
-    this._notices.set(value); 
+  set notice(value: string | undefined) {
+    this._notices.set(value);
   }
-  
+
   get notice(): string | undefined {
-    return this._notices.get(); 
+    return this._notices.get();
   }
 
-  getAllNotices(): ArbitraryUniqueCollection<string> { 
-    return this._notices.asSet(); 
+  getAllNotices(): ArbitraryUniqueCollection<string> {
+    return this._notices.asSet();
   }
 
-  appendNotice(value: string): boolean { 
-    return this._notices.append(value); 
+  appendNotice(value: string): boolean {
+    return this._notices.append(value);
   }
-  
+
   removeNotice(value: string): boolean {
-    return this._notices.remove(value); 
+    return this._notices.remove(value);
   }
 
   hasNotice(): boolean {
-    return this._notices.isNotEmpty(); 
+    return this._notices.isNotEmpty();
   }
 
-
-  set owner(value: string | undefined) { 
-    this._owners.set(value); 
+  set owner(value: string | undefined) {
+    this._owners.set(value);
   }
-  
+
   get owner(): string | undefined {
-    return this._owners.get(); 
+    return this._owners.get();
   }
 
-  getAllOwners(): ArbitraryUniqueCollection<string> { 
-    return this._owners.asSet(); 
+  getAllOwners(): ArbitraryUniqueCollection<string> {
+    return this._owners.asSet();
   }
 
-  appendOwner(value: string): boolean { 
-    return this._owners.append(value); 
+  appendOwner(value: string): boolean {
+    return this._owners.append(value);
   }
-  
+
   removeOwner(value: string): boolean {
-    return this._owners.remove(value); 
+    return this._owners.remove(value);
   }
 
   hasOwner(): boolean {
-    return this._owners.isNotEmpty(); 
+    return this._owners.isNotEmpty();
   }
-
 
   set timestamp(value: Date | undefined) {
-    this._timestamps.set(value); 
+    this._timestamps.set(value);
   }
-  
+
   get timestamp(): Date | undefined {
-    return this._timestamps.get(); 
+    return this._timestamps.get();
   }
 
   getAllTimestamps(): ArbitraryUniqueCollection<Date> {
-    return this._timestamps.asSet(); 
+    return this._timestamps.asSet();
   }
 
   appendTimestamp(value: Date): boolean {
-    return this._timestamps.append(value); 
+    return this._timestamps.append(value);
   }
-  
+
   removeTimestamp(value: Date): boolean {
-    return this._timestamps.remove(value); 
+    return this._timestamps.remove(value);
   }
 
   hasTimestamp(): boolean {
-    return this._timestamps.isNotEmpty(); 
+    return this._timestamps.isNotEmpty();
   }
-
 
 }
 

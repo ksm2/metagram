@@ -80,7 +80,7 @@ export class List<T> implements ArbitraryAmbiguousCollection<T> {
   }
 
   forEach(callbackfn: (value1: T, value2: T, collection: Collection<T>) => void, thisArg?: any): void {
-    this._items.forEach(value => callbackfn(value, value, this), thisArg);
+    this._items.forEach((value) => callbackfn(value, value, this), thisArg);
   }
 }
 

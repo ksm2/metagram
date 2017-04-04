@@ -1,9 +1,9 @@
-import { Element } from '../../models';
-import { Diagram } from '../../diagram/Diagram';
 import { ClassDiagram } from '../../diagram/ClassDiagram';
-import { DiagramElementVisitor } from './DiagramElementVisitor';
-import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Diagram } from '../../diagram/Diagram';
+import { Element } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { XMIDecoder } from '../encoding/XMIDecoder';
+import { DiagramElementVisitor } from './DiagramElementVisitor';
 
 export class ClassDiagramVisitor extends DiagramElementVisitor {
   createInstance(node: ResolvedXMINode): Element {

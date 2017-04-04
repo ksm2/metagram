@@ -3,42 +3,6 @@ export class StringService {
    * Plural inflector rules.
    */
   private static plural = {
-    rules: new Map<RegExp, string>([
-      [/(s)tatus$/i, '$1$2tatuses'],
-      [/(quiz)$/i, '$1zes'],
-      [/^(ox)$/i, '$1$2en'],
-      [/([m|l])ouse$/i, '$1ice'],
-      [/(matr|vert|ind)(ix|ex)$/i, '$1ices'],
-      [/(x|ch|ss|sh)$/i, '$1es'],
-      [/([^aeiouy]|qu)y$/i, '$1ies'],
-      [/(hive)$/i, '$1s'],
-      [/(:([^f])fe|([lr])f)$/i, '$1$2ves'],
-      [/sis$/i, 'ses'],
-      [/([ti])um$/i, '$1a'],
-      [/(p)erson$/i, '$1eople'],
-      [/(m)an$/i, '$1en'],
-      [/(c)hild$/i, '$1hildren'],
-      [/(f)oot$/i, '$1eet'],
-      [/(buffal|her|potat|tomat|volcan)o$/i, '$1$2oes'],
-      [/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|vir)us$/i, '$1i'],
-      [/us$/i, 'uses'],
-      [/(alias)$/i, '$1es'],
-      [/(analys|ax|cris|test|thes)is$/i, '$1es'],
-      [/s$/, 's'],
-      [/^$/, ''],
-      [/$/, 's'],
-    ]),
-    uninflected: [
-      '.*[nrlm]ese',
-      '.*deer',
-      '.*fish',
-      '.*measles',
-      '.*ois',
-      '.*pox',
-      '.*sheep',
-      'people',
-      'cookie'
-    ],
     irregular: {
       'atlas': 'atlases',
       'axe': 'axes',
@@ -99,12 +63,60 @@ export class StringService {
       'volcano': 'volcanoes',
     },
     merged: {} as any,
+    rules: new Map<RegExp, string>([
+      [/(s)tatus$/i, '$1$2tatuses'],
+      [/(quiz)$/i, '$1zes'],
+      [/^(ox)$/i, '$1$2en'],
+      [/([m|l])ouse$/i, '$1ice'],
+      [/(matr|vert|ind)(ix|ex)$/i, '$1ices'],
+      [/(x|ch|ss|sh)$/i, '$1es'],
+      [/([^aeiouy]|qu)y$/i, '$1ies'],
+      [/(hive)$/i, '$1s'],
+      [/(:([^f])fe|([lr])f)$/i, '$1$2ves'],
+      [/sis$/i, 'ses'],
+      [/([ti])um$/i, '$1a'],
+      [/(p)erson$/i, '$1eople'],
+      [/(m)an$/i, '$1en'],
+      [/(c)hild$/i, '$1hildren'],
+      [/(f)oot$/i, '$1eet'],
+      [/(buffal|her|potat|tomat|volcan)o$/i, '$1$2oes'],
+      [/(alumn|bacill|cact|foc|fung|nucle|radi|stimul|syllab|termin|vir)us$/i, '$1i'],
+      [/us$/i, 'uses'],
+      [/(alias)$/i, '$1es'],
+      [/(analys|ax|cris|test|thes)is$/i, '$1es'],
+      [/s$/, 's'],
+      [/^$/, ''],
+      [/$/, 's'],
+    ]),
+    uninflected: [
+      '.*[nrlm]ese',
+      '.*deer',
+      '.*fish',
+      '.*measles',
+      '.*ois',
+      '.*pox',
+      '.*sheep',
+      'people',
+      'cookie'
+    ],
   };
 
   /**
    * Singular inflector rules.
    */
   private static singular = {
+    irregular: {
+      criteria: 'criterion',
+      curves: 'curve',
+      emphases: 'emphasis',
+      foes: 'foe',
+      hoaxes: 'hoax',
+      media: 'medium',
+      neuroses: 'neurosis',
+      oases: 'oasis',
+      waves: 'wave',
+    },
+    merged: {} as any,
     rules: new Map<RegExp, string>([
       [/(s)tatuses$/i, '$1$2tatus'],
       [/^(.*)(menu)s$/i, '$1$2'],
@@ -153,18 +165,6 @@ export class StringService {
       '.*sheep',
       '.*ss',
     ],
-    irregular: {
-      'criteria': 'criterion',
-      'curves': 'curve',
-      'emphases': 'emphasis',
-      'foes': 'foe',
-      'hoaxes': 'hoax',
-      'media': 'medium',
-      'neuroses': 'neurosis',
-      'waves': 'wave',
-      'oases': 'oasis',
-    },
-    merged: {} as any,
   };
 
   /**
@@ -215,7 +215,7 @@ export class StringService {
     }
 
     // Apply a rule
-    for (let [rule, replacement] of StringService.plural.rules) {
+    for (const [rule, replacement] of StringService.plural.rules) {
       if (word.match(rule)) {
         return word.replace(rule, replacement);
       }
@@ -252,7 +252,7 @@ export class StringService {
       return word;
     }
 
-    for (let [rule, replacement] of StringService.singular.rules) {
+    for (const [rule, replacement] of StringService.singular.rules) {
       if (word.match(rule)) {
         return word.replace(rule, replacement);
       }

@@ -1,8 +1,8 @@
 import { Element } from '../../models';
 import { Class } from '../../models';
-import { ClassifierVisitor } from './ClassifierVisitor';
-import { XMIDecoder } from '../encoding/XMIDecoder';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { XMIDecoder } from '../encoding/XMIDecoder';
+import { ClassifierVisitor } from './ClassifierVisitor';
 
 export class ClassVisitor extends ClassifierVisitor {
   createInstance(node: ResolvedXMINode): Element {

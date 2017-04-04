@@ -1,9 +1,9 @@
 import { Element } from '../../models';
 import { Association } from '../../models';
 import { Property } from '../../models';
-import { ClassifierVisitor } from './ClassifierVisitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { ClassifierVisitor } from './ClassifierVisitor';
 
 export class AssociationVisitor extends ClassifierVisitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -16,9 +16,9 @@ export class AssociationVisitor extends ClassifierVisitor {
     switch (name) {
       case 'memberEnd': {
         parent.memberEnd = value.split(' ')
-          .map(id => parentNode.getNodeByID(id))
-          .map(node => decoder.decodeNode(node))
-          .filter(it => it instanceof Property) as Property[];
+          .map((id) => parentNode.getNodeByID(id))
+          .map((node) => decoder.decodeNode(node))
+          .filter((it) => it instanceof Property) as Property[];
       }
 
       default:

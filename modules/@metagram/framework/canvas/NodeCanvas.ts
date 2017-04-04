@@ -20,7 +20,7 @@ export class NodeCanvas extends AbstractCanvas {
     // Create rendering context
     const canvas = new Canvas(width, height, imageFormat);
     const ctx = canvas.getContext('2d');
-    if (!ctx) throw 'CanvasRenderingContext2D is not available';
+    if (!ctx) throw new Error('CanvasRenderingContext2D is not available');
     super(ctx);
 
     // Improve text drawing mode

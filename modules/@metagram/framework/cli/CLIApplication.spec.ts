@@ -1,6 +1,6 @@
 import path = require('path');
-import { execFile } from 'child_process';
 import { expect } from 'chai';
+import { execFile } from 'child_process';
 import readJson = require('read-package-json');
 import chalk = require('chalk');
 import sourceMaps = require('source-map-support');
@@ -10,7 +10,7 @@ sourceMaps.install();
 process.chdir(path.resolve(__dirname));
 process.setMaxListeners(0);
 
-describe('CLIApplication', function () {
+describe('CLIApplication', () => {
   let pkg: any;
   let bin: string;
 
@@ -23,7 +23,7 @@ describe('CLIApplication', function () {
     });
   });
 
-  after(function () {
+  after(() => {
     process.emit('cleanup');
   });
 
@@ -48,7 +48,7 @@ describe('CLIApplication', function () {
   it('should error when executing wrong command', (done) => {
     execFile('node', [bin, 'wrong', '--help'], (error, stdout, stderr) => {
       expect(error).to.be.not.null;
-      expect(chalk.stripColor(stderr).replace(/\r\n|\n/g, '')).to.equal('Invalid command: wrong');
+      expect(chalk.stripColor(stderr.split('\n')[0])).to.equal('Error: Invalid command: wrong');
       expect(error).to.have.property('code', 1);
       done();
     });

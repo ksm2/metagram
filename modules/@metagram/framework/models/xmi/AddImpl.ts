@@ -1,10 +1,10 @@
-import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '../Collections';
-import { Element as $Elm } from '../Element';
 import { Attribute as $Attr } from '../Attribute';
-import { Metamodel as $MM } from '../Metamodel';
-import { Difference } from './Difference';
+import { ArbitraryAmbiguousCollection, ArbitraryUniqueCollection, OrderedAmbiguousCollection, OrderedUniqueCollection } from '../Collections';
+import { Element as $Elm } from '../Element';
 import { Element } from '../Element';
+import { Metamodel as $MM } from '../Metamodel';
 import { Add } from './Add';
+import { Difference } from './Difference';
 
 /**
 
@@ -16,132 +16,126 @@ export class AddImpl extends $Elm implements Add {
   private _targets: $Attr<Element> = new $Attr<Element>('target', false, true, 0, Infinity);
   private _positions: $Attr<number> = new $Attr<number>('position', false, true, 0, 1);
   private _additions: $Attr<Element> = new $Attr<Element>('addition', false, true, 0, Infinity);
-  
 
-  set container(value: Difference | undefined) { 
-    this._containers.set(value); 
+  set container(value: Difference | undefined) {
+    this._containers.set(value);
   }
-  
+
   get container(): Difference | undefined {
-    return this._containers.get(); 
+    return this._containers.get();
   }
 
-  getAllContainers(): ArbitraryUniqueCollection<Difference> { 
-    return this._containers.asSet(); 
+  getAllContainers(): ArbitraryUniqueCollection<Difference> {
+    return this._containers.asSet();
   }
 
-  appendContainer(value: Difference): boolean { 
-    return this._containers.append(value); 
+  appendContainer(value: Difference): boolean {
+    return this._containers.append(value);
   }
-  
+
   removeContainer(value: Difference): boolean {
-    return this._containers.remove(value); 
+    return this._containers.remove(value);
   }
 
   hasContainer(): boolean {
-    return this._containers.isNotEmpty(); 
+    return this._containers.isNotEmpty();
   }
 
-
-  set difference(value: Difference | undefined) { 
-    this._differences.set(value); 
+  set difference(value: Difference | undefined) {
+    this._differences.set(value);
   }
-  
+
   get difference(): Difference | undefined {
-    return this._differences.get(); 
+    return this._differences.get();
   }
 
-  getAllDifferences(): ArbitraryUniqueCollection<Difference> { 
-    return this._differences.asSet(); 
+  getAllDifferences(): ArbitraryUniqueCollection<Difference> {
+    return this._differences.asSet();
   }
 
-  appendDifference(value: Difference): boolean { 
-    return this._differences.append(value); 
+  appendDifference(value: Difference): boolean {
+    return this._differences.append(value);
   }
-  
+
   removeDifference(value: Difference): boolean {
-    return this._differences.remove(value); 
+    return this._differences.remove(value);
   }
 
   hasDifference(): boolean {
-    return this._differences.isNotEmpty(); 
+    return this._differences.isNotEmpty();
   }
 
-
-  set target(value: Element | undefined) { 
-    this._targets.set(value); 
+  set target(value: Element | undefined) {
+    this._targets.set(value);
   }
-  
+
   get target(): Element | undefined {
-    return this._targets.get(); 
+    return this._targets.get();
   }
 
-  getAllTargets(): ArbitraryUniqueCollection<Element> { 
-    return this._targets.asSet(); 
+  getAllTargets(): ArbitraryUniqueCollection<Element> {
+    return this._targets.asSet();
   }
 
-  appendTarget(value: Element): boolean { 
-    return this._targets.append(value); 
+  appendTarget(value: Element): boolean {
+    return this._targets.append(value);
   }
-  
+
   removeTarget(value: Element): boolean {
-    return this._targets.remove(value); 
+    return this._targets.remove(value);
   }
 
   hasTarget(): boolean {
-    return this._targets.isNotEmpty(); 
+    return this._targets.isNotEmpty();
   }
 
-
-  set position(value: number | undefined) { 
-    this._positions.set(value); 
+  set position(value: number | undefined) {
+    this._positions.set(value);
   }
-  
+
   get position(): number | undefined {
-    return this._positions.get(); 
+    return this._positions.get();
   }
 
-  getAllPositions(): ArbitraryUniqueCollection<number> { 
-    return this._positions.asSet(); 
+  getAllPositions(): ArbitraryUniqueCollection<number> {
+    return this._positions.asSet();
   }
 
-  appendPosition(value: number): boolean { 
-    return this._positions.append(value); 
+  appendPosition(value: number): boolean {
+    return this._positions.append(value);
   }
-  
+
   removePosition(value: number): boolean {
-    return this._positions.remove(value); 
+    return this._positions.remove(value);
   }
 
   hasPosition(): boolean {
-    return this._positions.isNotEmpty(); 
+    return this._positions.isNotEmpty();
   }
 
-
-  set addition(value: Element | undefined) { 
-    this._additions.set(value); 
+  set addition(value: Element | undefined) {
+    this._additions.set(value);
   }
-  
+
   get addition(): Element | undefined {
-    return this._additions.get(); 
+    return this._additions.get();
   }
 
-  getAllAdditions(): ArbitraryUniqueCollection<Element> { 
-    return this._additions.asSet(); 
+  getAllAdditions(): ArbitraryUniqueCollection<Element> {
+    return this._additions.asSet();
   }
 
-  appendAddition(value: Element): boolean { 
-    return this._additions.append(value); 
+  appendAddition(value: Element): boolean {
+    return this._additions.append(value);
   }
-  
+
   removeAddition(value: Element): boolean {
-    return this._additions.remove(value); 
+    return this._additions.remove(value);
   }
 
   hasAddition(): boolean {
-    return this._additions.isNotEmpty(); 
+    return this._additions.isNotEmpty();
   }
-
 
 }
 

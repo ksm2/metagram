@@ -1,16 +1,16 @@
 import { Element, ModelElement, XMI } from '../../models';
 import { FetchService, LogService } from '../../services';
 import { Visitor } from '../normalization/Visitor';
-import { XMIResolver } from './XMIResolver';
 import { ResolvedXMINode } from './ResolvedXMINode';
 import { XMINode } from './XMINode';
+import { XMIResolver } from './XMIResolver';
 
-import UML25 from '../namespaces/UML25';
-import XMI25 from '../namespaces/XMI25';
-import UMLDI25 from '../namespaces/UMLDI25';
+import { XMIImpl } from '../../models/xmi/XMIImpl';
 import DC11 from '../namespaces/DC11';
 import DI11 from '../namespaces/DI11';
-import { XMIImpl } from '../../models/xmi/XMIImpl';
+import UML25 from '../namespaces/UML25';
+import UMLDI25 from '../namespaces/UMLDI25';
+import XMI25 from '../namespaces/XMI25';
 
 export class XMIDecoder {
   private visitors: Map<string, Map<string, Visitor>>;
@@ -19,7 +19,7 @@ export class XMIDecoder {
   private decodingErrors: Set<Error> = new Set();
   private xmiResolver: XMIResolver;
   private resolvedMap: WeakMap<ResolvedXMINode, Element>;
-  private promises: Promise<Element>[];
+  private promises: Array<Promise<Element>>;
 
   constructor(private fetchService: FetchService, private logService: LogService) {
     this.xmiResolver = new XMIResolver(fetchService, logService);
@@ -43,7 +43,7 @@ export class XMIDecoder {
    * Load multiple URLs
    */
   async loadURLs(...urls: string[]): Promise<XMIImpl | null> {
-    for (let url of urls) {
+    for (const url of urls) {
       this.logService.setInfo(url, 'pending');
     }
 
@@ -53,7 +53,7 @@ export class XMIDecoder {
       p = p.then((xmi) => {
         return this.loadURL(url).then((otherXmi) => {
           if (xmi) {
-            return xmi.merge(otherXmi)
+            return xmi.merge(otherXmi);
           }
 
           return otherXmi;
@@ -148,7 +148,7 @@ export class XMIDecoder {
     this.resolvedMap.set(node, target);
     this.promises.push(new Promise((resolve) => {
       const errors = visitor.visit(this, node, target);
-      errors.forEach(err => this.decodingErrors.add(err));
+      errors.forEach((err) => this.decodingErrors.add(err));
       resolve(target);
     }));
 

@@ -1,9 +1,9 @@
 import { Result } from 'meow';
 
 export interface CommandOption {
-  name: string,
-  description: string,
-  shorthand?: string,
+  name: string;
+  description: string;
+  shorthand?: string;
 }
 
 export class Command {

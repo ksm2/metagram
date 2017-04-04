@@ -1,6 +1,6 @@
-import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '../Collections';
-import { Documentation } from './Documentation';
+import { ArbitraryAmbiguousCollection, ArbitraryUniqueCollection, OrderedAmbiguousCollection, OrderedUniqueCollection } from '../Collections';
 import { Difference } from './Difference';
+import { Documentation } from './Documentation';
 import { Extension } from './Extension';
 
 /**
@@ -9,21 +9,19 @@ import { Extension } from './Extension';
 export interface XMI {
 
   /**
-  
+
    */
   documentation: Documentation | undefined;
 
-
   /**
-  
+
    */
   difference: Difference | undefined;
 
   getAllDifferences(): ArbitraryUniqueCollection<Difference>;
 
-
   /**
-  
+
    */
   extension: Extension | undefined;
 

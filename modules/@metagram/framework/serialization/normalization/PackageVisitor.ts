@@ -1,9 +1,9 @@
 import { Element } from '../../models';
 import { ModelElement } from '../../models';
 import { Package } from '../../models';
-import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class PackageVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

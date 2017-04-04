@@ -1,9 +1,9 @@
+import { Class } from '../../models/uml/Class';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Package } from '../../models/uml/Package';
+import { StringService } from '../../services/StringService';
 import { Template } from '../Template';
 import { TypeScriptBundler } from './TypeScriptBundler';
-import { ModelElement } from '../../models/uml/ModelElement';
-import { StringService } from '../../services/StringService';
-import { Package } from '../../models/uml/Package';
-import { Class } from '../../models/uml/Class';
 
 export class TypeScriptTemplate extends Template {
   constructor(protected bundler: TypeScriptBundler) {
@@ -29,9 +29,9 @@ export class TypeScriptTemplate extends Template {
   }
 
   protected static forEach<T>(
-    a:          { [Symbol.iterator](): Iterator<T> },
-    callback:   (a: T) => string,
-    separator:  string = '',
+    a: { [Symbol.iterator](): Iterator<T> },
+    callback: (a: T) => string,
+    separator: string = '',
   ): string {
     return [...a].map(callback).join(separator);
   }

@@ -1,5 +1,5 @@
-import { HTMLTemplate } from './HTMLTemplate';
 import { ModelElement } from '../../models/uml/ModelElement';
+import { HTMLTemplate } from './HTMLTemplate';
 
 export class OverviewTemplate extends HTMLTemplate {
   render(data: any, options: any, next: (data: any) => void): string {
@@ -23,24 +23,24 @@ export class OverviewTemplate extends HTMLTemplate {
       <script>
       $(() => {
         const elements = [${this.forEach(models, (ownedElement) => `{"cls":"${this.cssClass(ownedElement)}","href":"${this.ref(ownedElement)}","name":"${ownedElement.name}"},`)}];
-        
+
         function updateSearch() {
           const text = window.location.hash.substr(1).toLowerCase();
           const regex = text ? new RegExp('(' + text + ')', 'ig') : null;
           const $els = $('#elements');
           $els.empty();
-          
+
           elements.filter(it => it.name.toLowerCase().includes(text)).forEach(({cls, href, name}) => {
             const marked = regex ? name.replace(regex, '<mark>$1</mark>') : name;
             $els.append(${'`<li class="name-ref name-${cls}"><a href="${href}">${marked}</a></li>`'});
           });
         }
-        
+
         $('#search-input').on('keyup', (event) => {
           window.location.hash = event.target.value;
-          updateSearch();        
+          updateSearch();
         });
-        
+
         $('#search-input').val(window.location.hash.substr(1));
         updateSearch();
       });

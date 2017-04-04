@@ -4,9 +4,9 @@ import { Property } from '../../models';
 import { Association } from '../../models';
 import { EnumerationLiteral } from '../../models';
 import { AggregationKind } from '../../models';
-import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class PropertyVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

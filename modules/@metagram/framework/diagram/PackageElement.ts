@@ -1,10 +1,10 @@
-import { Package } from '../models';
-import { Shape } from './Shape';
 import { Canvas } from '../canvas/Canvas';
-import { Fill } from './Fill';
-import { Color } from './Color';
-import { Bounds } from './Bounds';
 import { Class } from '../decorators';
+import { Package } from '../models';
+import { Bounds } from './Bounds';
+import { Color } from './Color';
+import { Fill } from './Fill';
+import { Shape } from './Shape';
 
 @Class('PackageElement', Shape)
 export class PackageElement extends Shape<Package> {
@@ -34,7 +34,7 @@ export class PackageElement extends Shape<Package> {
     if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
 
     // Render contained elements
-    for (let element of this.ownedElements) {
+    for (const element of this.ownedElements) {
       element.render(canvas);
     }
   }

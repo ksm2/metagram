@@ -1,22 +1,22 @@
 import path = require('path');
 
 // Other
-import { ModelElement, Element, DataType, Class, Package, Enumeration, PrimitiveType } from '../../models';
-import { IOService, StringService } from '../../services';
+import { Class, DataType, Element, Enumeration, ModelElement, Package, PrimitiveType } from '../../models';
 import { XMIDecoder } from '../../serialization/encoding/XMIDecoder';
+import { IOService, StringService } from '../../services';
 
 // Codegen
 import { Bundler } from '../Bundler';
 
 // Templates
-import { IndexTemplate } from './IndexTemplate';
 import { AssociationTemplate } from './AssociationTemplate';
 import { ClassTemplate } from './ClassTemplate';
 import { DataTypeTemplate } from './DataTypeTemplate';
-import { EnumerationTemplate } from './EnumerationTemplate';
-import { PackageTemplate } from './PackageTemplate';
 import { DefaultTemplate } from './DefaultTemplate';
+import { EnumerationTemplate } from './EnumerationTemplate';
+import { IndexTemplate } from './IndexTemplate';
 import { OverviewTemplate } from './OverviewTemplate';
+import { PackageTemplate } from './PackageTemplate';
 
 export class HTMLBundler extends Bundler {
   instanceOf: WeakMap<ModelElement, ModelElement>;
@@ -41,7 +41,7 @@ export class HTMLBundler extends Bundler {
 
   async bundle(rootElement: Element, outputDir: string, options: any = {}): Promise<void> {
     const roots: Set<ModelElement> = new Set();
-    for (let element of rootElement.contents) {
+    for (const element of rootElement.contents) {
       if (element instanceof ModelElement) {
         roots.add(element);
       }
@@ -58,7 +58,7 @@ export class HTMLBundler extends Bundler {
   generateFilename(element: Element): string {
     if (!(element instanceof ModelElement)) return 'index.html';
 
-    const paths = element.allOwningElements().map(el => el.name).filter(el => !!el);
+    const paths = element.allOwningElements().map((el) => el.name).filter((el) => !!el);
     if (element.name) {
       paths.push(`${element.name}.html`);
     } else {
@@ -72,12 +72,12 @@ export class HTMLBundler extends Bundler {
     return StringService.camelToHyphenCase(model.constructor.name);
   }
 
-  private async render(element: Element, outputDir: string, options: any): Promise<Set<ModelElement>> {
+  private async render(root: Element, outputDir: string, options: any): Promise<Set<ModelElement>> {
     const rendered = new Set<ModelElement>();
 
-    const queue: Element[] = [element];
+    const queue: Element[] = [root];
     while (queue.length) {
-      let element = queue.shift()!;
+      const element = queue.shift()!;
 
       // Add to rendered elements
       if (element instanceof ModelElement) {
@@ -95,7 +95,7 @@ export class HTMLBundler extends Bundler {
         this.instanceOf.set(element, instanceOf);
       }
 
-      const str = template.render(element, options, next => queue.push(next));
+      const str = template.render(element, options, (next) => queue.push(next));
       await this.ioService.ensureDirectoryExists(filename);
       await this.ioService.writeFile(str, filename);
     }
@@ -112,7 +112,7 @@ export class HTMLBundler extends Bundler {
    */
   private async renderOverview(outputDir: string, rendered: Set<ModelElement>, options: any): Promise<void>  {
     const filename = path.join(outputDir, 'overview.html');
-    const models = this.sortModelElements([...rendered].filter(m => m.name));
+    const models = this.sortModelElements([...rendered].filter((m) => m.name));
 
     const overviewRenderer = new OverviewTemplate(this);
     const str = overviewRenderer.render(models, options, () => {});
@@ -131,7 +131,7 @@ export class HTMLBundler extends Bundler {
       const o1 = m1.getTypeName() ? order.indexOf(m1.getTypeName()!) : -1;
       const o2 = m2.getTypeName() ? order.indexOf(m2.getTypeName()!) : -1;
 
-      return (o2 - o1) || compare(m1.name!.toLowerCase(), m2.name!.toLowerCase())
+      return (o2 - o1) || compare(m1.name!.toLowerCase(), m2.name!.toLowerCase());
     });
   }
 }

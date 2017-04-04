@@ -1,8 +1,8 @@
-import { TypedElement } from './TypedElement';
+import { Attribute, Class } from '../../decorators';
 import { Parameter } from './Parameter';
-import { Class, Attribute } from '../../decorators';
-import { Type } from './Type';
 import { ParameterDirectionKind } from './ParameterDirectionKind';
+import { Type } from './Type';
+import { TypedElement } from './TypedElement';
 
 @Class('http://www.omg.org/spec/UML/20131001:Operation', TypedElement)
 export class Operation extends TypedElement {
@@ -18,7 +18,7 @@ export class Operation extends TypedElement {
   }
 
   get type(): Type | null {
-    const returnParam = [...this.ownedParameters].find(p => p.direction === ParameterDirectionKind.RETURN);
+    const returnParam = [...this.ownedParameters].find((p) => p.direction === ParameterDirectionKind.RETURN);
     return returnParam && returnParam.type || null;
   }
 }

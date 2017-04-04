@@ -1,7 +1,7 @@
-import { Element, ModelElement } from '../../models';
 import { Diagram } from '../../diagram/Diagram';
-import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Element, ModelElement } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { XMIDecoder } from '../encoding/XMIDecoder';
 
 export class Visitor {
   constructor() {}
@@ -18,8 +18,8 @@ export class Visitor {
 
     const errors: Error[] = [];
 
-    for (let [name, values] of node.attrs) {
-      for (let value of values) {
+    for (const [name, values] of node.attrs) {
+      for (const value of values) {
         try {
           this.visitAttr(decoder, name, value, element, node);
         } catch (e) {
@@ -28,8 +28,8 @@ export class Visitor {
       }
     }
 
-    for (let [name, childNodes] of node.elements) {
-      for (let childNode of childNodes) {
+    for (const [name, childNodes] of node.elements) {
+      for (const childNode of childNodes) {
         try {
           this.visitOwnedElement(decoder, name, childNode, element, node);
         } catch (e) {
@@ -115,7 +115,11 @@ export class Visitor {
    * Decodes UML's literal boolean type
    */
   protected decodeLiteralBoolean(element: ResolvedXMINode): boolean | null {
-    return element.typeName === 'LiteralBoolean' && element.has('value') ? this.valueToBoolean(element.getString('value')!, element.tagName) : null;
+    if (element.typeName === 'LiteralBoolean' && element.has('value')) {
+      return this.valueToBoolean(element.getString('value')!, element.tagName);
+    }
+
+    return null;
   }
 
   /**

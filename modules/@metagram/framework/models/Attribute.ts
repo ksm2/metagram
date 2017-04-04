@@ -57,7 +57,7 @@ export class Attribute<T> {
 
   append(item: T): boolean {
     if (this._unique && this.includes(item)) return false;
-    if (this.count == this._upper) return false;
+    if (this.count === this._upper) return false;
 
     this._items.push(item);
     return true;
@@ -66,7 +66,7 @@ export class Attribute<T> {
   remove(item: T): boolean {
     const index = this._items.indexOf(item);
     if (index < 0) return false;
-    if (this.count == this._lower) return false;
+    if (this.count === this._lower) return false;
 
     this._items.splice(index, 1);
     return true;
@@ -112,7 +112,7 @@ export class Attribute<T> {
   }
 
   get(): T | undefined {
-    if (this._items.length == 1) return this._items[0];
+    if (this._items.length === 1) return this._items[0];
     return;
   }
 

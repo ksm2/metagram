@@ -1,14 +1,10 @@
 import { EventEmitter } from 'events';
 import { Class } from '../decorators';
 
-export interface ElementListener {
-  (newValue: any, key: string): void;
-}
-
 @Class('Element')
 export class Element extends EventEmitter {
-  __typeName: string | undefined;
-  __typeURI: string | undefined;
+  private _typeName: string | undefined;
+  private _typeURI: string | undefined;
   private __contents = new Set<Element>();
   private __origin: string | undefined;
   private __ID: string | undefined;
@@ -75,28 +71,28 @@ export class Element extends EventEmitter {
    * Sets the element's type URI
    */
   setTypeURI(uri: string | undefined) {
-    this.__typeURI = uri;
+    this._typeURI = uri;
   }
 
   /**
    * Returns the TypeURI of this element
    */
   getTypeURI(): string | undefined {
-    return this.__typeURI;
+    return this._typeURI;
   }
 
   /**
    * Sets the element's type name
    */
   setTypeName(name: string | undefined) {
-    this.__typeName = name;
+    this._typeName = name;
   }
 
   /**
    * Returns the TypeName of this element
    */
   getTypeName(): string | undefined {
-    return this.__typeName;
+    return this._typeName;
   }
 
   /**

@@ -1,16 +1,16 @@
-import { Canvas } from './Canvas';
-import { DiagramElement } from '../diagram';
 import { Diagram } from '../diagram';
+import { DiagramElement } from '../diagram';
 import { Bounds } from '../diagram/Bounds';
-import { Point } from '../diagram/Point';
+import { Fill } from '../diagram/Fill';
+import { Baseline, Font, TextAlign } from '../diagram/Font';
+import { Handle } from '../diagram/Handle';
 import { Line } from '../diagram/Line';
+import { Point } from '../diagram/Point';
+import { Shape } from '../diagram/Shape';
+import { Stroke } from '../diagram/Stroke';
 import { LineHelper } from '../rendering/LineHelper';
 import { LineTip } from '../rendering/LineTip';
-import { Stroke } from '../diagram/Stroke';
-import { Baseline, Font, TextAlign } from '../diagram/Font';
-import { Shape } from '../diagram/Shape';
-import { Fill } from '../diagram/Fill';
-import { Handle } from '../diagram/Handle';
+import { Canvas } from './Canvas';
 
 export abstract class AbstractCanvas implements Canvas {
   protected _ctx: CanvasRenderingContext2D;

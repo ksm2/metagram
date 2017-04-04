@@ -1,28 +1,28 @@
 import { Element } from '../../models/Element';
-import { TypeScriptTemplate } from './TypeScriptTemplate';
 import { Class } from '../../models/uml/Class';
 import { ModelElement } from '../../models/uml/ModelElement';
+import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class InterfaceTypeScriptTemplate extends TypeScriptTemplate {
   render(model: Class, options: any, next: (element: Element) => void): string {
     // Make all generalizations next
-    model.generalizations.forEach(cls => next(cls));
+    model.generalizations.forEach((cls) => next(cls));
 
     const imports = new Set<ModelElement>();
     const { forEach, typeOf, pluralize, upperCaseFirst } = TypeScriptTemplate;
 
-    let extensions = [...model.generalizations].map(g => g.name).join(', ');
+    let extensions = [...model.generalizations].map((g) => g.name).join(', ');
     if (extensions) extensions = `extends ${extensions} `;
 
-    model.generalizations.forEach(g => imports.add(g));
+    model.generalizations.forEach((g) => imports.add(g));
 
     const text = `/**
-${forEach(model.comments, cmt => ` * ${cmt}`, `\n`)}
+${forEach(model.comments, (cmt) => ` * ${cmt}`, `\n`)}
  */
 export interface ${model.name} ${extensions}{
 ${forEach(model.ownedAttributes, (attribute) => `
   /**
-  ${forEach(attribute.comments, cmt => ` * ${cmt}`, `\n  `)}
+  ${forEach(attribute.comments, (cmt) => ` * ${cmt}`, `\n  `)}
    */
   ${attribute.name}: ${typeOf(attribute.type, (ref) => imports.add(ref))} | undefined;
 ${attribute.upper > 1 ? `
@@ -33,7 +33,7 @@ ${attribute.upper > 1 ? `
 `;
 
     imports.delete(model);
-    const i = [...imports].map(it => this.bundler.createReference(it, model)).join(`\n`);
+    const i = [...imports].map((it) => this.bundler.createReference(it, model)).join(`\n`);
     return `import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '@metagram/framework';\n${i}\n\n${text}`;
   }
 

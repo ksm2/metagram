@@ -1,9 +1,9 @@
+import { Attribute, Class } from '../../decorators';
 import { Element } from '../Element';
-import { TypedElement } from './TypedElement';
-import { Class, Attribute } from '../../decorators';
-import { EnumerationLiteral } from './EnumerationLiteral';
-import { Association } from './Association';
 import { AggregationKind } from './AggregationKind';
+import { Association } from './Association';
+import { EnumerationLiteral } from './EnumerationLiteral';
+import { TypedElement } from './TypedElement';
 
 export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 

@@ -28,8 +28,8 @@ export class Metamodel {
    * @param element The element to look for
    */
   static getRef(element: typeof Element): string | null {
-    for (let [ref, el] of Metamodel._models) {
-      if (el == element) return ref;
+    for (const [ref, el] of Metamodel._models) {
+      if (el === element) return ref;
     }
     return null;
   }

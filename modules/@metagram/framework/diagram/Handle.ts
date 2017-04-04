@@ -1,10 +1,10 @@
-import { DiagramElement } from './DiagramElement';
-import { ModelElement } from '../models';
 import { Canvas } from '../canvas/Canvas';
-import { Point } from './Point';
+import { ModelElement } from '../models';
 import { Bounds } from './Bounds';
-import { Fill } from './Fill';
 import { Color } from './Color';
+import { DiagramElement } from './DiagramElement';
+import { Fill } from './Fill';
+import { Point } from './Point';
 import { Stroke } from './Stroke';
 
 export class Handle extends DiagramElement<ModelElement> {

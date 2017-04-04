@@ -1,5 +1,5 @@
-import { Cursor } from './Cursor';
 import { Bounds } from './Bounds';
+import { Cursor } from './Cursor';
 import { Point } from './Point';
 
 export class Directions {

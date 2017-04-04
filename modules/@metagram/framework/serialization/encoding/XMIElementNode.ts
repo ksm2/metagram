@@ -11,7 +11,7 @@ export class XMIElementNode extends XMINode {
     this.attrs = new Map();
     this.tagName = xmlElement.tagName;
     for (let i = 0; i < xmlElement.attributes.length; i += 1) {
-      const attr = xmlElement.attributes[i];
+      const attr = xmlElement.attributes.item(i);
       if (attr.name.indexOf('xmi:') === 0) continue;
 
       this.attrs.set(attr.name, [attr.value]);
@@ -24,8 +24,8 @@ export class XMIElementNode extends XMINode {
       const node = queue.shift()!;
       if (node.id === id) return node;
 
-      for (let children of node.children.values()) {
-        for (let child of children) {
+      for (const children of node.children.values()) {
+        for (const child of children) {
           if (child instanceof XMIElementNode) {
             queue.push(child);
           }

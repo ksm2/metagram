@@ -10,10 +10,10 @@ export class DecoratorReader {
   create<T>(func: DecoratorFunction<T>): Function {
     const symbol = Symbol(func.name);
     this.annotationMap.set(func, symbol);
-    return function () {
+    return function() {
       const data = Reflect.construct(func as Function, arguments);
       return Reflect.metadata(symbol, data);
-    }
+    };
   }
 
   readClassAnnotation<T>(target: Function, annotation: DecoratorFunction<T>): T | null {

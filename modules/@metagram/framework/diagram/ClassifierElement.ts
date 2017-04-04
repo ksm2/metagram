@@ -1,16 +1,16 @@
-import { Classifier, Property, VisibilityKind, Operation, Parameter } from '../models';
-import { Metamodel } from '../models';
-import { Class as Clazz } from '../decorators';
-import { Type } from '../models';
-import { Shape } from './Shape';
 import { Canvas } from '../canvas/Canvas';
-import { Cursor } from './Cursor';
-import { Color } from './Color';
-import { Fill } from './Fill';
 import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
+import { Class as Clazz } from '../decorators';
+import { Classifier, Operation, Parameter, Property, VisibilityKind } from '../models';
+import { Metamodel } from '../models';
+import { Type } from '../models';
+import { Color } from './Color';
+import { Cursor } from './Cursor';
+import { Fill } from './Fill';
+import { Shape } from './Shape';
 import defineProperty = Reflect.defineProperty;
-import { Stroke } from './Stroke';
 import { Bounds } from './Bounds';
+import { Stroke } from './Stroke';
 
 const ENTRY_Y_OFFSET = 25 / 2;
 
@@ -85,14 +85,13 @@ export class ClassifierElement extends Shape<Classifier> {
   }
 
   onMouseLeave(i: InteractiveCanvas) {
-    if (!this.selected)
-      this.selectedProperty = null;
+    if (!this.selected) this.selectedProperty = null;
   }
 
   onKeyPress(key: string, i: InteractiveCanvas) {
     if (!this.selectedProperty) {
       // Enter is pressed?
-      if (key == 'Enter') {
+      if (key === 'Enter') {
         this.newProperty = new Property();
         this.newProperty.name = '';
         this.modelElement.ownedAttributes.add(this.newProperty);
@@ -103,7 +102,7 @@ export class ClassifierElement extends Shape<Classifier> {
     }
 
     // Switch mode
-    if (key == 'Tab' && this.newProperty) {
+    if (key === 'Tab' && this.newProperty) {
       this.typeEditing = !this.typeEditing;
       this.caret = true;
       return;
@@ -113,7 +112,7 @@ export class ClassifierElement extends Shape<Classifier> {
       const hints = this.getTypeHints();
 
       // A single letter is pressed?
-      if (key.length == 1) {
+      if (key.length === 1) {
         const old = this.typeComplete;
         this.typeComplete += key;
         if (!hints.length) {
@@ -121,30 +120,33 @@ export class ClassifierElement extends Shape<Classifier> {
           return;
         }
 
-        if (hints.indexOf(this.typeCompleteSelection) < 0)
+        if (hints.indexOf(this.typeCompleteSelection) < 0) {
           this.typeCompleteSelection = hints[0];
+        }
 
         return;
       }
 
       // Select next type from list
-      if (key == 'ArrowDown') {
+      if (key === 'ArrowDown') {
         const index = hints.indexOf(this.typeCompleteSelection);
-        if (index > -1 && index < hints.length - 1)
+        if (index > -1 && index < hints.length - 1) {
           this.typeCompleteSelection = hints[index + 1];
+        }
         return;
       }
 
       // Select last type from list
-      if (key == 'ArrowUp') {
+      if (key === 'ArrowUp') {
         const index = hints.indexOf(this.typeCompleteSelection);
-        if (index > 0)
+        if (index > 0) {
           this.typeCompleteSelection = hints[index - 1];
+        }
         return;
       }
 
       // Enter is pressed?
-      if (key == 'Enter') {
+      if (key === 'Enter') {
         const type = new (Metamodel.getModel('/db/' + this.typeCompleteSelection) as typeof Type)();
         this.selectedProperty.type = type;
         this.typeComplete = type.name || '';
@@ -156,19 +158,19 @@ export class ClassifierElement extends Shape<Classifier> {
       }
 
       // A backspace is pressed?
-      if (key == 'Backspace') {
+      if (key === 'Backspace') {
         this.selectedProperty.type = null;
         this.typeComplete = '';
       }
     } else {
       // A single letter is pressed?
-      if (key.length == 1) {
+      if (key.length === 1) {
         this.selectedProperty.name += key;
         return;
       }
 
       // Enter is pressed?
-      if (key == 'Enter') {
+      if (key === 'Enter') {
         const property = this.selectedProperty;
         i.deleteSelection(this);
         property.emit('rename', property);
@@ -176,7 +178,7 @@ export class ClassifierElement extends Shape<Classifier> {
       }
 
       // A backspace is pressed?
-      if (key == 'Backspace') {
+      if (key === 'Backspace') {
         if (this.selectedProperty.name) {
           const name = this.selectedProperty.name;
           this.selectedProperty.name = name.substr(0, name.length - 1);
@@ -187,13 +189,13 @@ export class ClassifierElement extends Shape<Classifier> {
   }
 
   onTick(time: number, i: InteractiveCanvas) {
-    this.caret = time % 2 == 1;
+    this.caret = time % 2 === 1;
   }
 
   private renderProperties(attributes: Set<Property>, canvas: Canvas, offsetY: number): number {
     let y = offsetY;
 
-    for (let attribute of attributes) {
+    for (const attribute of attributes) {
       y = this.renderProperty(attribute, canvas, y);
     }
 
@@ -219,14 +221,14 @@ export class ClassifierElement extends Shape<Classifier> {
     x += canvas.measureTextWidth(attributeName, this.font);
 
     // Draw caret
-    if (this.selectedProperty == attribute && this.caret && !this.typeEditing) {
+    if (this.selectedProperty === attribute && this.caret && !this.typeEditing) {
       this.drawCaret(canvas, x, y);
     }
 
     canvas.drawText(': ', x, y, this.font);
     x += canvas.measureTextWidth(': ', this.font);
 
-    if (this.selectedProperty == attribute && this.typeEditing) {
+    if (this.selectedProperty === attribute && this.typeEditing) {
       this.drawCompletion(canvas, x, y + ENTRY_Y_OFFSET);
     }
 
@@ -241,9 +243,8 @@ export class ClassifierElement extends Shape<Classifier> {
     }
 
     // Draw caret
-    if (this.selectedProperty == attribute && this.typeEditing) {
-      if (this.caret)
-        this.drawCaret(canvas, x, y);
+    if (this.selectedProperty === attribute && this.typeEditing) {
+      if (this.caret) this.drawCaret(canvas, x, y);
     }
 
     // Draw default value
@@ -256,7 +257,7 @@ export class ClassifierElement extends Shape<Classifier> {
 
     y += ENTRY_Y_OFFSET;
 
-    if (this.selectedProperty == attribute) {
+    if (this.selectedProperty === attribute) {
       canvas.drawSimpleLine(10, y, x, y, new Stroke(this.font.style, 1));
     }
 
@@ -273,13 +274,13 @@ export class ClassifierElement extends Shape<Classifier> {
     const visibilityWidth = canvas.measureTextWidth('~', this.font);
     let y = offsetY;
 
-    for (let operation of operations) {
+    for (const operation of operations) {
       let x = offsetX;
       y += ENTRY_Y_OFFSET;
 
       // Draw visibility
       if (operation.visibility) {
-        canvas.drawText(this.getVisibilitySymbol(operation.visibility), x + visibilityWidth/2, y, this.font, visibilityWidth, 'center');
+        canvas.drawText(this.getVisibilitySymbol(operation.visibility), x + visibilityWidth / 2, y, this.font, visibilityWidth, 'center');
       }
       x += visibilityWidth;
       x += sepX;
@@ -363,9 +364,9 @@ export class ClassifierElement extends Shape<Classifier> {
     canvas.fillRectangle(bounds, Fill.fromStyle(Color.YELLOW));
     canvas.strokeRectangle(bounds, new Stroke(Color.BLACK, 1));
 
-    for (let entry of entries) {
-      let font = this.font.clone;
-      if (entry == this.typeCompleteSelection) {
+    for (const entry of entries) {
+      const font = this.font.clone;
+      if (entry === this.typeCompleteSelection) {
         canvas.fillRectangle(new Bounds(x, y, 300, ENTRY_Y_OFFSET * 2), Fill.fromStyle(Color.BLACK));
         font.style = Color.WHITE;
       }
@@ -396,6 +397,6 @@ export class ClassifierElement extends Shape<Classifier> {
   private getTypeHints(): string[] {
     return Array.from(Metamodel.getModels())
       .map((model: any) => model.name)
-      .filter(it => it.indexOf(this.typeComplete) === 0);
+      .filter((it) => it.indexOf(this.typeComplete) === 0);
   }
 }

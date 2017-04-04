@@ -1,5 +1,5 @@
-import { Namespace, Attribute } from '../.';
 import { Element } from '@metagram/models';
+import { Attribute, Namespace } from '../.';
 
 @Namespace('http://spec.moellers.systems/PN')
 export class Net extends Element {

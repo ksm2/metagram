@@ -1,16 +1,16 @@
 import { Element } from '../../models/Element';
-import { TypeScriptTemplate } from './TypeScriptTemplate';
-import { StringService } from '../../services/StringService';
-import { XMI } from '../../models/xmi/XMI';
-import { Package } from '../../models/uml/Package';
-import { ModelElement } from '../../models/uml/ModelElement';
 import { Class } from '../../models/uml/Class';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Package } from '../../models/uml/Package';
+import { XMI } from '../../models/xmi/XMI';
 import { XMIImpl } from '../../models/xmi/XMIImpl';
+import { StringService } from '../../services/StringService';
+import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class IndexTypeScriptTemplate extends TypeScriptTemplate {
   render(xmi: XMIImpl, options: any, next: (element: Element) => void): string {
-    const elements = [...xmi.contents].filter(e => e instanceof Class || e instanceof Package) as ModelElement[];
-    elements.forEach(element => next(element));
+    const elements = [...xmi.contents].filter((e) => e instanceof Class || e instanceof Package) as ModelElement[];
+    elements.forEach((element) => next(element));
 
     const { forEach, exportStmt } = TypeScriptTemplate;
     return `/*

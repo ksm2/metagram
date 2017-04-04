@@ -1,7 +1,7 @@
-import { Type } from './Type';
-import { Property } from './Property';
+import { Attribute, Class } from '../../decorators';
 import { Operation } from './Operation';
-import { Class, Attribute } from '../../decorators';
+import { Property } from './Property';
+import { Type } from './Type';
 
 @Class('http://www.omg.org/spec/UML/20131001:Classifier', Type)
 export class Classifier extends Type {
@@ -40,7 +40,7 @@ export class Classifier extends Type {
    * Gets an attribute with a specific name or null, if it does not exist.
    */
   getAttribute(name: string): Property | null {
-    for (let property of this._ownedAttributes) {
+    for (const property of this._ownedAttributes) {
       if (property.name === name) return property;
     }
 

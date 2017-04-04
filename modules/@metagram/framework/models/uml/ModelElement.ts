@@ -1,6 +1,6 @@
-import { Class, Attribute } from '../../decorators';
-import { VisibilityKind } from './VisibilityKind';
+import { Attribute, Class } from '../../decorators';
 import { Element } from '../Element';
+import { VisibilityKind } from './VisibilityKind';
 
 @Class(ModelElement, Element)
 export class ModelElement extends Element {

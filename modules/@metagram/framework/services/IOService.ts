@@ -33,7 +33,7 @@ export class IOService {
    * @param destination Destination directory
    */
   copyDirectory(source: string, destination: string): Promise<void> {
-    return new Promise<void>((res, rej) => ncp(source, destination, err => err ? rej(err) : res()));
+    return new Promise<void>((res, rej) => ncp(source, destination, (err) => err ? rej(err) : res()));
   }
 
   /**

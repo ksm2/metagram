@@ -1,6 +1,6 @@
-import { ModelElement } from './ModelElement';
+import { Attribute, Class } from '../../decorators';
 import { Classifier } from './Classifier';
-import { Class, Attribute } from '../../decorators';
+import { ModelElement } from './ModelElement';
 
 /**
  * A DirectedRelationship represents a relationship between a collection of source model Elements and a collection of target model Elements.

@@ -1,8 +1,8 @@
 import path = require('path');
 import fs = require('fs');
 import mkdirp = require('mkdirp');
-import { execFile } from 'child_process';
 import { expect } from 'chai';
+import { execFile } from 'child_process';
 import readJson = require('read-package-json');
 import chalk = require('chalk');
 import sourceMaps = require('source-map-support');
@@ -12,7 +12,7 @@ sourceMaps.install();
 process.chdir(path.resolve(__dirname));
 process.setMaxListeners(0);
 
-describe('TypeScriptCommand', function () {
+describe('TypeScriptCommand', () => {
   let pkg: any;
   let bin: string;
 
@@ -33,7 +33,7 @@ describe('TypeScriptCommand', function () {
     });
   });
 
-  after(function () {
+  after(() => {
     process.emit('cleanup');
   });
 
@@ -51,15 +51,18 @@ describe('TypeScriptCommand', function () {
   it('should error when executing without source', (done) => {
     execFile('node', [bin, 'typescript'], (error, stdout, stderr) => {
       expect(error).to.be.not.null;
-      expect(chalk.stripColor(stderr).replace(/\r\n|\n/g, '')).to.equal('No XMI source URLs specified');
+      expect(chalk.stripColor(stderr.split('\n')[0])).to.equal('Error: No XMI source URLs specified');
       expect(error).to.have.property('code', 1);
       done();
     });
   });
 
-  it('should generate a TypeScript module', function (done) {
+  it('should generate a TypeScript module', function(done) {
     this.timeout(60000);
-    execFile('node', [bin, 'typescript', '-o', 'out', '-c', 'typescript-var', 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi', 'http://www.omg.org/spec/UML/20131001/UML.xmi'], (error, stdout) => {
+    const primitiveTypes = 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi';
+    const uml = 'http://www.omg.org/spec/UML/20131001/UML.xmi';
+    const command = [bin, 'typescript', '-o', 'out', '-c', 'typescript-var', primitiveTypes, uml];
+    execFile('node', command, (error) => {
       expect(error).to.be.null;
 
       // Check cache contents

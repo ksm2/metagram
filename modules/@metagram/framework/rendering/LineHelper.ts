@@ -57,7 +57,7 @@ export class LineHelper {
     ctx.rotate(textAngle);
     let x = 0;
     if (usePdfFix) {
-      x -= ctx.textAlign == 'right' ? ctx.measureText(label).width : ctx.textAlign == 'center' ? ctx.measureText(label).width / 2 : 0;
+      x -= ctx.textAlign === 'right' ? ctx.measureText(label).width : ctx.textAlign === 'center' ? ctx.measureText(label).width / 2 : 0;
     }
     ctx.fillText(label, x, usePdfFix ? -20 : -10);
 
@@ -75,7 +75,7 @@ export class LineHelper {
   }
 
   private static calculateTextPos(ctx: CanvasRenderingContext2D, flip: boolean, length: number, position: number) {
-    if (position == 0) {
+    if (position === 0) {
       ctx.textAlign = 'center';
       ctx.translate(.5 * length, 0);
       return;

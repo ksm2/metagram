@@ -1,8 +1,8 @@
-import { Visitor } from './Visitor';
 import { Element } from '../../models';
+import { XMIImpl } from '../../models/xmi/XMIImpl';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
-import { XMIImpl } from '../../models/xmi/XMIImpl';
+import { Visitor } from './Visitor';
 
 export class XMIVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es2015",
+    "lib": ["dom", "es2015", "dom.iterable", "scripthost"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,

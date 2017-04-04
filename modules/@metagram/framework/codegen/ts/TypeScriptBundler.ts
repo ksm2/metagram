@@ -1,7 +1,7 @@
 import path = require('path');
 
 // Other
-import { ModelElement, Element, DataType, Class, Package, Enumeration, PrimitiveType } from '../../models';
+import { Class, DataType, Element, Enumeration, ModelElement, Package, PrimitiveType } from '../../models';
 import { IOService, StringService } from '../../services';
 
 // Codegen
@@ -45,7 +45,7 @@ export class TypeScriptBundler extends Bundler {
       if (targetIndex >= 0) {
         if (!path) path = './';
 
-        const remainingDirs = targetPaths.slice(targetIndex + 1).map(pkg => StringService.camelToHyphenCase(pkg.name!));
+        const remainingDirs = targetPaths.slice(targetIndex + 1).map((pkg) => StringService.camelToHyphenCase(pkg.name!));
         remainingDirs.push(ref.name!);
 
         return `import { ${ref.name} } from '${path}${remainingDirs.join('/')}';`;
@@ -57,7 +57,7 @@ export class TypeScriptBundler extends Bundler {
     // Go all the way up
     if (!path) path = './';
 
-    const remainingDirs = targetPaths.map(pkg => StringService.camelToHyphenCase(pkg.name!));
+    const remainingDirs = targetPaths.map((pkg) => StringService.camelToHyphenCase(pkg.name!));
     remainingDirs.push(ref.name!);
 
     return `import { ${ref.name} } from '${path}${remainingDirs.join('/')}';`;
@@ -74,16 +74,16 @@ export class TypeScriptBundler extends Bundler {
 
     return 'src/' + pkg.allOwningElements()
       .concat(pkg)
-      .map(el => StringService.camelToHyphenCase(el.name!))
+      .map((el) => StringService.camelToHyphenCase(el.name!))
       .join('/');
   }
 
-  private async render(element: Element, outputDir: string, options: any): Promise<Set<ModelElement>> {
+  private async render(root: Element, outputDir: string, options: any): Promise<Set<ModelElement>> {
     const rendered = new Set<ModelElement>();
 
-    const queue: Element[] = [element];
+    const queue: Element[] = [root];
     while (queue.length) {
-      let element = queue.shift()!;
+      const element = queue.shift()!;
 
       // Add to rendered elements
       if (element instanceof ModelElement) {
@@ -94,9 +94,9 @@ export class TypeScriptBundler extends Bundler {
       // Find matching template
       const templates = this.findTemplates(element, options);
 
-      for (let template of templates) {
+      for (const template of templates) {
         const filename = path.join(outputDir, template.generateFilename(element));
-        const content = template.render(element, options, next => queue.push(next));
+        const content = template.render(element, options, (next) => queue.push(next));
         await this.ioService.ensureDirectoryExists(filename);
         await this.ioService.writeFile(content, filename);
       }

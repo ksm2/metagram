@@ -1,7 +1,7 @@
+import { Attribute, Class } from '../decorators';
 import { Element } from '../models';
-import { Class, Attribute } from '../decorators';
-import { Line } from './Line';
 import { SVGService } from '../services/SVGService';
+import { Line } from './Line';
 import { Point } from './Point';
 
 @Class('LineStroke', Element)
@@ -41,7 +41,7 @@ export class LineStroke extends Element {
     // Work over all lines
     const lines = [];
     let x = commands[0].args[0], y = commands[0].args[1];
-    for (let command of commands.slice(1)) {
+    for (const command of commands.slice(1)) {
       let nx, ny;
       switch (command.cmd) {
         case 'L':

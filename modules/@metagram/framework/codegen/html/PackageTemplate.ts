@@ -1,20 +1,18 @@
 import { Element } from '../../models/Element';
-import { HTMLTemplate } from './HTMLTemplate';
 import { Package } from '../../models/uml/Package';
+import { HTMLTemplate } from './HTMLTemplate';
 
 export class PackageTemplate extends HTMLTemplate {
-  render(element: Element, options: any, next: (element: Element) => void): string {
-    const model = element as Package;
+  render(pkg: Package, options: any, next: (element: Element) => void): string {
+    // Make all packaged elements next
+    pkg.packagedElement.forEach((cls) => next(cls));
 
-    // Make all child elements next
-    model.packagedElement.forEach(cls => next(cls));
-
-    return this.layout(model, options, `
+    return this.layout(pkg, options, `
       <section>
         <h2>Packaged Elements</h2>
         <ul class="list-unstyled">
-          ${this.forEach(model.packagedElement, (element) => `
-            <li><a class="name-ref name-${this.cssClass(element)}" href="${this.ref(element)}">${element.name}</a></li>`)}
+          ${this.forEach(pkg.packagedElement, (packaged) => `
+            <li><a class="name-ref name-${this.cssClass(packaged)}" href="${this.ref(packaged)}">${packaged.name}</a></li>`)}
         </ul>
       </section>
     `);

@@ -1,8 +1,8 @@
-import { Element } from '../../models';
 import { Point } from '../../diagram/Point';
-import { Visitor } from './Visitor';
+import { Element } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class PointVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

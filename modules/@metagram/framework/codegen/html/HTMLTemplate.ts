@@ -1,12 +1,12 @@
+import { KNOWN_MODELS } from '../../models/index';
+import { EnumerationLiteral } from '../../models/uml/EnumerationLiteral';
+import { ModelElement } from '../../models/uml/ModelElement';
+import { Operation } from '../../models/uml/Operation';
+import { Package } from '../../models/uml/Package';
+import { ParameterDirectionKind } from '../../models/uml/ParameterDirectionKind';
+import { Property } from '../../models/uml/Property';
 import { Template } from '../Template';
 import { HTMLBundler } from './HTMLBundler';
-import { Package } from '../../models/uml/Package';
-import { ModelElement } from '../../models/uml/ModelElement';
-import { KNOWN_MODELS } from '../../models/index';
-import { Property } from '../../models/uml/Property';
-import { EnumerationLiteral } from '../../models/uml/EnumerationLiteral';
-import { Operation } from '../../models/uml/Operation';
-import { ParameterDirectionKind } from '../../models/uml/ParameterDirectionKind';
 
 export class HTMLTemplate extends Template {
   constructor(protected bundler: HTMLBundler) {
@@ -107,7 +107,7 @@ export class HTMLTemplate extends Template {
         </button>
         <a class="navbar-brand" href="index.html">Metagram</a>
       </div>
-        
+
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="nav navbar-nav">
           <li class="nav-item${active === 'index' ? ' active' : ''}">
@@ -125,7 +125,7 @@ export class HTMLTemplate extends Template {
       </div>
     </div>
   </nav>
-  
+
   <div class="container">
     ${body}
   </div>
@@ -143,7 +143,7 @@ export class HTMLTemplate extends Template {
             <strong class="name-ref name-${this.cssClass(property)}">${property.name}</strong>
             ${property.type ? `&nbsp;<a class="name-ref name-${this.cssClass(property.type)}" href="${this.ref(property.type)}">:${property.type.name}</a>` : ``}
             <span>[${property.lower}..${property.upper === Infinity ? '*' : property.upper}]</span>
-            ${property.defaultValue instanceof EnumerationLiteral ? ` 
+            ${property.defaultValue instanceof EnumerationLiteral ? `
               <a href="${this.ref(property.defaultValue)}">=${property.defaultValue.name}</a>
             ` : null !== property.defaultValue ? `
               <span>=${property.defaultValue}</span>
@@ -166,10 +166,10 @@ export class HTMLTemplate extends Template {
           <li>
             <strong class="name-ref name-${this.cssClass(operation)}">${operation.name}</strong>
             <strong>(</strong>
-            ${this.forEach([...operation.ownedParameters].filter(p => p.direction !== ParameterDirectionKind.RETURN), (parameter) => `
+            ${this.forEach([...operation.ownedParameters].filter((p) => p.direction !== ParameterDirectionKind.RETURN), (parameter) => `
               <strong>${parameter.name}</strong>
               ${parameter.type ? `&nbsp;<a class="name-ref name-${this.cssClass(parameter.type)}" href="${this.ref(parameter.type)}">:${parameter.type.name}</a>` : ``}
-              ${parameter.defaultValue instanceof EnumerationLiteral ? ` 
+              ${parameter.defaultValue instanceof EnumerationLiteral ? `
                 <a href="${this.ref(parameter.defaultValue)}">=${parameter.defaultValue.name}</a>
               ` : null !== parameter.defaultValue ? `
                 <span>=${parameter.defaultValue}</span>

@@ -1,8 +1,8 @@
 import meow = require('meow');
 import chalk = require('chalk');
-import { Command } from './Command';
-import { FetchService, IOService, LogService } from '../services';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
+import { FetchService, IOService, LogService } from '../services';
+import { Command } from './Command';
 import { DiagramCommand } from './DiagramCommand';
 import { HTMLCommand } from './HTMLCommand';
 import { TypeScriptCommand } from './TypeScriptCommand';
@@ -43,7 +43,7 @@ export class CLIApplication {
 
     const cmdName = result.input[0];
     const cmdExp = new RegExp(`^${cmdName.replace(/(.)/g, '$1.*')}$`, 'i');
-    this.command = this.commands.find(command => !!command.getName().match(cmdExp));
+    this.command = this.commands.find((command) => !!command.getName().match(cmdExp));
     result.input = result.input.slice(1);
 
     // Command not found?
@@ -52,16 +52,16 @@ export class CLIApplication {
     }
 
     // Wanting command's help?
-    if (result.flags['help'] || result.flags['h']) {
+    if (result.flags.help || result.flags.h) {
       this.showHelp();
       return;
     }
 
     // Specified cache dir?
-    const cacheDir = result.flags['cacheDir'] || result.flags['c'] || null;
+    const cacheDir = result.flags.cacheDir || result.flags.c || null;
     if (cacheDir) {
       this.fetchService.setCacheDir(cacheDir);
-      console.info(`Setting cache dir to ${chalk.cyan(this.fetchService.getCacheDir() || '')}`);
+      process.stderr.write(`Setting cache dir to ${chalk.cyan(this.fetchService.getCacheDir() || '')}\n`);
     }
 
     // Run the command
@@ -70,8 +70,7 @@ export class CLIApplication {
 
   showHelp(err?: Error): void {
     if (err) {
-      console.error(chalk.bgRed.white(err.message));
-      console.log(err.stack);
+      process.stderr.write(chalk.red(err.stack || ''));
     }
 
     if (this.command) {
@@ -82,12 +81,12 @@ export class CLIApplication {
     const commandString = this.generateCommandHelp(this.commands);
     const help = `
 metagram <command>
-  
-${chalk.bold('Commands')}
-${commandString} 
-    `;
 
-    console.log(help);
+${chalk.bold('Commands')}
+${commandString}
+`;
+
+    process.stdout.write(help);
     process.exit(err ? 1 : 2);
   }
 
@@ -104,17 +103,17 @@ metagram ${command.getName()} ${command.getUsageHelp()}
 
 ${chalk.bold('Description')}
   ${command.getDescription()}
-  
+
 ${chalk.bold('Options')}
 ${optionStr}
-    `;
+`;
 
-    console.log(help);
+    process.stdout.write(help);
     process.exit(err ? 1 : 2);
   }
 
   private generateCommandHelp(commands: Command[]): string {
-    const table = commands.map(cmd => [
+    const table = commands.map((cmd) => [
       cmd.getName(),
       cmd.getDescription(),
     ]);
@@ -122,7 +121,7 @@ ${optionStr}
     return this.generateTable(table);
   }
 
-  private generateTable(rows: (string | undefined)[][]): string {
+  private generateTable(rows: Array<Array<string | undefined>>): string {
     if (!rows.length) {
       return '';
     }
@@ -131,7 +130,7 @@ ${optionStr}
     const max: number[] = [];
     const spaces: string[] = [];
     for (let i = 0; i < cols; i += 1) {
-      max[i] = rows.reduce((max, cmd) => Math.max((cmd[i] || '').length, max), 0);
+      max[i] = rows.reduce((prev, cmd) => Math.max((cmd[i] || '').length, prev), 0);
       spaces[i] = ' '.repeat(max[i]);
     }
 

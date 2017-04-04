@@ -1,7 +1,7 @@
 import path = require('path');
 import fs = require('fs');
-import { execFile } from 'child_process';
 import { expect } from 'chai';
+import { execFile } from 'child_process';
 import readJson = require('read-package-json');
 import chalk = require('chalk');
 import sourceMaps = require('source-map-support');
@@ -11,7 +11,7 @@ sourceMaps.install();
 process.chdir(path.resolve(__dirname));
 process.setMaxListeners(0);
 
-describe('DiagramCommand', function () {
+describe('DiagramCommand', () => {
   let pkg: any;
   let bin: string;
 
@@ -24,7 +24,7 @@ describe('DiagramCommand', function () {
     });
   });
 
-  after(function () {
+  after(() => {
     process.emit('cleanup');
   });
 
@@ -42,7 +42,7 @@ describe('DiagramCommand', function () {
   it('should error when piping no XMI data', (done) => {
     const p = execFile('node', [bin, 'diagram'], (error, stdout, stderr) => {
       expect(error).to.be.not.null;
-      expect(chalk.stripColor(stderr).replace(/\r\n|\n/g, '')).to.equal('Unexpected amount of XMI elements: 0 (expected 1)');
+      expect(chalk.stripColor(stderr.split('\n')[0])).to.equal('Error: Unexpected amount of XMI elements: 0 (expected 1)');
       expect(error).to.have.property('code', 1);
       done();
     });
@@ -52,36 +52,36 @@ describe('DiagramCommand', function () {
   });
 
   it('should generate SVG image files', (done) => {
-    execFile('node', [bin, 'diagram', '-f', 'svg', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+    execFile('node', [bin, 'diagram', '-f', 'svg', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout, stderr) => {
       expect(error).to.be.null;
-      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.svg');
+      expect(chalk.stripColor(stderr)).to.include('Saved Petrinet elements.svg');
       expect(fs.existsSync('Petrinet elements.svg')).to.be.true;
       done();
     });
   });
 
   it('should generate PDF image files', (done) => {
-    execFile('node', [bin, 'diagram', '-f', 'pdf', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+    execFile('node', [bin, 'diagram', '-f', 'pdf', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout, stderr) => {
       expect(error).to.be.null;
-      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.pdf');
+      expect(chalk.stripColor(stderr)).to.include('Saved Petrinet elements.pdf');
       expect(fs.existsSync('Petrinet elements.pdf')).to.be.true;
       done();
     });
   });
 
   it('should generate PNG image files', (done) => {
-    execFile('node', [bin, 'diagram', '-f', 'png', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+    execFile('node', [bin, 'diagram', '-f', 'png', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout, stderr) => {
       expect(error).to.be.null;
-      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.png');
+      expect(chalk.stripColor(stderr)).to.include('Saved Petrinet elements.png');
       expect(fs.existsSync('Petrinet elements.png')).to.be.true;
       done();
     });
   });
 
   it('should generate JPEG image files', (done) => {
-    execFile('node', [bin, 'diagram', '-f', 'jpeg', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout) => {
+    execFile('node', [bin, 'diagram', '-f', 'jpeg', 'https://ksm2.github.io/xmi/Petrinet/v1.0.0/Petrinet.xmi'], (error, stdout, stderr) => {
       expect(error).to.be.null;
-      expect(chalk.stripColor(stdout)).to.include('Saved Petrinet elements.jpeg');
+      expect(chalk.stripColor(stderr)).to.include('Saved Petrinet elements.jpeg');
       expect(fs.existsSync('Petrinet elements.jpeg')).to.be.true;
       done();
     });

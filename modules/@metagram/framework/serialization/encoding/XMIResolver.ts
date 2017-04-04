@@ -1,8 +1,8 @@
 import { DOMParser } from 'xmldom';
 import { KNOWN_MODELS } from '../../models';
-import { XMITree } from './XMITree';
-import { ResolvedXMINode } from './ResolvedXMINode';
 import { FetchService, LogService } from '../../services';
+import { ResolvedXMINode } from './ResolvedXMINode';
+import { XMITree } from './XMITree';
 
 const XMI_URI = 'http://www.omg.org/spec/XMI/20131001';
 

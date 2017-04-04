@@ -1,14 +1,14 @@
-import { ModelElement } from '../models';
-import { DiagramElement } from './DiagramElement';
 import { Canvas } from '../canvas/Canvas';
-import { Directions } from './Directions';
-import { Handle } from './Handle';
-import { Fill } from './Fill';
-import { Stroke } from './Stroke';
-import { Font } from './Font';
+import { Attribute, Class } from '../decorators';
+import { ModelElement } from '../models';
 import { Bounds } from './Bounds';
-import { Class, Attribute } from '../decorators';
+import { DiagramElement } from './DiagramElement';
+import { Directions } from './Directions';
+import { Fill } from './Fill';
+import { Font } from './Font';
+import { Handle } from './Handle';
 import { Point } from './Point';
+import { Stroke } from './Stroke';
 
 @Class('Shape', DiagramElement)
 export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
@@ -72,7 +72,7 @@ export abstract class Shape<M extends ModelElement> extends DiagramElement<M> {
     canvas.pushCanvasStack();
     canvas.translate(this._bounds.topLeft);
     this.renderContents(canvas);
-    for (let child of this.ownedElements) {
+    for (const child of this.ownedElements) {
       child.render(canvas);
     }
     canvas.popCanvasStack();

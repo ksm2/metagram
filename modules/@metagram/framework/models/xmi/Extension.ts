@@ -1,5 +1,4 @@
-import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '../Collections';
-
+import { ArbitraryAmbiguousCollection, ArbitraryUniqueCollection, OrderedAmbiguousCollection, OrderedUniqueCollection } from '../Collections';
 
 /**
 
@@ -7,15 +6,13 @@ import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueC
 export interface Extension {
 
   /**
-  
+
    */
   extender: string | undefined;
 
-
   /**
-  
+
    */
   extenderID: string | undefined;
-
 
 }

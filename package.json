@@ -58,6 +58,7 @@
     "prelink": "npm run build",
     "link": "npm run link:framework",
     "link:framework": "cd dest && npm link",
+    "lint": "tslint -c tslint.json modules/**/*.ts",
     "build:dest": "tsc -p tsconfig.json",
     "build:test": "tsc -p tsconfig.test.json",
     "watch:dest": "tsc -p tsconfig.json -w",
