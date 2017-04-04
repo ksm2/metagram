@@ -59,7 +59,7 @@ describe('TypeScriptCommand', function () {
 
   it('should generate a TypeScript module', function (done) {
     this.timeout(60000);
-    execFile('node', [bin, 'typescript', '-o', 'out', '--base-href', '/my/base/href/', '-c', 'typescript-var', 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi', 'http://www.omg.org/spec/UML/20131001/UML.xmi'], (error, stdout) => {
+    execFile('node', [bin, 'typescript', '-o', 'out', '-c', 'typescript-var', 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi', 'http://www.omg.org/spec/UML/20131001/UML.xmi'], (error, stdout) => {
       expect(error).to.be.null;
 
       // Check cache contents

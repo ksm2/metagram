@@ -3,6 +3,11 @@ import { TypeScriptTemplate } from './TypeScriptTemplate';
 import { Class } from '../../models/uml/Class';
 import { ModelElement } from '../../models/uml/ModelElement';
 
+function values<T>(o: { [key: string]: T }): T[] {
+  const isEnumerable = Function.bind.call(Function.call, Object.prototype.propertyIsEnumerable);
+  return Reflect.ownKeys(o).reduce((v, k) => v.concat(typeof k === 'string' && isEnumerable(o, k) ? [o[k]] : []), [] as any[]);
+}
+
 export class ClassTypeScriptTemplate extends TypeScriptTemplate {
   render(model: Class, options: any, next: (element: Element) => void): string {
     // Make all generalizations next
@@ -14,10 +19,10 @@ export class ClassTypeScriptTemplate extends TypeScriptTemplate {
 ${forEach(model.comments, cmt => ` * ${cmt}`, `\n`)}
  */
 export class ${model.name}Impl extends $Elm implements ${model.name} {
-${forEach(Object.values(model.getAttributes()), (attribute) => `
+${forEach(values(model.getAttributes()), (attribute) => `
   private _${pluralize(attribute.name!)}: $Attr<${typeOf(attribute.type, (ref) => imports.add(ref))}> = new $Attr<${typeOf(attribute.type)}>('${attribute.name!}', ${attribute.ordered}, ${attribute.unique}, ${attribute.lower}, ${attribute.upper});`)}
   
-${forEach(Object.values(model.getAttributes()), (attribute) => `
+${forEach(values(model.getAttributes()), (attribute) => `
   set ${attribute.name}(value: ${typeOf(attribute.type)} | undefined) { 
     this._${pluralize(attribute.name!)}.set(value); 
   }
