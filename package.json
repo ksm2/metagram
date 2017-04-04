@@ -46,7 +46,7 @@
     "typescript": "^2.2.2"
   },
   "scripts": {
-    "mocha": "mocha test/**/*.spec.js --reporter spec",
+    "mocha": "mocha test/**/*.spec.js --timeout 5000 --reporter spec",
     "start": "http-server out",
     "pretest": "npm run clean:test  && npm run build:test && npm run copy:test",
     "test": "npm run mocha",
