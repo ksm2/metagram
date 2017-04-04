@@ -1,17 +1,15 @@
 import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '../Collections';
-import { Documentation } from './Documentation';
-import { Difference } from './Difference';
-import { Extension } from './Extension';
+import { Element } from '../Element';
 
 /**
 
  */
-export interface XMI {
+export interface Difference {
 
   /**
   
    */
-  documentation: Documentation | undefined;
+  container: Difference | undefined;
 
 
   /**
@@ -25,8 +23,9 @@ export interface XMI {
   /**
   
    */
-  extension: Extension | undefined;
+  target: Element | undefined;
 
-  getAllExtensions(): ArbitraryUniqueCollection<Extension>;
+  getAllTargets(): ArbitraryUniqueCollection<Element>;
+
 
 }

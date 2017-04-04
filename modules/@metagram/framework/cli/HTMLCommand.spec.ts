@@ -12,14 +12,14 @@ sourceMaps.install();
 process.chdir(path.resolve(__dirname));
 process.setMaxListeners(0);
 
-describe('HTMLDocCommand', function () {
+describe('HTMLCommand', function () {
   let pkg: any;
   let bin: string;
 
   before((done) => {
-     mkdirp('html-doc-var', (err) => {
+     mkdirp('html-var', (err) => {
        expect(err).to.be.null;
-       expect(fs.existsSync('html-doc-var')).to.be.true;
+       expect(fs.existsSync('html-var')).to.be.true;
        done();
      });
   });
@@ -38,9 +38,9 @@ describe('HTMLDocCommand', function () {
   });
 
   it('should print the help', (done) => {
-    execFile('node', [bin, 'html-doc', '--help'], (error, stdout) => {
+    execFile('node', [bin, 'html', '--help'], (error, stdout) => {
       expect(error).to.be.not.null;
-      expect(stdout).to.include('metagram html-doc');
+      expect(stdout).to.include('metagram html');
       expect(stdout).to.include('Description');
       expect(stdout).to.include('Options');
       expect(error).to.have.property('code', 2);
@@ -49,7 +49,7 @@ describe('HTMLDocCommand', function () {
   });
 
   it('should error when executing without source', (done) => {
-    execFile('node', [bin, 'html-doc'], (error, stdout, stderr) => {
+    execFile('node', [bin, 'html'], (error, stdout, stderr) => {
       expect(error).to.be.not.null;
       expect(chalk.stripColor(stderr).replace(/\r\n|\n/g, '')).to.equal('No XMI source URLs specified');
       expect(error).to.have.property('code', 1);
@@ -59,12 +59,12 @@ describe('HTMLDocCommand', function () {
 
   it('should generate an HTML documentation', function (done) {
     this.timeout(60000);
-    execFile('node', [bin, 'html-doc', '-o', 'out', '--base-href', '/my/base/href/', '-c', 'html-doc-var', 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi', 'http://www.omg.org/spec/UML/20131001/UML.xmi'], (error, stdout) => {
+    execFile('node', [bin, 'html', '-o', 'out', '--base-href', '/my/base/href/', '-c', 'html-var', 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi', 'http://www.omg.org/spec/UML/20131001/UML.xmi'], (error, stdout) => {
       expect(error).to.be.null;
 
       // Check cache contents
-      expect(fs.existsSync('html-doc-var/http---www.omg.org-spec-UML-20131001-PrimitiveTypes.xmi')).to.be.true;
-      expect(fs.existsSync('html-doc-var/http---www.omg.org-spec-UML-20131001-UML.xmi')).to.be.true;
+      expect(fs.existsSync('html-var/http---www.omg.org-spec-UML-20131001-PrimitiveTypes.xmi')).to.be.true;
+      expect(fs.existsSync('html-var/http---www.omg.org-spec-UML-20131001-UML.xmi')).to.be.true;
 
       // Check HTML doc output
       expect(fs.existsSync('out')).to.be.true;

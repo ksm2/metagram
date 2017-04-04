@@ -4,11 +4,9 @@ export { Class } from './uml/Class';
 export { Classifier } from './uml/Classifier';
 export { DataType } from './uml/DataType';
 export { DirectedRelationship } from './uml/DirectedRelationship';
-export { Element } from './Element';
 export { Enumeration } from './uml/Enumeration';
 export { EnumerationLiteral } from './uml/EnumerationLiteral';
 export { Generalization } from './uml/Generalization';
-export { Metamodel } from './Metamodel';
 export { ModelElement } from './uml/ModelElement';
 export { Operation } from './uml/Operation';
 export { Package } from './uml/Package';
@@ -20,7 +18,13 @@ export { Property } from './uml/Property';
 export { Type } from './uml/Type';
 export { TypedElement } from './uml/TypedElement';
 export { VisibilityKind } from './uml/VisibilityKind';
-export { XMI } from './xmi/XMI';
+
+export * from './xmi';
+
+export * from './Collections';
+export { Element } from './Element';
+export { Attribute } from './Attribute';
+export { Metamodel } from './Metamodel';
 
 export const KNOWN_MODELS = new Map([
   ['http://www.omg.org/spec/XMI/20131001', { xmi: 'http://www.omg.org/spec/XMI/20131001/XMI-model.xmi', name: 'XMI', version: '2.5.1' }],

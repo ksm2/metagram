@@ -5,11 +5,22 @@ export class Template {
    * Renders any kind of data
    *
    * @param data The data to render
-   * @param next Calls the next data to be rendered
    * @param options Some options to pass to the renderer
+   * @param next Calls the next data to be rendered
    * @return A promise that resolves after finishing the rendering
    */
   render(data: any, options: any, next: (data: any) => void): string {
+    return '';
+  }
+
+  /**
+   * Generates a filename for given data
+   *
+   * @param data The data to render
+   * @param options Some options to pass to the renderer
+   * @return The generated filename
+   */
+  generateFilename(data: any, options: any = {}): string {
     return '';
   }
 

@@ -1,26 +1,26 @@
 import path = require('path');
 
-import { ModelElement, Element, DataType, Class, Package, Enumeration, PrimitiveType } from '../models';
-import {
-  IndexTemplate,
-  AssociationTemplate,
-  ClassTemplate,
-  DataTypeTemplate,
-  EnumerationTemplate,
-  PackageTemplate,
-  DefaultTemplate,
-  OverviewTemplate,
-} from './html';
-import { IOService } from '../services';
-import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
-import { Template } from './Template';
-import { Bundler } from './Bundler';
-import { StringService } from '../services/StringService';
+// Other
+import { ModelElement, Element, DataType, Class, Package, Enumeration, PrimitiveType } from '../../models';
+import { IOService, StringService } from '../../services';
+import { XMIDecoder } from '../../serialization/encoding/XMIDecoder';
+
+// Codegen
+import { Bundler } from '../Bundler';
+
+// Templates
+import { IndexTemplate } from './IndexTemplate';
+import { AssociationTemplate } from './AssociationTemplate';
+import { ClassTemplate } from './ClassTemplate';
+import { DataTypeTemplate } from './DataTypeTemplate';
+import { EnumerationTemplate } from './EnumerationTemplate';
+import { PackageTemplate } from './PackageTemplate';
+import { DefaultTemplate } from './DefaultTemplate';
+import { OverviewTemplate } from './OverviewTemplate';
 
 export class HTMLBundler extends Bundler {
   instanceOf: WeakMap<ModelElement, ModelElement>;
   private decoder: XMIDecoder;
-  private templates: Template[];
 
   constructor(
     decoder: XMIDecoder,
@@ -30,15 +30,13 @@ export class HTMLBundler extends Bundler {
     this.decoder = decoder;
     this.instanceOf = new WeakMap();
 
-    this.templates = [
-      new IndexTemplate(this),
-      new AssociationTemplate(this),
-      new ClassTemplate(this),
-      new DataTypeTemplate(this),
-      new EnumerationTemplate(this),
-      new PackageTemplate(this),
-      new DefaultTemplate(this),
-    ];
+    this.addTemplate(new IndexTemplate(this));
+    this.addTemplate(new AssociationTemplate(this));
+    this.addTemplate(new ClassTemplate(this));
+    this.addTemplate(new DataTypeTemplate(this));
+    this.addTemplate(new EnumerationTemplate(this));
+    this.addTemplate(new PackageTemplate(this));
+    this.addTemplate(new DefaultTemplate(this));
   }
 
   async bundle(rootElement: Element, outputDir: string, options: any = {}): Promise<void> {
@@ -57,12 +55,6 @@ export class HTMLBundler extends Bundler {
     await this.copyAssets(outputDir);
   }
 
-  /**
-   * Generates a filename for a given element
-   *
-   * @param element An element to generate the filename for
-   * @return The generated filename
-   */
   generateFilename(element: Element): string {
     if (!(element instanceof ModelElement)) return 'index.html';
 
@@ -104,8 +96,8 @@ export class HTMLBundler extends Bundler {
       }
 
       const str = template.render(element, options, next => queue.push(next));
-      await this.getIOService().ensureDirectoryExists(filename);
-      await this.getIOService().writeFile(str, filename);
+      await this.ioService.ensureDirectoryExists(filename);
+      await this.ioService.writeFile(str, filename);
     }
 
     return rendered;
@@ -125,21 +117,8 @@ export class HTMLBundler extends Bundler {
     const overviewRenderer = new OverviewTemplate(this);
     const str = overviewRenderer.render(models, options, () => {});
 
-    await this.getIOService().ensureDirectoryExists(filename);
-    await this.getIOService().writeFile(str, filename);
-  }
-
-  /**
-   * Finds a matching template for an element
-   */
-  private findTemplate(element: Element, options: any): Template | null {
-    for (let template of this.templates) {
-      if (template.isSupporting(element, options)) {
-        return template;
-      }
-    }
-
-    return null;
+    await this.ioService.ensureDirectoryExists(filename);
+    await this.ioService.writeFile(str, filename);
   }
 
   /**

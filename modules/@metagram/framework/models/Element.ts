@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import { Class } from '../decorators';
-import { ModelElement } from './uml/ModelElement';
 
 export interface ElementListener {
   (newValue: any, key: string): void;
@@ -8,14 +7,14 @@ export interface ElementListener {
 
 @Class('Element')
 export class Element extends EventEmitter {
-  _typeName: string | undefined;
-  _typeURI: string | undefined;
-  private _contents = new Set<Element>();
-  private _origin: string | undefined;
-  private _ID: string | undefined;
+  __typeName: string | undefined;
+  __typeURI: string | undefined;
+  private __contents = new Set<Element>();
+  private __origin: string | undefined;
+  private __ID: string | undefined;
 
   get contents(): Set<Element> {
-    return this._contents;
+    return this.__contents;
   }
 
   constructor() {
@@ -27,14 +26,14 @@ export class Element extends EventEmitter {
    * Appends a child to this element
    */
   appendChild(child: Element): void {
-    this._contents.add(child);
+    this.__contents.add(child);
   }
 
   /**
    * Removes a child from this element
    */
   removeChild(child: Element): boolean {
-    return this._contents.delete(child);
+    return this.__contents.delete(child);
   }
 
   /**
@@ -48,55 +47,68 @@ export class Element extends EventEmitter {
    * Sets the element's origin
    */
   setOrigin(origin: string) {
-    this._origin = origin;
+    this.__origin = origin;
   }
 
   /**
    * Returns the origin of this element
    */
   getOrigin(): string | undefined {
-    return this._origin;
+    return this.__origin;
   }
 
   /**
    * Sets the element's ID
    */
   setID(ID: string | undefined) {
-    this._ID = ID;
+    this.__ID = ID;
   }
 
   /**
    * Returns the ID of this element
    */
   getID(): string | undefined {
-    return this._ID;
+    return this.__ID;
   }
 
   /**
    * Sets the element's type URI
    */
   setTypeURI(uri: string | undefined) {
-    this._typeURI = uri;
+    this.__typeURI = uri;
   }
 
   /**
    * Returns the TypeURI of this element
    */
   getTypeURI(): string | undefined {
-    return this._typeURI;
+    return this.__typeURI;
   }
 
   /**
    * Sets the element's type name
    */
   setTypeName(name: string | undefined) {
-    this._typeName = name;
+    this.__typeName = name;
   }
 
   /**
    * Returns the TypeName of this element
    */
   getTypeName(): string | undefined {
-    return this._typeName;
+    return this.__typeName;
+  }
+
+  /**
+   * Merges elements with each other
+   *
+   * @param other The element to merge
+   */
+  merge(other: Element): this {
+    other.contents.forEach((ownedElement) => {
+      this.appendChild(ownedElement);
+      other.removeChild(ownedElement);
+    });
+    return this;
   }
 }

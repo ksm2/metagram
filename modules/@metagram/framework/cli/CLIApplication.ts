@@ -1,10 +1,11 @@
 import meow = require('meow');
 import chalk = require('chalk');
-import { HTMLDocCommand } from './HTMLDocCommand';
 import { Command } from './Command';
 import { FetchService, IOService, LogService } from '../services';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { DiagramCommand } from './DiagramCommand';
+import { HTMLCommand } from './HTMLCommand';
+import { TypeScriptCommand } from './TypeScriptCommand';
 
 import sourceMaps = require('source-map-support');
 sourceMaps.install();
@@ -22,7 +23,8 @@ export class CLIApplication {
 
     this.commands = [
       new DiagramCommand(decoder),
-      new HTMLDocCommand(decoder, ioService),
+      new HTMLCommand(decoder, ioService),
+      new TypeScriptCommand(decoder, ioService),
     ];
   }
 

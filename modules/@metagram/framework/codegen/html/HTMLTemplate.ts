@@ -1,5 +1,5 @@
 import { Template } from '../Template';
-import { HTMLBundler } from '../HTMLBundler';
+import { HTMLBundler } from './HTMLBundler';
 import { Package } from '../../models/uml/Package';
 import { ModelElement } from '../../models/uml/ModelElement';
 import { KNOWN_MODELS } from '../../models/index';

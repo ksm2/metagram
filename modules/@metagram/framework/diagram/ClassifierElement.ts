@@ -145,7 +145,7 @@ export class ClassifierElement extends Shape<Classifier> {
 
       // Enter is pressed?
       if (key == 'Enter') {
-        const type = Metamodel.getModel('/db/' + this.typeCompleteSelection) as Type;
+        const type = new (Metamodel.getModel('/db/' + this.typeCompleteSelection) as typeof Type)();
         this.selectedProperty.type = type;
         this.typeComplete = type.name || '';
         const property = this.selectedProperty;

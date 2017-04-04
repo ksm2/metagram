@@ -1,3 +1,5 @@
+import 'core-js/fn/object/values';
+
 export * from './canvas';
 export * from './cli';
 export * from './codegen';

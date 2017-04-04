@@ -38,6 +38,16 @@ export class PropertyVisitor extends Visitor {
         return;
       }
 
+      case 'isOrdered': {
+        parent.ordered = this.valueToBoolean(value, 'isOrdered');
+        return;
+      }
+
+      case 'isUnique': {
+        parent.unique = this.valueToBoolean(value, 'isUnique');
+        return;
+      }
+
       default: super.visitAttr(decoder, name, value, parent, parentNode);
     }
   }
@@ -89,8 +99,7 @@ export class PropertyVisitor extends Visitor {
             return;
         }
 
-        // console.error(`Unexpected default value type: ${childNode.typeName}`);
-        return;
+        throw new Error(`Unexpected default value type: ${childNode.typeName}`);
       }
 
       default:

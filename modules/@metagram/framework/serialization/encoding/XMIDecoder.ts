@@ -10,11 +10,13 @@ import XMI25 from '../namespaces/XMI25';
 import UMLDI25 from '../namespaces/UMLDI25';
 import DC11 from '../namespaces/DC11';
 import DI11 from '../namespaces/DI11';
+import { XMIImpl } from '../../models/xmi/XMIImpl';
 
 export class XMIDecoder {
   private visitors: Map<string, Map<string, Visitor>>;
   private unsupportedTypeURIs: Set<string> = new Set();
   private unsupportedTypeNames: Set<string> = new Set();
+  private decodingErrors: Set<Error> = new Set();
   private xmiResolver: XMIResolver;
   private resolvedMap: WeakMap<ResolvedXMINode, Element>;
   private promises: Promise<Element>[];
@@ -40,12 +42,12 @@ export class XMIDecoder {
   /**
    * Load multiple URLs
    */
-  async loadURLs(...urls: string[]): Promise<XMI | null> {
+  async loadURLs(...urls: string[]): Promise<XMIImpl | null> {
     for (let url of urls) {
       this.logService.setInfo(url, 'pending');
     }
 
-    let p: Promise<XMI | null> = Promise.resolve(null);
+    let p: Promise<XMIImpl | null> = Promise.resolve(null);
     while (urls.length) {
       const url = urls.shift()!;
       p = p.then((xmi) => {
@@ -69,10 +71,10 @@ export class XMIDecoder {
    * @param [encoding] Encoding of that file
    * @returns Promise for a model element
    */
-  async loadURL(url: string, encoding: string = 'utf8'): Promise<XMI> {
+  async loadURL(url: string, encoding: string = 'utf8'): Promise<XMIImpl> {
     const tree = await this.xmiResolver.resolveURL(url, encoding);
     const element = this.decodeNode(tree);
-    if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
+    if (!(element instanceof XMIImpl)) throw new Error(`Tree root has wrong type: ${element}`);
 
     return element;
   }
@@ -82,10 +84,10 @@ export class XMIDecoder {
    *
    * @returns Promise for a model element
    */
-  async loadStdin(): Promise<XMI> {
+  async loadStdin(): Promise<XMIImpl> {
     const tree = await this.xmiResolver.resolveStdin();
     const element = this.decodeNode(tree);
-    if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
+    if (!(element instanceof XMIImpl)) throw new Error(`Tree root has wrong type: ${element}`);
 
     return element;
   }
@@ -111,10 +113,13 @@ export class XMIDecoder {
   printErrors(): void {
     this.logService.finish();
     if (this.unsupportedTypeURIs.size) {
-      console.error(`Unsupported URIs during decoding:\n${[...this.unsupportedTypeURIs].reduce((x, uri) => `${x}  - ${uri}\n`, '')}`);
+      console.error([...this.unsupportedTypeURIs].reduce((x, uri) => `${x}  - ${uri}\n`, `Unsupported URIs during decoding:\n`));
     }
     if (this.unsupportedTypeNames.size) {
-      console.warn(`Unsupported XMI types during decoding:\n${[...this.unsupportedTypeNames].reduce((x, type) => `${x}  - ${type}\n`, '')}`);
+      console.error([...this.unsupportedTypeNames].reduce((x, type) => `${x}  - ${type}\n`, `Unsupported XMI types during decoding:\n`));
+    }
+    if (this.decodingErrors.size) {
+      console.error([...this.decodingErrors].reduce((x, err) => `${x}  - ${err.message}\n`, `Errors in XMI file during decoding:\n`));
     }
   }
 
@@ -142,7 +147,8 @@ export class XMIDecoder {
     const target = visitor.createInstance(node);
     this.resolvedMap.set(node, target);
     this.promises.push(new Promise((resolve) => {
-      visitor.visit(this, node, target);
+      const errors = visitor.visit(this, node, target);
+      errors.forEach(err => this.decodingErrors.add(err));
       resolve(target);
     }));
 

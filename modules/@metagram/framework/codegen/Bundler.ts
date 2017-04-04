@@ -1,12 +1,24 @@
 import { Element } from '../models/Element';
 import { IOService } from '../services/IOService';
+import { Template } from './Template';
 
 export class Bundler {
-  constructor(private ioService: IOService) {
+  constructor(private _ioService: IOService, private _templates: Template[] = []) {
   }
 
-  getIOService(): IOService {
-    return this.ioService;
+  get ioService(): IOService {
+    return this._ioService;
+  }
+
+  get templates(): Template[] {
+    return this._templates;
+  }
+
+  /**
+   * Adds a template to the templates to process
+   */
+  addTemplate(template: Template) {
+    this._templates.push(template);
   }
 
   /**
@@ -21,7 +33,34 @@ export class Bundler {
   async bundle(rootElement: Element, outputDir: string, options: any = {}): Promise<void> {
   }
 
+  /**
+   * Copies a directory from a given source to a target
+   *
+   * @param sourceDir The source directory to copy
+   * @param targetDir The name of the copy
+   * @return Resolves when the copying is finished
+   */
   protected async copyDirectory(sourceDir: string, targetDir: string): Promise<void> {
-    await this.ioService.copyDirectory(sourceDir, targetDir);
+    await this._ioService.copyDirectory(sourceDir, targetDir);
+  }
+
+  /**
+   * Finds a matching template for an element
+   */
+  protected findTemplate(element: Element, options: any): Template | null {
+    for (let template of this._templates) {
+      if (template.isSupporting(element, options)) {
+        return template;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Finds a matching template for an element
+   */
+  protected findTemplates(element: Element, options: any): Template[] {
+    return this._templates.filter(template => template.isSupporting(element, options));
   }
 }

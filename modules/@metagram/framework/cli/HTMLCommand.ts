@@ -4,11 +4,11 @@ import { Result } from 'meow';
 import { Command } from './Command';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { IOService } from '../services/IOService';
-import { HTMLBundler } from '../codegen/HTMLBundler';
+import { HTMLBundler } from '../codegen/html/HTMLBundler';
 
-export class HTMLDocCommand extends Command {
+export class HTMLCommand extends Command {
   constructor(private decoder: XMIDecoder, private ioService: IOService) {
-    super('html-doc', '[--base-href] [-o <dir>] URL...', 'Generates an HTML documentation out of a model.');
+    super('html', '[--base-href] [-o <dir>] URL...', 'Generates an HTML documentation out of a model.');
     this.addOption({ name: '--base-href', description: 'The base HRef to set in the HTML\'s <head>.' });
     this.addOption({ name: '--output-dir', description: 'Specifies the output directory.', shorthand: '-o' });
   }

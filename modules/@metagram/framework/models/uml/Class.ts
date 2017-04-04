@@ -36,4 +36,15 @@ export class Class extends Classifier {
 
     return null;
   }
+
+  getAttributes(): { [name: string]: Property } {
+    let attrs = {};
+    for (let generalization of this._generalizations) {
+      Object.assign(attrs, generalization.getAttributes());
+    }
+
+    Object.assign(attrs, [...this.ownedAttributes].reduce((obj, attr) => Object.assign(obj, { [attr.name!]: attr }), {}));
+
+    return attrs;
+  }
 }

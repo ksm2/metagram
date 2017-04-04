@@ -6,10 +6,11 @@ import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
 import { XMI } from '../models/xmi/XMI';
 import { Diagram } from '../diagram/Diagram';
 import { NodeCanvas } from '../canvas';
+import { XMIImpl } from '../models/xmi/XMIImpl';
 
 export class DiagramCommand extends Command {
   constructor(private decoder: XMIDecoder) {
-    super('diagram', '[-f svg|pdf|png|jpeg] [-o <dir>] [URL]', 'Generates a diagram image out of a model.');
+    super('diagram', '[-f svg|pdf|png|jpeg] [-o <dir>] [URL]', 'Exports a diagram image out of a model.');
     this.addOption({ name: '--format', description: 'Image format of the image to generate.', shorthand: '-f' });
     this.addOption({ name: '--output-dir', description: 'Specifies the output directory.', shorthand: '-o' });
   }
@@ -21,7 +22,7 @@ export class DiagramCommand extends Command {
     const outputDir = path.normalize(result.flags['outputDir'] || result.flags['o'] || '.');
     console.info(`Setting output directory to ${chalk.cyan(outputDir)}`);
 
-    let xmi: XMI;
+    let xmi: XMIImpl;
     if (result.input.length === 1) {
       xmi = await this.decoder.loadURL(result.input[0]);
     } else {
