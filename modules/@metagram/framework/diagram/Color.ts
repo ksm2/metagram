@@ -1,28 +1,19 @@
 import { Style } from './Style';
 
 export class Color extends Style {
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
+  static readonly PRINT = new Color(55, 58, 60);
+  static readonly RED = new Color(255, 0, 0);
+  static readonly YELLOW = new Color(255, 255, 0);
+  static readonly GREEN = new Color(0, 255, 0);
+  static readonly CYAN = new Color(0, 255, 255);
+  static readonly BLUE = new Color(0, 0, 255);
+  static readonly MAGENTA = new Color(255, 0, 255);
+  static readonly WHITE = new Color(255, 255, 255);
+  static readonly BLACK = new Color(0, 0, 0);
 
-  static fromRGBA(red: number, green: number, blue: number, alpha: number): Color {
-    return Object.assign(new Color(), { red, green, blue, alpha });
+  constructor(public red: number = 0, public green = 0, public blue = 0, public alpha = 1) {
+    super();
   }
-
-  static fromRGB(red: number, green: number, blue: number): Color {
-    return Color.fromRGBA(red, green, blue, 1);
-  }
-
-  static readonly PRINT = Color.fromRGB(55, 58, 60);
-  static readonly RED = Color.fromRGB(255, 0, 0);
-  static readonly YELLOW = Color.fromRGB(255, 255, 0);
-  static readonly GREEN = Color.fromRGB(0, 255, 0);
-  static readonly CYAN = Color.fromRGB(0, 255, 255);
-  static readonly BLUE = Color.fromRGB(0, 0, 255);
-  static readonly MAGENTA = Color.fromRGB(255, 0, 255);
-  static readonly WHITE = Color.fromRGB(255, 255, 255);
-  static readonly BLACK = Color.fromRGB(0, 0, 0);
 
   toCanvasStyle(): string | CanvasGradient | CanvasPattern {
     const { red, green, blue, alpha } = this;

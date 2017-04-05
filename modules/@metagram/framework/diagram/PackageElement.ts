@@ -31,7 +31,7 @@ export class PackageElement extends Shape<Package> {
     canvas.strokeRectangle(this.bounds.dimension, this.stroke);
 
     // Draw a black overlay if selected or hovered
-    if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
+    if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(new Color(0, 0, 0, 0.1)));
 
     // Render contained elements
     for (const element of this.ownedElements) {

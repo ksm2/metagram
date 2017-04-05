@@ -6,12 +6,12 @@ export interface IDocumentation {
   exporterVersion: string | undefined;
   exporterID: string | undefined;
   longDescription: string | undefined;
-  getAllLongDescriptions(): Metagram.ArbitraryUniqueCollection<string>;
   shortDescription: string | undefined;
-  getAllShortDescriptions(): Metagram.ArbitraryUniqueCollection<string>;
   notice: string | undefined;
-  getAllNotices(): Metagram.ArbitraryUniqueCollection<string>;
   owner: string | undefined;
-  getAllOwners(): Metagram.ArbitraryUniqueCollection<string>;
   timestamp: Date | undefined;
+  getAllLongDescriptions(): Metagram.ArbitraryUniqueCollection<string>;
+  getAllShortDescriptions(): Metagram.ArbitraryUniqueCollection<string>;
+  getAllNotices(): Metagram.ArbitraryUniqueCollection<string>;
+  getAllOwners(): Metagram.ArbitraryUniqueCollection<string>;
 }

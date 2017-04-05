@@ -1,7 +1,7 @@
 export interface Collection<T> {
+  readonly size: number;
   [Symbol.iterator](): IterableIterator<T>;
   has(value: T): boolean;
-  readonly size: number;
 }
 
 export interface OrderedCollection<T> extends Collection<T> {

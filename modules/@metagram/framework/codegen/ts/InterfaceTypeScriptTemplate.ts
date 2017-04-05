@@ -26,7 +26,7 @@ ${forEach(model.comments, (cmt) => ` * ${cmt}`, `\n`)}
 ${attr.comments.size ? `  /**
 ${forEach(attr.comments, (cmt) => `   * ${cmt}`, `\n  `)}
    */
-  ` : '  '}${attr.name}: ${typeOf(attr.type, importCb)} | undefined;${attr.upper > 1 ? `
+  ` : '  '}${attr.name}: ${typeOf(attr.type, importCb)} | undefined;`)}${forEach(model.ownedAttributes, (attr) => `${attr.upper > 1 ? `
   getAll${pluralize(upperCaseFirst(attr.name!))}(): ${collectionInterfaceName(attr)};` : ''}`)}
 }
 `;

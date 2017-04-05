@@ -34,17 +34,6 @@ export class Bundler {
   }
 
   /**
-   * Copies a directory from a given source to a target
-   *
-   * @param sourceDir The source directory to copy
-   * @param targetDir The name of the copy
-   * @return Resolves when the copying is finished
-   */
-  protected async copyDirectory(sourceDir: string, targetDir: string): Promise<void> {
-    await this._ioService.copyDirectory(sourceDir, targetDir);
-  }
-
-  /**
    * Checks whether the bundler is supporting given data
    *
    * @param data The data to check support for
@@ -53,6 +42,17 @@ export class Bundler {
    */
   isSupporting(data: any, options: any = {}): boolean {
     return this.findTemplates(data, options).length > 0;
+  }
+
+  /**
+   * Copies a directory from a given source to a target
+   *
+   * @param sourceDir The source directory to copy
+   * @param targetDir The name of the copy
+   * @return Resolves when the copying is finished
+   */
+  protected async copyDirectory(sourceDir: string, targetDir: string): Promise<void> {
+    await this._ioService.copyDirectory(sourceDir, targetDir);
   }
 
   /**

@@ -2,7 +2,7 @@
  * XMI module
  *
  * Generated from Metagram
- * Wed Apr 05 2017 15:42:42 GMT+0200 (CEST)
+ * Wed Apr 05 2017 16:08:39 GMT+0200 (CEST)
  */
 export { Delete } from './Delete';
 export { IDelete } from './IDelete';

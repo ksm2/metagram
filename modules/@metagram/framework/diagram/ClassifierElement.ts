@@ -58,7 +58,7 @@ export class ClassifierElement extends Shape<Classifier> {
     }
 
     // Draw a black overlay if selected or hovered
-    if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(Color.fromRGBA(0, 0, 0, 0.1)));
+    if (selected || hovered) canvas.fillRectangle(this.bounds.dimension, Fill.fromStyle(new Color(0, 0, 0, 0.1)));
   }
 
   deselect() {

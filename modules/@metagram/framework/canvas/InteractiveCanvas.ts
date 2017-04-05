@@ -57,19 +57,6 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
   }
 
   /**
-   * Renders the canvas
-   */
-  protected render(): this {
-    super.render();
-    this.pushCanvasStack();
-    this._ctx.scale(this.zoom, this.zoom);
-    this._ctx.translate(this.offsetX, this.offsetY);
-    this._handles.forEach((handles) => handles.forEach((handle) => handle.render(this)));
-    this.popCanvasStack();
-    return this;
-  }
-
-  /**
    * Returns the element at the given position
    */
   getElementByPosition(x: number, y: number): DiagramElement<any> | null {
@@ -171,6 +158,19 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    */
   zoom100(x?: number, y?: number) {
     this.zoomCanvas(1, x, y);
+  }
+
+  /**
+   * Renders the canvas
+   */
+  protected render(): this {
+    super.render();
+    this.pushCanvasStack();
+    this._ctx.scale(this.zoom, this.zoom);
+    this._ctx.translate(this.offsetX, this.offsetY);
+    this._handles.forEach((handles) => handles.forEach((handle) => handle.render(this)));
+    this.popCanvasStack();
+    return this;
   }
 
   /**

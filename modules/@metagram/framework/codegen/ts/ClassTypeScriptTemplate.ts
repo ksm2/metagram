@@ -66,7 +66,6 @@ Metagram.Metamodel.registerModel('${model.getHref()}', ${model.name});
 ${text}`;
   }
 
-
   isSupporting(element: Element, options: any): boolean {
     return element instanceof Class;
   }

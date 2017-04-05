@@ -6,7 +6,7 @@ import { IExtension } from './IExtension';
 export interface IXMI {
   documentation: IDocumentation | undefined;
   difference: IDifference | undefined;
-  getAllDifferences(): Metagram.ArbitraryUniqueCollection<IDifference>;
   extension: IExtension | undefined;
+  getAllDifferences(): Metagram.ArbitraryUniqueCollection<IDifference>;
   getAllExtensions(): Metagram.ArbitraryUniqueCollection<IExtension>;
 }

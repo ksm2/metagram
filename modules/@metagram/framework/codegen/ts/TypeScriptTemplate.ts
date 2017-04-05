@@ -8,38 +8,6 @@ export class TypeScriptTemplate extends Template {
     super();
   }
 
-  generateFilename(data: any, options: any = {}): string {
-    if (data instanceof Package) {
-      return `${this.bundler.getPackageDirectory(data)}/index.ts`;
-    }
-
-    if (data instanceof ModelElement) {
-      const path = this.bundler.getPackageDirectory(data.owningElement);
-      const basename = this.generateBasename(data);
-      return `${path}/${basename}`;
-    }
-
-    return 'src/index.ts';
-  }
-
-  generateBasename(element: ModelElement): string {
-    return `${element.name}.ts`;
-  }
-
-  generateImports(map: Map<string, string>): string {
-    const array = [...map].sort(([imp1, filename1], [imp2, filename2]) => this.compareFilenames(filename1, filename2));
-    return array.map(([imp1, filename1]) => `import ${imp1} from '${filename1}';`).join('\n');
-  }
-
-  compareFilenames(fn1: string, fn2: string): number {
-    const doesNotStartWithDot = /^[^\.]/;
-    if (fn1.match(doesNotStartWithDot) && !fn2.match(doesNotStartWithDot)) return -1;
-    if (!fn1.match(doesNotStartWithDot) && fn2.match(doesNotStartWithDot)) return 1;
-    if (fn1 < fn2) return -1;
-    if (fn1 > fn2) return 1;
-    return 0;
-  }
-
   protected static forEach<T>(
     a: { [Symbol.iterator](): Iterator<T> },
     callback: (a: T) => string,
@@ -94,5 +62,37 @@ export class TypeScriptTemplate extends Template {
   protected static collectionInterfaceName(attr: Property): string {
     const typeOf = TypeScriptTemplate.typeOf;
     return `Metagram.${attr.ordered ? 'Ordered' : 'Arbitrary'}${attr.unique ? 'Unique' : 'Ambiguous'}Collection<${typeOf(attr.type)}>`;
+  }
+
+  generateFilename(data: any, options: any = {}): string {
+    if (data instanceof Package) {
+      return `${this.bundler.getPackageDirectory(data)}/index.ts`;
+    }
+
+    if (data instanceof ModelElement) {
+      const path = this.bundler.getPackageDirectory(data.owningElement);
+      const basename = this.generateBasename(data);
+      return `${path}/${basename}`;
+    }
+
+    return 'src/index.ts';
+  }
+
+  generateBasename(element: ModelElement): string {
+    return `${element.name}.ts`;
+  }
+
+  generateImports(map: Map<string, string>): string {
+    const array = [...map].sort(([imp1, filename1], [imp2, filename2]) => this.compareFilenames(filename1, filename2));
+    return array.map(([imp1, filename1]) => `import ${imp1} from '${filename1}';`).join('\n');
+  }
+
+  compareFilenames(fn1: string, fn2: string): number {
+    const doesNotStartWithDot = /^[^\.]/;
+    if (fn1.match(doesNotStartWithDot) && !fn2.match(doesNotStartWithDot)) return -1;
+    if (!fn1.match(doesNotStartWithDot) && fn2.match(doesNotStartWithDot)) return 1;
+    if (fn1 < fn2) return -1;
+    if (fn1 > fn2) return 1;
+    return 0;
   }
 }
