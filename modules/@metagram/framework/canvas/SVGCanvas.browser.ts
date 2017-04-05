@@ -1,6 +1,6 @@
 import C2S = require('canvas2svg');
-import { AbstractCanvas } from './AbstractCanvas';
 import { Diagram } from '../diagram/Diagram';
+import { AbstractCanvas } from './AbstractCanvas';
 
 export class SVGCanvas extends AbstractCanvas {
   _ctx: C2S;

@@ -1,8 +1,8 @@
-import { Element } from '../../models';
 import { Bounds } from '../../diagram/Bounds';
-import { Visitor } from './Visitor';
+import { Element } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class BoundsVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

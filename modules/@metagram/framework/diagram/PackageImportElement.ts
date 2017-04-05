@@ -1,9 +1,9 @@
-import { PackageImport } from '../models';
 import { Canvas } from '../canvas/Canvas';
+import { PackageImport } from '../models';
+import { LineTip } from '../rendering/LineTip';
 import { Color } from './Color';
 import { Edge } from './Edge';
 import { Line } from './Line';
-import { LineTip } from '../rendering/LineTip';
 
 export class PackageImportElement extends Edge<PackageImport> {
   constructor() {

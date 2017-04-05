@@ -1,5 +1,5 @@
+import { Attribute, Class } from '../decorators';
 import { Element } from '../models';
-import { Class, Attribute } from '../decorators';
 
 @Class('Point', Element)
 export class Point extends Element {

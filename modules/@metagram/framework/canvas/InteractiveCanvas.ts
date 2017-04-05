@@ -1,11 +1,9 @@
-import { AbstractCanvas } from './AbstractCanvas';
-import { Handle } from '../diagram/Handle';
-import { DiagramElement } from '../diagram/DiagramElement';
 import { Cursor } from '../diagram/Cursor';
-import { Shape } from '../diagram/Shape';
-import { Bounds } from '../diagram/Bounds';
+import { DiagramElement } from '../diagram/DiagramElement';
+import { Handle } from '../diagram/Handle';
+import { AbstractCanvas } from './AbstractCanvas';
 
-const zoomLevels = [1/8, 1/7, 1/6, 1/5, 1/4, 1/3, 1/2, 2/3, 1, 3/2, 2, 3, 4, 5, 6, 7, 8];
+const zoomLevels = [1 / 8, 1 / 7, 1 / 6, 1 / 5, 1 / 4, 1 / 3, 1 / 2, 2 / 3, 1, 3 / 2, 2, 3, 4, 5, 6, 7, 8];
 
 export abstract class InteractiveCanvas extends AbstractCanvas {
   private _selectedElements: Set<DiagramElement<any>>;
@@ -19,7 +17,7 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    * @param element The new element
    */
   set hoveredElement(element: DiagramElement<any> | null) {
-    if (this._hoveredElement == element) return;
+    if (this._hoveredElement === element) return;
 
     if (this._hoveredElement) {
       this._hoveredElement.hover(false);
@@ -59,19 +57,6 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
   }
 
   /**
-   * Renders the canvas
-   */
-  protected render(): this {
-    super.render();
-    this.pushCanvasStack();
-    this._ctx.scale(this.zoom, this.zoom);
-    this._ctx.translate(this.offsetX, this.offsetY);
-    this._handles.forEach(handles => handles.forEach(handle => handle.render(this)));
-    this.popCanvasStack();
-    return this;
-  }
-
-  /**
    * Returns the element at the given position
    */
   getElementByPosition(x: number, y: number): DiagramElement<any> | null {
@@ -87,8 +72,8 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    * Returns the handle at the given position
    */
   getHandleByPosition(x: number, y: number): Handle | null {
-    for (let handles of this._handles.values()) {
-      for (let handle of handles) {
+    for (const handles of this._handles.values()) {
+      for (const handle of handles) {
         if (handle.containsPoint(x, y)) return handle;
       }
     }
@@ -148,7 +133,7 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    * Clears the selection of all canvas elements
    */
   clearSelection() {
-    for (let element of this._selectedElements) {
+    for (const element of this._selectedElements) {
       this.deleteSelection(element);
     }
     this._selectedElements.clear();
@@ -173,6 +158,19 @@ export abstract class InteractiveCanvas extends AbstractCanvas {
    */
   zoom100(x?: number, y?: number) {
     this.zoomCanvas(1, x, y);
+  }
+
+  /**
+   * Renders the canvas
+   */
+  protected render(): this {
+    super.render();
+    this.pushCanvasStack();
+    this._ctx.scale(this.zoom, this.zoom);
+    this._ctx.translate(this.offsetX, this.offsetY);
+    this._handles.forEach((handles) => handles.forEach((handle) => handle.render(this)));
+    this.popCanvasStack();
+    return this;
   }
 
   /**

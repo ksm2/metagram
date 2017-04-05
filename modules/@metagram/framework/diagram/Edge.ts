@@ -1,17 +1,17 @@
-import { ModelElement } from '../models';
-import { Class, Attribute } from '../decorators';
 import { Canvas } from '../canvas/Canvas';
+import { Attribute, Class } from '../decorators';
+import { ModelElement } from '../models';
 import { BresenhamService, SVGService } from '../services';
+import { Bounds } from './Bounds';
+import { Connector } from './Connector';
 import { DiagramElement } from './DiagramElement';
-import { Handle } from './Handle';
-import { Stroke } from './Stroke';
 import { Font } from './Font';
-import { Shape } from './Shape';
-import { Point } from './Point';
+import { Handle } from './Handle';
 import { Line } from './Line';
 import { LineStroke } from './LineStroke';
-import { Connector } from './Connector';
-import { Bounds } from './Bounds';
+import { Point } from './Point';
+import { Shape } from './Shape';
+import { Stroke } from './Stroke';
 
 @Class('Edge', DiagramElement)
 export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
@@ -119,7 +119,7 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     let maxX = Math.max(this._source.absoluteLocation.x, this._target.absoluteLocation.x);
     let maxY = Math.max(this._source.absoluteLocation.y, this._target.absoluteLocation.y);
 
-    for (let point of this._waypoint) {
+    for (const point of this._waypoint) {
       minX = Math.min(minX, point.x);
       minY = Math.min(minY, point.y);
       maxX = Math.max(maxX, point.x);
@@ -158,7 +158,7 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     });
 
     const handles = [sourceHandle];
-    for (let point of this._waypoint) {
+    for (const point of this._waypoint) {
       handles.push(new Handle(this, point));
     }
 
@@ -174,7 +174,7 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
   get svgPath(): string {
     const path = SVGService.createSVGPath();
     path.moveTo(this._source.absoluteLocation.x, this._source.absoluteLocation.y);
-    for (let point of this._waypoint) {
+    for (const point of this._waypoint) {
       path.lineTo(point.x, point.y);
     }
     path.lineTo(this._target.absoluteLocation.x, this._target.absoluteLocation.y);
@@ -194,7 +194,7 @@ export abstract class Edge<M extends ModelElement> extends DiagramElement<M> {
     this._waypoint = [];
     this._source.absoluteLocation = lines.lines[0].from;
     this._target.absoluteLocation = lines.lines[0].to;
-    for (let line of lines.lines.slice(1)) {
+    for (const line of lines.lines.slice(1)) {
       this._waypoint.push(line.from);
       this._target.absoluteLocation = line.to;
     }

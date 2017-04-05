@@ -3,9 +3,9 @@ import { Type } from '../../models';
 import { Parameter } from '../../models';
 import { ParameterDirectionKind } from '../../models';
 import { EnumerationLiteral } from '../../models';
-import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class ParameterVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

@@ -1,9 +1,9 @@
-import { Element } from '../Element';
-import { TypedElement } from './TypedElement';
-import { Class, Attribute } from '../../decorators';
-import { EnumerationLiteral } from './EnumerationLiteral';
-import { Association } from './Association';
+import { Attribute, Class } from '../../decorators';
+import { Element } from '../metamodel';
 import { AggregationKind } from './AggregationKind';
+import { Association } from './Association';
+import { EnumerationLiteral } from './EnumerationLiteral';
+import { TypedElement } from './TypedElement';
 
 export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 
@@ -11,6 +11,8 @@ export type DefaultValueType = boolean | number | string | EnumerationLiteral;
 export class Property extends TypedElement {
   private _lowerValue: number | null = null;
   private _upperValue: number | null = null;
+  private _ordered: boolean = false;
+  private _unique: boolean = true;
   private _defaultValue: DefaultValueType | null = null;
   private _association: Association | null = null;
   private _aggregation: string = AggregationKind.NONE;
@@ -41,6 +43,24 @@ export class Property extends TypedElement {
 
   set upperValue(value: number | null) {
     this._upperValue = value;
+  }
+
+  @Attribute({ type: Boolean })
+  get ordered(): boolean {
+    return this._ordered;
+  }
+
+  set ordered(value: boolean) {
+    this._ordered = value;
+  }
+
+  @Attribute({ type: Boolean })
+  get unique(): boolean {
+    return this._unique;
+  }
+
+  set unique(value: boolean) {
+    this._unique = value;
   }
 
   @Attribute({ type: Element, lower: 0 })

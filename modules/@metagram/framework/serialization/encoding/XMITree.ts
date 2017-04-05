@@ -1,10 +1,10 @@
-import { XMIResolver } from './XMIResolver';
-import { XMINode } from './XMINode';
-import { ResolvedXMINode } from './ResolvedXMINode';
-import { XMIElementNode } from './XMIElementNode';
 import { HRefLeaf } from './HRefLeaf';
 import { IDRefLeaf } from './IDRefLeaf';
+import { ResolvedXMINode } from './ResolvedXMINode';
 import { StringLeaf } from './StringLeaf';
+import { XMIElementNode } from './XMIElementNode';
+import { XMINode } from './XMINode';
+import { XMIResolver } from './XMIResolver';
 
 const XMI_URI = 'http://www.omg.org/spec/XMI/20131001';
 
@@ -47,11 +47,11 @@ export class XMITree {
       const [typeURI, typeName] = xmiType;
 
       // Is child node an element?
-      const elements = Array.from(xml.childNodes).filter(childNode => childNode.nodeType === 1) as Element[];
+      const elements = Array.from(xml.childNodes).filter((childNode) => childNode.nodeType === 1) as Element[];
 
       // Resolve children
       const node = new XMIElementNode(this.origin, xml, typeURI, typeName, id);
-      for (let element of elements) {
+      for (const element of elements) {
         const childrenOfTag = node.children.get(element.tagName) || [];
         const childNode = this.createTree(element);
         if (childNode) {
@@ -70,7 +70,7 @@ export class XMITree {
   private async resolveRefNodes(node: XMIElementNode, resolver: XMIResolver, visited: Set<XMIElementNode>): Promise<any> {
     visited.add(node);
 
-    for (let children of node.children.values()) {
+    for (const children of node.children.values()) {
       for (let i = 0; i < children.length; i += 1) {
         const child = children[i];
 
@@ -110,9 +110,9 @@ export class XMITree {
    */
   private extractXMIInfo(element: Element): { id?: string; idref?: string; type?: string; name?: string; href?: string } {
     return {
+      href: element.getAttribute('href') || '',
       id: element.getAttributeNS(XMI_URI, 'id'),
       idref: element.getAttributeNS(XMI_URI, 'idref'),
-      href: element.getAttribute('href') || '',
     };
   }
 

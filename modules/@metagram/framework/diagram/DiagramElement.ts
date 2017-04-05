@@ -1,11 +1,11 @@
+import { Canvas } from '../canvas/Canvas';
+import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
+import { Attribute, Class } from '../decorators';
 import { Element } from '../models';
 import { ModelElement } from '../models';
-import { Canvas } from '../canvas/Canvas';
-import { Handle } from './Handle';
-import { Cursor } from './Cursor';
-import { Class, Attribute } from '../decorators';
 import { Bounds } from './Bounds';
-import { InteractiveCanvas } from '../canvas/InteractiveCanvas';
+import { Cursor } from './Cursor';
+import { Handle } from './Handle';
 import { Point } from './Point';
 
 @Class('DiagramElement', Element)
@@ -14,7 +14,7 @@ export abstract class DiagramElement<M extends ModelElement> extends Element {
   private _cursor: Cursor = 'default';
   private _selected: boolean = false;
   private _hovered: boolean = false;
-  private _ownedElements: DiagramElement<any>[] = [];
+  private _ownedElements: Array<DiagramElement<any>> = [];
   private _owningElement: DiagramElement<any> | null = null;
 
   @Attribute({ type: Element, lower: 0 })
@@ -27,11 +27,11 @@ export abstract class DiagramElement<M extends ModelElement> extends Element {
   }
 
   @Attribute({ type: DiagramElement, lower: 0, upper: Infinity })
-  get ownedElements(): DiagramElement<any>[] {
+  get ownedElements(): Array<DiagramElement<any>> {
     return this._ownedElements;
   }
 
-  set ownedElements(value: DiagramElement<any>[]) {
+  set ownedElements(value: Array<DiagramElement<any>>) {
     this._ownedElements = value;
   }
 
@@ -182,7 +182,7 @@ export abstract class DiagramElement<M extends ModelElement> extends Element {
     let maxX = 0;
     let maxY = 0;
 
-    for (let element of this.ownedElements) {
+    for (const element of this.ownedElements) {
       minX = Math.min(minX, element.bounds.x);
       minY = Math.min(minY, element.bounds.y);
       maxX = Math.max(maxX, element.bounds.x + element.bounds.width);

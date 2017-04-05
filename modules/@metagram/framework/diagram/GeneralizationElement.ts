@@ -1,9 +1,9 @@
-import { Generalization } from '../models';
 import { Canvas } from '../canvas/Canvas';
+import { Generalization } from '../models';
+import { LineTip } from '../rendering/LineTip';
 import { Color } from './Color';
 import { Edge } from './Edge';
 import { Line } from './Line';
-import { LineTip } from '../rendering/LineTip';
 
 export class GeneralizationElement extends Edge<Generalization> {
   renderLineSegment(canvas: Canvas, line: Line, index: number, lastIndex: number): void {
@@ -12,6 +12,6 @@ export class GeneralizationElement extends Edge<Generalization> {
       stroke = this.stroke.withStyle(Color.RED);
     }
 
-    canvas.drawLine(line, stroke, index == lastIndex ? LineTip.TRIANGLE : LineTip.NONE, LineTip.NONE);
+    canvas.drawLine(line, stroke, index === lastIndex ? LineTip.TRIANGLE : LineTip.NONE, LineTip.NONE);
   }
 }

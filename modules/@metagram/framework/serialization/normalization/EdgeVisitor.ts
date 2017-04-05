@@ -1,13 +1,13 @@
-import { Element } from '../../models';
-import { Edge } from '../../diagram/Edge';
-import { Shape } from '../../diagram/Shape';
-import { PackageImportElement } from '../../diagram/PackageImportElement';
-import { GeneralizationElement } from '../../diagram/GeneralizationElement';
 import { AssociationElement } from '../../diagram/AssociationElement';
+import { Edge } from '../../diagram/Edge';
+import { GeneralizationElement } from '../../diagram/GeneralizationElement';
+import { PackageImportElement } from '../../diagram/PackageImportElement';
 import { Point } from '../../diagram/Point';
-import { DiagramElementVisitor } from './DiagramElementVisitor';
+import { Shape } from '../../diagram/Shape';
+import { Element } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { DiagramElementVisitor } from './DiagramElementVisitor';
 
 export class EdgeVisitor extends DiagramElementVisitor {
   createInstance(node: ResolvedXMINode): Element {

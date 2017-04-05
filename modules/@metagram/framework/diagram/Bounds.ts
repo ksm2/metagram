@@ -1,5 +1,5 @@
+import { Attribute, Class } from '../decorators';
 import { Element } from '../models';
-import { Class, Attribute } from '../decorators';
 import { Point } from './Point';
 
 @Class('Bounds', Element)

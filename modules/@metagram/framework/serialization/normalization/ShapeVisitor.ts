@@ -1,11 +1,11 @@
-import { DiagramElementVisitor } from './DiagramElementVisitor';
-import { Element } from '../../models';
-import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
-import { XMIDecoder } from '../encoding/XMIDecoder';
-import { Shape } from '../../diagram/Shape';
 import { Bounds } from '../../diagram/Bounds';
 import { ClassifierElement } from '../../diagram/ClassifierElement';
 import { PackageElement } from '../../diagram/PackageElement';
+import { Shape } from '../../diagram/Shape';
+import { Element } from '../../models';
+import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { XMIDecoder } from '../encoding/XMIDecoder';
+import { DiagramElementVisitor } from './DiagramElementVisitor';
 
 export class ShapeVisitor extends DiagramElementVisitor {
   createInstance(node: ResolvedXMINode): Element {

@@ -1,8 +1,8 @@
-import { Line } from '../diagram/Line';
-import { Point } from '../diagram/Point';
-import { Edge } from '../diagram/Edge';
-import { LineStroke } from '../diagram/LineStroke';
 import { Connector } from '../diagram/Connector';
+import { Edge } from '../diagram/Edge';
+import { Line } from '../diagram/Line';
+import { LineStroke } from '../diagram/LineStroke';
+import { Point } from '../diagram/Point';
 
 export class BresenhamService {
   /**
@@ -102,7 +102,7 @@ export class BresenhamService {
     const [x2, y2] = p2.getTuple();
 
     // Points are the same?
-    if (x1 == x2 && y1 == y2) return new Line(x1, y1, x2, y2);
+    if (x1 === x2 && y1 === y2) return new Line(x1, y1, x2, y2);
 
     // Calculate distances
     const dx = Math.abs(x2 - x1);

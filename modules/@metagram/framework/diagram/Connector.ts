@@ -1,7 +1,7 @@
-import { Shape } from './Shape';
-import { Point } from './Point';
 import { Element } from '../models';
 import { Bounds } from './Bounds';
+import { Point } from './Point';
+import { Shape } from './Shape';
 
 export class Connector extends Element {
   private _location: Point = new Point();

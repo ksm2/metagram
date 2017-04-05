@@ -1,11 +1,11 @@
 import { Cursor } from '../diagram/Cursor';
 import { DiagramElement } from '../diagram/DiagramElement';
 import { Edge } from '../diagram/Edge';
+import { Handle } from '../diagram/Handle';
 import { Point } from '../diagram/Point';
 import { InteractiveCanvas } from './InteractiveCanvas';
-import { Handle } from '../diagram/Handle';
-import { SVGCanvas } from './SVGCanvas';
 import { PDFCanvas } from './PDFCanvas';
+import { SVGCanvas } from './SVGCanvas';
 
 enum MouseButtons {
   LEFT = 1,
@@ -44,22 +44,22 @@ export class HTML5Canvas extends InteractiveCanvas {
 
   constructor(element: HTMLCanvasElement) {
     const ctx = element.getContext && element.getContext('2d');
-    if (!ctx) throw 'HTML5 Context is not available';
+    if (!ctx) throw new Error('HTML5 Context is not available');
     super(ctx);
 
     // Init event listeners
-    element.addEventListener('keydown', event => this.onKeyPress(event), true);
-    element.addEventListener('mousedown', event => this.onMouseDown(event));
-    element.addEventListener('mouseup'  , event => this.onMouseUp(event));
-    element.addEventListener('mousemove', event => this.onMouseMove(event));
-    element.addEventListener('contextmenu', event => this.onContextMenu(event));
-    element.addEventListener('mousewheel', event => this.onMouseWheelScroll(event.wheelDeltaY, event.offsetX, event.offsetY));
-    element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheelScroll(-event.detail, event.offsetX, event.offsetY));
+    element.addEventListener('keydown', (event) => this.onKeyPress(event), true);
+    element.addEventListener('mousedown', (event) => this.onMouseDown(event));
+    element.addEventListener('mouseup'  , (event) => this.onMouseUp(event));
+    element.addEventListener('mousemove', (event) => this.onMouseMove(event));
+    element.addEventListener('contextmenu', (event) => this.onContextMenu(event));
+    element.addEventListener('mousewheel', (event) => this.onMouseWheel(event.wheelDeltaY, event.offsetX, event.offsetY));
+    element.addEventListener('DOMMouseScroll', (event: DOMMouseScroll) => this.onMouseWheel(-event.detail, event.offsetX, event.offsetY));
 
     // Init clock
     let clock = 0;
     setInterval(() => {
-      this.selectedElements.forEach(element => element.onTick(clock, this));
+      this.selectedElements.forEach((el) => el.onTick(clock, this));
       clock += 1;
       this.rerender();
     }, 500);
@@ -75,7 +75,7 @@ export class HTML5Canvas extends InteractiveCanvas {
 
   onKeyPress(event: KeyboardEvent): void {
     event.preventDefault();
-    this.selectedElements.forEach(element => element.onKeyPress(event.key, this));
+    this.selectedElements.forEach((element) => element.onKeyPress(event.key, this));
     this.rerender();
   }
 
@@ -160,7 +160,7 @@ export class HTML5Canvas extends InteractiveCanvas {
       dx -= x; dy -= y;
       this._clickedElement.move(dx, dy);
     } else {
-      this.selectedElements.forEach(element => this.moveElement(element, dx, dy));
+      this.selectedElements.forEach((element) => this.moveElement(element, dx, dy));
     }
 
     this.rerender();
@@ -177,7 +177,7 @@ export class HTML5Canvas extends InteractiveCanvas {
   /**
    * Handles when the mouse wheel is scrolled over the canvas
    */
-  onMouseWheelScroll(delta: number, x: number, y: number) {
+  onMouseWheel(delta: number, x: number, y: number) {
     if (delta < 0) {
       this.zoomIn(x, y);
     } else {
@@ -231,9 +231,9 @@ export class HTML5Canvas extends InteractiveCanvas {
     if (clickedElement instanceof Handle) {
       const handleOwner = clickedElement.owningElement;
       if (handleOwner instanceof Edge) {
-        const number = handleOwner.waypoint.indexOf(clickedElement.attachedTo);
-        if (number >= 0) {
-          handleOwner.waypoint.splice(number, 1);
+        const index = handleOwner.waypoint.indexOf(clickedElement.attachedTo);
+        if (index >= 0) {
+          handleOwner.waypoint.splice(index, 1);
           this.updateHandles(handleOwner);
           this.rerender();
         }
@@ -253,11 +253,11 @@ export class HTML5Canvas extends InteractiveCanvas {
     // No diagram present?
     if (!this.diagram) return 'data:,';
 
-    if (format == 'application/pdf') {
+    if (format === 'application/pdf') {
       return this.generatePDF(zoom);
     }
 
-    if (format == 'image/svg+xml') {
+    if (format === 'image/svg+xml') {
       return this.generateSVG(zoom);
     }
 

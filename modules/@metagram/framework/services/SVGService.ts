@@ -92,7 +92,7 @@ export class SVGService {
         case '\r':
           if (inArg) result += 1;
           inArg = false;
-          if (result === expectedCommands) return [i, results.map(string => parseFloat(string))];
+          if (result === expectedCommands) return [i, results.map((str) => parseFloat(str))];
           break;
         case '0':
         case '1':
@@ -113,15 +113,17 @@ export class SVGService {
         default:
           throw new Error(`Error in SVG path: Illegal character found in command arguments at pos ${i}:\n${path}\n${' '.repeat(i)}^`);
       }
-      if (!inArg && result == expectedCommands) break;
+      if (!inArg && result === expectedCommands) break;
     }
 
     // Check if valid ending
     if (
       (inArg && result !== expectedCommands - 1) ||
       (!inArg && result !== expectedCommands)
-    ) throw new Error(`Error in SVG path: Path is not complete ${path}`);
+    ) {
+      throw new Error(`Error in SVG path: Path is not complete ${path}`);
+    }
 
-    return [i, results.map(string => parseFloat(string))];
+    return [i, results.map((str) => parseFloat(str))];
   }
 }

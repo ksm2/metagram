@@ -1,6 +1,6 @@
 import { Element } from '../models';
-import { Style } from './Style';
 import { Color } from './Color';
+import { Style } from './Style';
 
 export class Stroke extends Element {
   style: Style;
@@ -29,8 +29,7 @@ export class Stroke extends Element {
     ctx.strokeStyle = this.style.toCanvasStyle();
     ctx.lineWidth = this.width;
     ctx.lineCap = this.cap;
-    if (ctx.setLineDash)
-      ctx.setLineDash(this.dashOffset === 0 ? [] : [this.dashOffset]);
+    if (ctx.setLineDash) ctx.setLineDash(this.dashOffset === 0 ? [] : [this.dashOffset]);
   }
 
   withStyle(style: Style) {

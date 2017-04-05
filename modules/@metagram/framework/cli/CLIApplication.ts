@@ -1,15 +1,20 @@
 import meow = require('meow');
 import chalk = require('chalk');
-import { HTMLDocCommand } from './HTMLDocCommand';
-import { Command } from './Command';
-import { FetchService, IOService, LogService } from '../services';
 import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
+import { FetchService, IOService, LogService } from '../services';
+import { Command } from './Command';
 import { DiagramCommand } from './DiagramCommand';
+import { HTMLCommand } from './HTMLCommand';
+import { TypeScriptCommand } from './TypeScriptCommand';
+
+import sourceMaps = require('source-map-support');
+sourceMaps.install();
 
 export class CLIApplication {
   private fetchService: FetchService;
   private logService: LogService;
   private commands: Command[];
+  private command?: Command;
 
   constructor(private ioService: IOService) {
     this.fetchService = new FetchService(ioService);
@@ -18,7 +23,8 @@ export class CLIApplication {
 
     this.commands = [
       new DiagramCommand(decoder),
-      new HTMLDocCommand(decoder, ioService),
+      new HTMLCommand(decoder, ioService),
+      new TypeScriptCommand(decoder, ioService),
     ];
   }
 
@@ -35,53 +41,56 @@ export class CLIApplication {
       return;
     }
 
-    const commandName = result.input[0];
-    const command = this.commands.find(command => command.getName() === commandName);
+    const cmdName = result.input[0];
+    const cmdExp = new RegExp(`^${cmdName.replace(/(.)/g, '$1.*')}$`, 'i');
+    this.command = this.commands.find((command) => !!command.getName().match(cmdExp));
     result.input = result.input.slice(1);
 
     // Command not found?
-    if (!command) {
-      throw new Error(`Invalid command: ${commandName}`);
+    if (!this.command) {
+      throw new Error(`Invalid command: ${cmdName}`);
     }
 
     // Wanting command's help?
-    if (result.flags['help'] || result.flags['h']) {
-      this.showCommandHelp(command);
+    if (result.flags.help || result.flags.h) {
+      this.showHelp();
       return;
     }
 
     // Specified cache dir?
-    const cacheDir = result.flags['cacheDir'] || result.flags['c'] || null;
+    const cacheDir = result.flags.cacheDir || result.flags.c || null;
     if (cacheDir) {
       this.fetchService.setCacheDir(cacheDir);
-      console.info(`Setting cache dir to ${chalk.cyan(this.fetchService.getCacheDir() || '')}`);
+      process.stderr.write(`Setting cache dir to ${chalk.cyan(this.fetchService.getCacheDir() || '')}\n`);
     }
 
     // Run the command
-    await command.run(result);
+    await this.command.run(result);
   }
 
   showHelp(err?: Error): void {
     if (err) {
-      console.error(chalk.bgRed.white(err.message));
+      process.stderr.write(chalk.red(err.stack || ''));
+    }
+
+    if (this.command) {
+      this.showCommandHelp(this.command, err);
+      return;
     }
 
     const commandString = this.generateCommandHelp(this.commands);
     const help = `
-metagram <command> <input>
-  
-${chalk.bold('Commands')}
-${commandString} 
-    
-${chalk.bold('Examples')}
-  cat petrinet.xmi | metagram generate html
-    `;
+metagram <command>
 
-    console.log(help);
+${chalk.bold('Commands')}
+${commandString}
+`;
+
+    process.stdout.write(help);
     process.exit(err ? 1 : 2);
   }
 
-  showCommandHelp(command: Command): void {
+  showCommandHelp(command: Command, err?: Error): void {
     const options = command.getOptions().map((option) => [
       option.name,
       option.shorthand,
@@ -94,17 +103,17 @@ metagram ${command.getName()} ${command.getUsageHelp()}
 
 ${chalk.bold('Description')}
   ${command.getDescription()}
-  
+
 ${chalk.bold('Options')}
 ${optionStr}
-    `;
+`;
 
-    console.log(help);
-    process.exit(2);
+    process.stdout.write(help);
+    process.exit(err ? 1 : 2);
   }
 
   private generateCommandHelp(commands: Command[]): string {
-    const table = commands.map(cmd => [
+    const table = commands.map((cmd) => [
       cmd.getName(),
       cmd.getDescription(),
     ]);
@@ -112,7 +121,7 @@ ${optionStr}
     return this.generateTable(table);
   }
 
-  private generateTable(rows: (string | undefined)[][]): string {
+  private generateTable(rows: Array<Array<string | undefined>>): string {
     if (!rows.length) {
       return '';
     }
@@ -121,7 +130,7 @@ ${optionStr}
     const max: number[] = [];
     const spaces: string[] = [];
     for (let i = 0; i < cols; i += 1) {
-      max[i] = rows.reduce((max, cmd) => Math.max((cmd[i] || '').length, max), 0);
+      max[i] = rows.reduce((prev, cmd) => Math.max((cmd[i] || '').length, prev), 0);
       spaces[i] = ' '.repeat(max[i]);
     }
 

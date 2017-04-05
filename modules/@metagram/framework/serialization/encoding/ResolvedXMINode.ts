@@ -1,5 +1,5 @@
-import { XMINode } from './XMINode';
 import { XMIElementNode } from './XMIElementNode';
+import { XMINode } from './XMINode';
 
 export class ResolvedXMINode extends XMINode {
   parent: ResolvedXMINode | null;
@@ -24,31 +24,31 @@ export class ResolvedXMINode extends XMINode {
   /**
    * Creates a resolved tree from an unresolved XMI element node
    */
-  static createTree(unresolvedNode: XMINode, parent?: ResolvedXMINode, weakMap?: WeakMap<XMINode, ResolvedXMINode>): ResolvedXMINode | null {
+  static createTree(node: XMINode, parent?: ResolvedXMINode, weakMap?: WeakMap<XMINode, ResolvedXMINode>): ResolvedXMINode | null {
     // Directly return resolved node
-    if (unresolvedNode instanceof ResolvedXMINode) return unresolvedNode;
+    if (node instanceof ResolvedXMINode) return node;
 
     // Check if is already in weak map
     if (!weakMap) weakMap = new WeakMap();
-    if (weakMap.has(unresolvedNode)) return weakMap.get(unresolvedNode)!;
+    if (weakMap.has(node)) return weakMap.get(node)!;
 
     // Create new unresolved node from element node
-    if (unresolvedNode instanceof XMIElementNode) {
-      const node = new ResolvedXMINode(unresolvedNode, parent);
-      weakMap.set(unresolvedNode, node);
+    if (node instanceof XMIElementNode) {
+      const resolvedNode = new ResolvedXMINode(node, parent);
+      weakMap.set(node, resolvedNode);
 
-      for (let [tagName, children] of unresolvedNode.children) {
-        for (let child of children) {
-          const resolved = ResolvedXMINode.createTree(child, node, weakMap);
-          if (!resolved) throw 'The tree is not fully resolved';
+      for (const [tagName, children] of node.children) {
+        for (const child of children) {
+          const resolved = ResolvedXMINode.createTree(child, resolvedNode, weakMap);
+          if (!resolved) throw new Error('The tree is not fully resolved');
 
-          const elements = node.elements.get(tagName) || [];
+          const elements = resolvedNode.elements.get(tagName) || [];
           elements.push(resolved);
-          node.elements.set(tagName, elements);
+          resolvedNode.elements.set(tagName, elements);
         }
       }
 
-      return node;
+      return resolvedNode;
     }
 
     return null;
@@ -71,7 +71,7 @@ export class ResolvedXMINode extends XMINode {
       visited.add(node);
       if (node.id === id) return node;
 
-      for (let child of node.getAllChildren()) {
+      for (const child of node.getAllChildren()) {
         if (child instanceof ResolvedXMINode && !visited.has(child)) {
           queue.push(child);
         }
@@ -93,7 +93,7 @@ export class ResolvedXMINode extends XMINode {
       visited.add(node);
       if (node.getString('name') === name) return node;
 
-      for (let child of node.getAllChildren()) {
+      for (const child of node.getAllChildren()) {
         if (child instanceof ResolvedXMINode && !visited.has(child)) {
           queue.push(child);
         }

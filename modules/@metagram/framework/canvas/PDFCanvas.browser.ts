@@ -1,14 +1,14 @@
 import PDF = require('jspdf');
-import { Canvas } from './Canvas';
-import { Diagram } from '../diagram/Diagram';
-import { Point } from '../diagram/Point';
 import { Bounds } from '../diagram/Bounds';
+import { Diagram } from '../diagram/Diagram';
 import { Fill } from '../diagram/Fill';
-import { Stroke } from '../diagram/Stroke';
 import { Baseline, Font, TextAlign } from '../diagram/Font';
 import { Line } from '../diagram/Line';
-import { LineTip } from '../rendering/LineTip';
+import { Point } from '../diagram/Point';
+import { Stroke } from '../diagram/Stroke';
 import { LineHelper } from '../rendering/LineHelper';
+import { LineTip } from '../rendering/LineTip';
+import { Canvas } from './Canvas';
 
 export class PDFCanvas implements Canvas {
   private _width: number;
@@ -98,7 +98,7 @@ export class PDFCanvas implements Canvas {
     this._pdf.setFont('helvetica', font.bold ? 'bold' : 'normal');
     this._pdf.setFontSize(3 * font.size);
     y -= 5;
-    if (hAlign == 'center') x -= this.measureTextWidth(text, font) / 2;
+    if (hAlign === 'center') x -= this.measureTextWidth(text, font) / 2;
     this._ctx.fillText(text, x, y);
   }
 

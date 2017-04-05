@@ -1,8 +1,8 @@
-import { Element } from '../../models';
 import { DiagramElement } from '../../diagram/DiagramElement';
-import { Visitor } from './Visitor';
-import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Element } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class DiagramElementVisitor extends Visitor {
   visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {

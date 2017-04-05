@@ -41,7 +41,7 @@ export class LogService {
       this.currentLine = this.lines.length + 1;
       this.lines.push(key);
     } else {
-      if (index != this.currentLine) {
+      if (index !== this.currentLine) {
         process.stdout.write(move.lines(index - this.currentLine));
       }
       this.currentLine = index + 1;

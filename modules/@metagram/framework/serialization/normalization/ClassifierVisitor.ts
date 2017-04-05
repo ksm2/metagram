@@ -2,9 +2,9 @@ import { Element } from '../../models';
 import { Property } from '../../models';
 import { Classifier } from '../../models';
 import { Operation } from '../../models';
-import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class ClassifierVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

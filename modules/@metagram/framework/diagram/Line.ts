@@ -1,5 +1,5 @@
+import { Attribute, Class } from '../decorators';
 import { Element } from '../models';
-import { Class, Attribute } from '../decorators';
 import { Point } from './Point';
 
 @Class('Line', Element)
@@ -59,7 +59,7 @@ export class Line extends Element {
 
   constructor(x1?: number, y1?: number, x2?: number, y2?: number) {
     super();
-    if (typeof x1 == 'number' && typeof y1 == 'number' && typeof x2 == 'number' && typeof y2 == 'number') {
+    if (typeof x1 === 'number' && typeof y1 === 'number' && typeof x2 === 'number' && typeof y2 === 'number') {
       this._from = new Point(x1, y1);
       this._to = new Point(x2, y2);
     }

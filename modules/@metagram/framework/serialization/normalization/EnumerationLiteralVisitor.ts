@@ -1,7 +1,7 @@
 import { Element } from '../../models';
 import { EnumerationLiteral } from '../../models';
-import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { Visitor } from './Visitor';
 
 export class EnumerationLiteralVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {

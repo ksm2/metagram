@@ -4,9 +4,9 @@ import { Property } from '../../models';
 import { Association } from '../../models';
 import { EnumerationLiteral } from '../../models';
 import { AggregationKind } from '../../models';
-import { Visitor } from './Visitor';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
 import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Visitor } from './Visitor';
 
 export class PropertyVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {
@@ -35,6 +35,16 @@ export class PropertyVisitor extends Visitor {
 
       case 'aggregation': {
         parent.aggregation = value;
+        return;
+      }
+
+      case 'isOrdered': {
+        parent.ordered = this.valueToBoolean(value, 'isOrdered');
+        return;
+      }
+
+      case 'isUnique': {
+        parent.unique = this.valueToBoolean(value, 'isUnique');
         return;
       }
 
@@ -89,8 +99,7 @@ export class PropertyVisitor extends Visitor {
             return;
         }
 
-        // console.error(`Unexpected default value type: ${childNode.typeName}`);
-        return;
+        throw new Error(`Unexpected default value type: ${childNode.typeName}`);
       }
 
       default:

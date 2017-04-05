@@ -1,8 +1,8 @@
-import { Package } from '../models';
-import { Shape } from './Shape';
-import { Class, Attribute } from '../decorators';
 import { Canvas } from '../canvas/Canvas';
+import { Attribute, Class } from '../decorators';
+import { Package } from '../models';
 import { DiagramElement } from './DiagramElement';
+import { Shape } from './Shape';
 
 @Class('Diagram', Shape)
 export class Diagram extends Shape<Package> {
@@ -43,7 +43,7 @@ export class Diagram extends Shape<Package> {
   }
 
   render(canvas: Canvas): void {
-    for (let child of this.ownedElements) {
+    for (const child of this.ownedElements) {
       child.render(canvas);
     }
   }

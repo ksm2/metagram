@@ -1,11 +1,11 @@
+import { Canvas } from '../canvas/Canvas';
 import { Association } from '../models';
 import { AggregationKind } from '../models';
 import { Property } from '../models';
-import { Canvas } from '../canvas/Canvas';
+import { LineTip } from '../rendering/LineTip';
 import { Color } from './Color';
 import { Edge } from './Edge';
 import { Line } from './Line';
-import { LineTip } from '../rendering/LineTip';
 
 export class AssociationElement extends Edge<Association> {
   renderLineSegment(canvas: Canvas, line: Line, index: number, lastIndex: number): void {
@@ -27,12 +27,15 @@ export class AssociationElement extends Edge<Association> {
     }
 
     canvas.drawLine(line, stroke, arrowEnd, arrowStart);
-    if (isMid && this.label)
+    if (isMid && this.label) {
       canvas.labelLine(line, this.font, this.label);
-    if (isFirst && this.sourceLabel)
+    }
+    if (isFirst && this.sourceLabel) {
       canvas.labelLine(line, this.font, this.sourceLabel, 25);
-    if (isLast && this.targetLabel)
+    }
+    if (isLast && this.targetLabel) {
       canvas.labelLine(line, this.font, this.targetLabel, -25);
+    }
   }
 
   private getArrowTip(property: Property): LineTip {

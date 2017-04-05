@@ -1,11 +1,11 @@
 import { Diagram } from '../diagram';
 import { Bounds } from '../diagram/Bounds';
-import { Point } from '../diagram/Point';
-import { Line } from '../diagram/Line';
-import { LineTip } from '../rendering/LineTip';
-import { Stroke } from '../diagram/Stroke';
-import { Baseline, Font, TextAlign } from '../diagram/Font';
 import { Fill } from '../diagram/Fill';
+import { Baseline, Font, TextAlign } from '../diagram/Font';
+import { Line } from '../diagram/Line';
+import { Point } from '../diagram/Point';
+import { Stroke } from '../diagram/Stroke';
+import { LineTip } from '../rendering/LineTip';
 
 export interface Canvas {
   zoom: number;

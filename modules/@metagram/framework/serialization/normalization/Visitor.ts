@@ -1,7 +1,7 @@
-import { Element, ModelElement } from '../../models';
 import { Diagram } from '../../diagram/Diagram';
-import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Element, ModelElement } from '../../models';
 import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
+import { XMIDecoder } from '../encoding/XMIDecoder';
 
 export class Visitor {
   constructor() {}
@@ -10,25 +10,35 @@ export class Visitor {
     return new Element();
   }
 
-  visit(decoder: XMIDecoder, node: ResolvedXMINode, element: Element): Element {
+  visit(decoder: XMIDecoder, node: ResolvedXMINode, element: Element): Error[] {
     element.setID(node.id);
     element.setOrigin(node.origin);
     element.setTypeURI(node.typeURI);
     element.setTypeName(node.typeName);
 
-    for (let [name, values] of node.attrs) {
-      for (let value of values) {
-        this.visitAttr(decoder, name, value, element, node);
+    const errors: Error[] = [];
+
+    for (const [name, values] of node.attrs) {
+      for (const value of values) {
+        try {
+          this.visitAttr(decoder, name, value, element, node);
+        } catch (e) {
+          errors.push(e);
+        }
       }
     }
 
-    for (let [name, childNodes] of node.elements) {
-      for (let childNode of childNodes) {
-        this.visitOwnedElement(decoder, name, childNode, element, node);
+    for (const [name, childNodes] of node.elements) {
+      for (const childNode of childNodes) {
+        try {
+          this.visitOwnedElement(decoder, name, childNode, element, node);
+        } catch (e) {
+          errors.push(e);
+        }
       }
     }
 
-    return element;
+    return errors;
   }
 
   visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {
@@ -92,10 +102,24 @@ export class Visitor {
   }
 
   /**
+   * Parses a boolean out of a string
+   */
+  protected valueToBoolean(value: string, property: string): boolean {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+
+    throw new Error(`Wrong value for "${property}": ${value}`);
+  }
+
+  /**
    * Decodes UML's literal boolean type
    */
   protected decodeLiteralBoolean(element: ResolvedXMINode): boolean | null {
-    return element.typeName === 'LiteralBoolean' ? element.getString('value') === 'true' : null;
+    if (element.typeName === 'LiteralBoolean' && element.has('value')) {
+      return this.valueToBoolean(element.getString('value')!, element.tagName);
+    }
+
+    return null;
   }
 
   /**

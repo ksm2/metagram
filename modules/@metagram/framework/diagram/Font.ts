@@ -1,6 +1,6 @@
 import { Element } from '../models';
-import { Style } from './Style';
 import { Color } from './Color';
+import { Style } from './Style';
 export type TextAlign = 'left' | 'right' | 'center' | 'start' | 'end';
 export type Baseline = 'top' | 'hanging' | 'middle' | 'alphabetic' | 'ideographic' | 'bottom';
 
