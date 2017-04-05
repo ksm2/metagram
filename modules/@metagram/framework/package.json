@@ -27,10 +27,8 @@
     "./canvas/NodeCanvas.js": false,
     "./canvas/PDFCanvas.js": "./canvas/PDFCanvas.browser.js",
     "./canvas/SVGCanvas.js": "./canvas/SVGCanvas.browser.js",
-    "./cli/CLIApplication.js": false,
-    "./cli/Command.js": false,
-    "./cli/DiagramCommand.js": false,
-    "./cli/HTMLDocCommand.js": false,
+    "./cli": false,
+    "./codegen": false,
     "./services/FetchService.js": "./services/FetchService.browser.js",
     "./services/IOService.js": false
   },
