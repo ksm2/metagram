@@ -1,6 +1,6 @@
 {
   "name": "metagram-scrs",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Metagram - a web framework for model transformation and digramming",
   "main": "index.js",
   "bin": {
