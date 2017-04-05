@@ -14,48 +14,55 @@ export class ClassTypeScriptTemplate extends TypeScriptTemplate {
     model.generalizations.forEach((cls) => next(cls));
 
     const imports = new Set<ModelElement>();
-    const { forEach, typeOf, pluralize, upperCaseFirst } = TypeScriptTemplate;
-    const text = `/**
+    const { forEach, typeOf, pluralize, upperCaseFirst, attributeConstructor, collectionInterfaceName } = ClassTypeScriptTemplate;
+    const attrs = values(model.getAttributes());
+    const text = `${model.comments.size ? `/**
 ${forEach(model.comments, (cmt) => ` * ${cmt}`, `\n`)}
  */
-export class ${model.name}Impl extends $Elm implements ${model.name} {
-${forEach(values(model.getAttributes()), (attribute) => `
-  private _${pluralize(attribute.name!)}: $Attr<${typeOf(attribute.type, (ref) => imports.add(ref))}> = new $Attr<${typeOf(attribute.type)}>('${attribute.name!}', ${attribute.ordered}, ${attribute.unique}, ${attribute.lower}, ${attribute.upper});`)}
+` : ''}export class ${model.name}Impl extends Metagram.Element implements ${model.name} {${forEach(attrs, (attr) => `
+  private _${pluralize(attr.name!)}: Metagram.Attribute<${typeOf(attr.type, (ref) => imports.add(ref))}>;`)}
 
-${forEach(values(model.getAttributes()), (attribute) => `
-  set ${attribute.name}(value: ${typeOf(attribute.type)} | undefined) {
-    this._${pluralize(attribute.name!)}.set(value);
+  constructor() {
+    super();
+${forEach(attrs, (attr) => `
+    this._${pluralize(attr.name!)} = ${attributeConstructor(attr)};`)}
   }
-
-  get ${attribute.name}(): ${typeOf(attribute.type)} | undefined {
-    return this._${pluralize(attribute.name!)}.get()${attribute.lower >= 1 ? '!' : ''};
-  }
-
-  getAll${pluralize(upperCaseFirst(attribute.name!))}(): ${attribute.ordered ? 'Ordered' : 'Arbitrary'}${attribute.unique ? 'Unique' : 'Ambiguous'}Collection<${typeOf(attribute.type)}> {
-    return this._${pluralize(attribute.name!)}.as${attribute.ordered ? 'Ordered' : ''}${attribute.unique ? 'Set' : 'List'}();
-  }
-${attribute.upper > attribute.lower ? `
-  append${upperCaseFirst(attribute.name!)}(value: ${typeOf(attribute.type)}): boolean {
-    return this._${pluralize(attribute.name!)}.append(value);
+${forEach(attrs, (attr) => `
+  set ${attr.name}(value: ${typeOf(attr.type)} | undefined) {
+    this._${pluralize(attr.name!)}.set(value);
   }
 
-  remove${upperCaseFirst(attribute.name!)}(value: ${typeOf(attribute.type)}): boolean {
-    return this._${pluralize(attribute.name!)}.remove(value);
+  get ${attr.name}(): ${typeOf(attr.type)} | undefined {
+    return this._${pluralize(attr.name!)}.get()${attr.lower >= 1 ? '!' : ''};
   }
-` : ''}${attribute.lower < 1 ? `
-  has${upperCaseFirst(attribute.name!)}(): boolean {
-    return this._${pluralize(attribute.name!)}.isNotEmpty();
-  }
-` : ''}
-`)}
-}
 
-$MM.registerModel('${model.getHref()}', ${model.name}Impl);
+  getAll${pluralize(upperCaseFirst(attr.name!))}(): ${collectionInterfaceName(attr)} {
+    return this._${pluralize(attr.name!)}.as${attr.ordered ? 'Ordered' : ''}${attr.unique ? 'Set' : 'List'}();
+  }
+${attr.upper > attr.lower ? `
+  append${upperCaseFirst(attr.name!)}(value: ${typeOf(attr.type)}): boolean {
+    return this._${pluralize(attr.name!)}.append(value);
+  }
+
+  remove${upperCaseFirst(attr.name!)}(value: ${typeOf(attr.type)}): boolean {
+    return this._${pluralize(attr.name!)}.remove(value);
+  }
+` : ''}${attr.lower < 1 ? `
+  has${upperCaseFirst(attr.name!)}(): boolean {
+    return this._${pluralize(attr.name!)}.isNotEmpty();
+  }
+` : ''}`)}}
+
+Metagram.Metamodel.registerModel('${model.getHref()}', ${model.name}Impl);
 `;
 
     imports.delete(model);
-    const i = [...imports].map((it) => this.bundler.createReference(it, model)).join(`\n`);
-    return `import { Element as $Elm, Attribute as $Attr, Metamodel as $MM, ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '@metagram/framework';\n${i}\nimport { ${model.name} } from './${model.name}';\n\n${text}`;
+    const otherImports = [...imports].map((it) => this.bundler.createReference(it, model)).join(`\n`);
+    return `import * as Metagram from '@metagram/framework';
+${otherImports}
+import { ${model.name} } from './${model.name}';
+
+${text}`;
   }
 
   generateBasename(element: ModelElement): string {

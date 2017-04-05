@@ -50,7 +50,11 @@ export class HTMLTemplate extends Template {
         <h1 class="name name-${this.cssClass(model)}">${model.name}</h1>
         <p>
         ${this.instanceOf(model) ? `
-          <strong>instance of <a href="${this.ref(this.instanceOf(model)!)}">${this.instanceOf(model)!.name}</strong></a> from ${this.uriNameFor(this.instanceOf(model)!)}
+          <strong>
+            <span>instance of</span>
+            <a href="${this.ref(this.instanceOf(model)!)}">${this.instanceOf(model)!.name}</a>
+            <span>from ${this.uriNameFor(this.instanceOf(model)!)}</span>
+          </strong>
         ` : ``}
         </p>
         ${this.forEach(model.comments, (comment) => `
@@ -99,7 +103,8 @@ export class HTMLTemplate extends Template {
   <nav class="navbar navbar-inverse navbar-fixed-top navbar-toggleable-md">
     <div class="container">
       <div class="navbar-header">
-        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -138,18 +143,20 @@ export class HTMLTemplate extends Template {
     return properties.size ? `<section>
       <h2>Owned Attributes</h2>
       <ul class="list-unstyled">
-        ${this.forEach(properties, (property) => `
+        ${this.forEach(properties, (prop) => `
           <li>
-            <strong class="name-ref name-${this.cssClass(property)}">${property.name}</strong>
-            ${property.type ? `&nbsp;<a class="name-ref name-${this.cssClass(property.type)}" href="${this.ref(property.type)}">:${property.type.name}</a>` : ``}
-            <span>[${property.lower}..${property.upper === Infinity ? '*' : property.upper}]</span>
-            ${property.defaultValue instanceof EnumerationLiteral ? `
-              <a href="${this.ref(property.defaultValue)}">=${property.defaultValue.name}</a>
-            ` : null !== property.defaultValue ? `
-              <span>=${property.defaultValue}</span>
+            <strong class="name-ref name-${this.cssClass(prop)}">${prop.name}</strong>
+            ${prop.type ?
+              `&nbsp;<a class="name-ref name-${this.cssClass(prop.type)}" href="${this.ref(prop.type)}">:${prop.type.name}</a>` : ``}
+            <span>[${prop.lower}..${prop.upper === Infinity ? '*' : prop.upper}]</span>
+            ${prop.defaultValue instanceof EnumerationLiteral ? `
+              <a href="${this.ref(prop.defaultValue)}">=${prop.defaultValue.name}</a>
+            ` : null !== prop.defaultValue ? `
+              <span>=${prop.defaultValue}</span>
             ` : ``}
-            ${property.association ? `&nbsp;<a class="name-ref name-association" href="${this.ref(property.association)}">${property.association.name}</a>` : ``}
-            ${this.forEach(property.comments, (comment) => `
+            ${prop.association ?
+              `&nbsp;<a class="name-ref name-association" href="${this.ref(prop.association)}">${prop.association.name}</a>` : ``}
+            ${this.forEach(prop.comments, (comment) => `
               <p class="comment">${comment}</p>
             `)}
           </li>
@@ -162,22 +169,24 @@ export class HTMLTemplate extends Template {
     return operations.size ? `<section>
       <h2>Owned Operations</h2>
       <ul class="list-unstyled">
-        ${this.forEach(operations, (operation) => `
+        ${this.forEach(operations, (op) => `
           <li>
-            <strong class="name-ref name-${this.cssClass(operation)}">${operation.name}</strong>
+            <strong class="name-ref name-${this.cssClass(op)}">${op.name}</strong>
             <strong>(</strong>
-            ${this.forEach([...operation.ownedParameters].filter((p) => p.direction !== ParameterDirectionKind.RETURN), (parameter) => `
-              <strong>${parameter.name}</strong>
-              ${parameter.type ? `&nbsp;<a class="name-ref name-${this.cssClass(parameter.type)}" href="${this.ref(parameter.type)}">:${parameter.type.name}</a>` : ``}
-              ${parameter.defaultValue instanceof EnumerationLiteral ? `
-                <a href="${this.ref(parameter.defaultValue)}">=${parameter.defaultValue.name}</a>
-              ` : null !== parameter.defaultValue ? `
-                <span>=${parameter.defaultValue}</span>
+            ${this.forEach([...op.ownedParameters].filter((p) => p.direction !== ParameterDirectionKind.RETURN), (param) => `
+              <strong>${param.name}</strong>
+              ${param.type ?
+                `&nbsp;<a class="name-ref name-${this.cssClass(param.type)}" href="${this.ref(param.type)}">:${param.type.name}</a>` : ``}
+              ${param.defaultValue instanceof EnumerationLiteral ? `
+                <a href="${this.ref(param.defaultValue)}">=${param.defaultValue.name}</a>
+              ` : null !== param.defaultValue ? `
+                <span>=${param.defaultValue}</span>
               ` : ``}
               `, '<strong>,</strong>')}
             <strong>)</strong>
-            ${operation.type ? `&nbsp;<a class="name-ref name-${this.cssClass(operation.type)}" href="${this.ref(operation.type)}">:${operation.type.name}</a>` : ``}
-            ${this.forEach(operation.comments, (comment) => `
+            ${op.type ?
+              `&nbsp;<a class="name-ref name-${this.cssClass(op.type)}" href="${this.ref(op.type)}">:${op.type.name}</a>` : ``}
+            ${this.forEach(op.comments, (comment) => `
               <p class="comment">${comment}</p>
             `)}
           </li>

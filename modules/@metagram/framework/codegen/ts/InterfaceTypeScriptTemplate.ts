@@ -9,32 +9,31 @@ export class InterfaceTypeScriptTemplate extends TypeScriptTemplate {
     model.generalizations.forEach((cls) => next(cls));
 
     const imports = new Set<ModelElement>();
-    const { forEach, typeOf, pluralize, upperCaseFirst } = TypeScriptTemplate;
+    const { forEach, typeOf, pluralize, upperCaseFirst, collectionInterfaceName } = TypeScriptTemplate;
 
     let extensions = [...model.generalizations].map((g) => g.name).join(', ');
     if (extensions) extensions = `extends ${extensions} `;
 
     model.generalizations.forEach((g) => imports.add(g));
 
-    const text = `/**
+    const text = `${model.comments.size ? `/**
 ${forEach(model.comments, (cmt) => ` * ${cmt}`, `\n`)}
  */
-export interface ${model.name} ${extensions}{
-${forEach(model.ownedAttributes, (attribute) => `
-  /**
-  ${forEach(attribute.comments, (cmt) => ` * ${cmt}`, `\n  `)}
+` : ''}export interface ${model.name} ${extensions}{${forEach(model.ownedAttributes, (attr) => `
+${attr.comments.size ? `  /**
+${forEach(attr.comments, (cmt) => `   * ${cmt}`, `\n  `)}
    */
-  ${attribute.name}: ${typeOf(attribute.type, (ref) => imports.add(ref))} | undefined;
-${attribute.upper > 1 ? `
-  getAll${pluralize(upperCaseFirst(attribute.name!))}(): ${attribute.ordered ? 'Ordered' : 'Arbitrary'}${attribute.unique ? 'Unique' : 'Ambiguous'}Collection<${typeOf(attribute.type)}>;
-` : ''}
-`)}
+  ` : '  '}${attr.name}: ${typeOf(attr.type, (ref) => imports.add(ref))} | undefined;${attr.upper > 1 ? `
+  getAll${pluralize(upperCaseFirst(attr.name!))}(): ${collectionInterfaceName(attr)};` : ''}`)}
 }
 `;
 
     imports.delete(model);
     const i = [...imports].map((it) => this.bundler.createReference(it, model)).join(`\n`);
-    return `import { ArbitraryUniqueCollection, ArbitraryAmbiguousCollection, OrderedUniqueCollection, OrderedAmbiguousCollection } from '@metagram/framework';\n${i}\n\n${text}`;
+    return `import * as Metagram from '@metagram/framework';
+${i}
+
+${text}`;
   }
 
   isSupporting(element: Element, options: any): boolean {

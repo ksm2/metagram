@@ -22,7 +22,8 @@ export class OverviewTemplate extends HTMLTemplate {
       </main>
       <script>
       $(() => {
-        const elements = [${this.forEach(models, (ownedElement) => `{"cls":"${this.cssClass(ownedElement)}","href":"${this.ref(ownedElement)}","name":"${ownedElement.name}"},`)}];
+        const elements = [${this.forEach(models, (ownedElement) =>
+          `{"cls":"${this.cssClass(ownedElement)}","href":"${this.ref(ownedElement)}","name":"${ownedElement.name}"},`)}];
 
         function updateSearch() {
           const text = window.location.hash.substr(1).toLowerCase();

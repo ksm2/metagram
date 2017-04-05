@@ -1,6 +1,7 @@
 import { Class } from '../../models/uml/Class';
 import { ModelElement } from '../../models/uml/ModelElement';
 import { Package } from '../../models/uml/Package';
+import { Property } from '../../models/uml/Property';
 import { StringService } from '../../services/StringService';
 import { Template } from '../Template';
 import { TypeScriptBundler } from './TypeScriptBundler';
@@ -69,5 +70,15 @@ export class TypeScriptTemplate extends Template {
 
   protected static upperCaseFirst(str: string): string {
     return StringService.upperCaseFirst(str);
+  }
+
+  protected static attributeConstructor(attr: Property): string {
+    const typeOf = TypeScriptTemplate.typeOf;
+    return `new Metagram.Attribute<${typeOf(attr.type)}>('${attr.name!}', ${attr.ordered}, ${attr.unique}, ${attr.lower}, ${attr.upper})`;
+  }
+
+  protected static collectionInterfaceName(attr: Property): string {
+    const typeOf = TypeScriptTemplate.typeOf;
+    return `Metagram.${attr.ordered ? 'Ordered' : 'Arbitrary'}${attr.unique ? 'Unique' : 'Ambiguous'}Collection<${typeOf(attr.type)}>`;
   }
 }

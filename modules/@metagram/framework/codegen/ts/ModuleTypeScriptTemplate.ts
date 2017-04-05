@@ -7,7 +7,7 @@ import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class ModuleTypeScriptTemplate extends TypeScriptTemplate {
   render(pkg: Package, options: any, next: (element: Element) => void): string {
-    const elements = [...pkg.packagedElement].filter((e) => e instanceof Class || e instanceof Package || e instanceof Enumeration) as ModelElement[];
+    const elements = [...pkg.packagedElement].filter((e) => this.bundler.isSupporting(e)) as ModelElement[];
     elements.forEach((element) => next(element));
 
     // Make all generalizations next

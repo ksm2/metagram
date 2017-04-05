@@ -45,11 +45,22 @@ export class Bundler {
   }
 
   /**
-   * Finds a matching template for an element
+   * Checks whether the bundler is supporting given data
+   *
+   * @param data The data to check support for
+   * @param [options] Some options to pass to the bundler
+   * @return True, if this bundler supports given data
    */
-  protected findTemplate(element: Element, options: any): Template | null {
+  isSupporting(data: any, options: any = {}): boolean {
+    return this.findTemplates(data, options).length > 0;
+  }
+
+  /**
+   * Finds a matching template for data
+   */
+  protected findTemplate(data: any, options: any): Template | null {
     for (const template of this._templates) {
-      if (template.isSupporting(element, options)) {
+      if (template.isSupporting(data, options)) {
         return template;
       }
     }
