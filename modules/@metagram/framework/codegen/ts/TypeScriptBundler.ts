@@ -30,7 +30,7 @@ export class TypeScriptBundler extends Bundler {
   }
 
   async bundle(rootElement: Element, outputDir: string, options: any = {}): Promise<void> {
-    const rendered = await this.render(rootElement, outputDir, options);
+    await this.render(rootElement, outputDir, options);
   }
 
   createReference(ref: ModelElement, from: ModelElement): string {
@@ -46,9 +46,9 @@ export class TypeScriptBundler extends Bundler {
         if (!path) path = './';
 
         const remainingDirs = targetPaths.slice(targetIndex + 1).map((pkg) => StringService.camelToHyphenCase(pkg.name!));
-        remainingDirs.push(ref.name!);
+        remainingDirs.push(`${ref instanceof Class ? 'I' : ''}${ref.name}`);
 
-        return `import { ${ref.name} } from '${path}${remainingDirs.join('/')}';`;
+        return `${path}${remainingDirs.join('/')}`;
       }
 
       path += '../';
@@ -58,9 +58,9 @@ export class TypeScriptBundler extends Bundler {
     if (!path) path = './';
 
     const remainingDirs = targetPaths.map((pkg) => StringService.camelToHyphenCase(pkg.name!));
-    remainingDirs.push(ref.name!);
+    remainingDirs.push(`${ref instanceof Class ? 'I' : ''}${ref.name}`);
 
-    return `import { ${ref.name} } from '${path}${remainingDirs.join('/')}';`;
+    return `${path}${remainingDirs.join('/')}`;
   }
 
   /**

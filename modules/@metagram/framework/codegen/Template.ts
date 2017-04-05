@@ -1,5 +1,3 @@
-import { Element } from '../models/Element';
-
 export class Template {
   /**
    * Renders any kind of data

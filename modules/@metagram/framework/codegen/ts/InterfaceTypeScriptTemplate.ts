@@ -1,39 +1,44 @@
-import { Element } from '../../models/Element';
-import { Class } from '../../models/uml/Class';
-import { ModelElement } from '../../models/uml/ModelElement';
+import { Class, Element, ModelElement } from '../../models';
 import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class InterfaceTypeScriptTemplate extends TypeScriptTemplate {
   render(model: Class, options: any, next: (element: Element) => void): string {
     // Make all generalizations next
+    const { internal } = options;
     model.generalizations.forEach((cls) => next(cls));
 
-    const imports = new Set<ModelElement>();
+    const rootDir = model.allOwningElements().map(() => '..').join('/');
+    const imports = new Map<string, string>([
+      ['* as Metagram', internal ? `${rootDir}/metamodel` : '@metagram/framework'],
+    ]);
     const { forEach, typeOf, pluralize, upperCaseFirst, collectionInterfaceName } = TypeScriptTemplate;
 
-    let extensions = [...model.generalizations].map((g) => g.name).join(', ');
+    let extensions = [...model.generalizations].map((g) => `I${g.name}`).join(', ');
     if (extensions) extensions = `extends ${extensions} `;
 
-    model.generalizations.forEach((g) => imports.add(g));
+    model.generalizations.forEach((g) => imports.set(`{ I${g.name} }`, this.bundler.createReference(g, model)));
 
+    const importCb = (ref: ModelElement, name: string) => imports.set(name, this.bundler.createReference(ref, model));
     const text = `${model.comments.size ? `/**
 ${forEach(model.comments, (cmt) => ` * ${cmt}`, `\n`)}
  */
-` : ''}export interface ${model.name} ${extensions}{${forEach(model.ownedAttributes, (attr) => `
+` : ''}export interface I${model.name} ${extensions}{${forEach(model.ownedAttributes, (attr) => `
 ${attr.comments.size ? `  /**
 ${forEach(attr.comments, (cmt) => `   * ${cmt}`, `\n  `)}
    */
-  ` : '  '}${attr.name}: ${typeOf(attr.type, (ref) => imports.add(ref))} | undefined;${attr.upper > 1 ? `
+  ` : '  '}${attr.name}: ${typeOf(attr.type, importCb)} | undefined;${attr.upper > 1 ? `
   getAll${pluralize(upperCaseFirst(attr.name!))}(): ${collectionInterfaceName(attr)};` : ''}`)}
 }
 `;
 
-    imports.delete(model);
-    const i = [...imports].map((it) => this.bundler.createReference(it, model)).join(`\n`);
-    return `import * as Metagram from '@metagram/framework';
-${i}
+    imports.delete(`I${model.name}`);
+    return `${this.generateImports(imports)}
 
 ${text}`;
+  }
+
+  generateBasename(element: ModelElement): string {
+    return `I${element.name}.ts`;
   }
 
   isSupporting(element: Element, options: any): boolean {

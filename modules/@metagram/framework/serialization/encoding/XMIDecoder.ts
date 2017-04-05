@@ -1,11 +1,10 @@
 import { Element, ModelElement, XMI } from '../../models';
 import { FetchService, LogService } from '../../services';
-import { Visitor } from '../normalization/Visitor';
+import { Visitor } from '../normalization';
 import { ResolvedXMINode } from './ResolvedXMINode';
 import { XMINode } from './XMINode';
 import { XMIResolver } from './XMIResolver';
 
-import { XMIImpl } from '../../models/xmi/XMIImpl';
 import DC11 from '../namespaces/DC11';
 import DI11 from '../namespaces/DI11';
 import UML25 from '../namespaces/UML25';
@@ -42,12 +41,12 @@ export class XMIDecoder {
   /**
    * Load multiple URLs
    */
-  async loadURLs(...urls: string[]): Promise<XMIImpl | null> {
+  async loadURLs(...urls: string[]): Promise<XMI | null> {
     for (const url of urls) {
       this.logService.setInfo(url, 'pending');
     }
 
-    let p: Promise<XMIImpl | null> = Promise.resolve(null);
+    let p: Promise<XMI | null> = Promise.resolve(null);
     while (urls.length) {
       const url = urls.shift()!;
       p = p.then((xmi) => {
@@ -71,10 +70,10 @@ export class XMIDecoder {
    * @param [encoding] Encoding of that file
    * @returns Promise for a model element
    */
-  async loadURL(url: string, encoding: string = 'utf8'): Promise<XMIImpl> {
+  async loadURL(url: string, encoding: string = 'utf8'): Promise<XMI> {
     const tree = await this.xmiResolver.resolveURL(url, encoding);
     const element = this.decodeNode(tree);
-    if (!(element instanceof XMIImpl)) throw new Error(`Tree root has wrong type: ${element}`);
+    if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
 
     return element;
   }
@@ -84,10 +83,10 @@ export class XMIDecoder {
    *
    * @returns Promise for a model element
    */
-  async loadStdin(): Promise<XMIImpl> {
+  async loadStdin(): Promise<XMI> {
     const tree = await this.xmiResolver.resolveStdin();
     const element = this.decodeNode(tree);
-    if (!(element instanceof XMIImpl)) throw new Error(`Tree root has wrong type: ${element}`);
+    if (!(element instanceof XMI)) throw new Error(`Tree root has wrong type: ${element}`);
 
     return element;
   }

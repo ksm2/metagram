@@ -1,5 +1,5 @@
-import { Element } from '../models/Element';
-import { IOService } from '../services/IOService';
+import { Element } from '../models';
+import { IOService } from '../services';
 import { Template } from './Template';
 
 export class Bundler {

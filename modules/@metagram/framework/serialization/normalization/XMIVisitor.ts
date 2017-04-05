@@ -1,12 +1,10 @@
-import { Element } from '../../models';
-import { XMIImpl } from '../../models/xmi/XMIImpl';
-import { ResolvedXMINode } from '../encoding/ResolvedXMINode';
-import { XMIDecoder } from '../encoding/XMIDecoder';
+import { Element, XMI } from '../../models';
+import { ResolvedXMINode, XMIDecoder } from '../encoding';
 import { Visitor } from './Visitor';
 
 export class XMIVisitor extends Visitor {
   createInstance(node: ResolvedXMINode): Element {
-    return new XMIImpl();
+    return new XMI();
   }
 
   visitOwnedElement(decoder: XMIDecoder, name: string, childNode: ResolvedXMINode, parent: Element, parentNode: ResolvedXMINode): void {

@@ -1,5 +1,4 @@
-import { Element } from '../../models/Element';
-import { Package } from '../../models/uml/Package';
+import { Element, Package } from '../../models';
 import { HTMLTemplate } from './HTMLTemplate';
 
 export class PackageTemplate extends HTMLTemplate {

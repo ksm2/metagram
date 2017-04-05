@@ -1,5 +1,5 @@
 import { Attribute, Class } from '../../decorators';
-import { Element } from '../Element';
+import { Element } from '../metamodel';
 import { AggregationKind } from './AggregationKind';
 import { Association } from './Association';
 import { EnumerationLiteral } from './EnumerationLiteral';

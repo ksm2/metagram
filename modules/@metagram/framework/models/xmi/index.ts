@@ -2,19 +2,19 @@
  * XMI module
  *
  * Generated from Metagram
- * Tue Apr 04 2017 15:50:53 GMT+0200 (CEST)
+ * Wed Apr 05 2017 15:42:42 GMT+0200 (CEST)
  */
 export { Delete } from './Delete';
-export { DeleteImpl } from './DeleteImpl';
+export { IDelete } from './IDelete';
 export { Documentation } from './Documentation';
-export { DocumentationImpl } from './DocumentationImpl';
+export { IDocumentation } from './IDocumentation';
 export { Difference } from './Difference';
-export { DifferenceImpl } from './DifferenceImpl';
+export { IDifference } from './IDifference';
 export { Extension } from './Extension';
-export { ExtensionImpl } from './ExtensionImpl';
+export { IExtension } from './IExtension';
 export { XMI } from './XMI';
-export { XMIImpl } from './XMIImpl';
+export { IXMI } from './IXMI';
 export { Replace } from './Replace';
-export { ReplaceImpl } from './ReplaceImpl';
+export { IReplace } from './IReplace';
 export { Add } from './Add';
-export { AddImpl } from './AddImpl';
+export { IAdd } from './IAdd';

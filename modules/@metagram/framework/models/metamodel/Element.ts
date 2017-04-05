@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Class } from '../decorators';
+import { Class } from '../../decorators';
 
 @Class('Element')
 export class Element extends EventEmitter {

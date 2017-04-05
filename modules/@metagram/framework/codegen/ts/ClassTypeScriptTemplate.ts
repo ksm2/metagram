@@ -1,6 +1,4 @@
-import { Element } from '../../models/Element';
-import { Class } from '../../models/uml/Class';
-import { ModelElement } from '../../models/uml/ModelElement';
+import { Class, Element, ModelElement } from '../../models';
 import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 function values<T>(o: { [key: string]: T }): T[] {
@@ -11,16 +9,23 @@ function values<T>(o: { [key: string]: T }): T[] {
 export class ClassTypeScriptTemplate extends TypeScriptTemplate {
   render(model: Class, options: any, next: (element: Element) => void): string {
     // Make all generalizations next
+    const { internal } = options;
     model.generalizations.forEach((cls) => next(cls));
 
-    const imports = new Set<ModelElement>();
+    const rootDir = model.allOwningElements().map(() => '..').join('/');
+    const imports = new Map<string, string>([
+      ['* as Metagram', internal ? `${rootDir}/metamodel` : '@metagram/framework'],
+      [`{ I${model.name} }`, `./I${model.name}`],
+    ]);
+
     const { forEach, typeOf, pluralize, upperCaseFirst, attributeConstructor, collectionInterfaceName } = ClassTypeScriptTemplate;
     const attrs = values(model.getAttributes());
+    const importCb = (ref: ModelElement, name: string) => imports.set(name, this.bundler.createReference(ref, model));
     const text = `${model.comments.size ? `/**
 ${forEach(model.comments, (cmt) => ` * ${cmt}`, `\n`)}
  */
-` : ''}export class ${model.name}Impl extends Metagram.Element implements ${model.name} {${forEach(attrs, (attr) => `
-  private _${pluralize(attr.name!)}: Metagram.Attribute<${typeOf(attr.type, (ref) => imports.add(ref))}>;`)}
+` : ''}export class ${model.name} extends Metagram.Element implements I${model.name} {${forEach(attrs, (attr) => `
+  private _${pluralize(attr.name!)}: Metagram.Attribute<${typeOf(attr.type, importCb)}>;`)}
 
   constructor() {
     super();
@@ -53,21 +58,14 @@ ${attr.upper > attr.lower ? `
   }
 ` : ''}`)}}
 
-Metagram.Metamodel.registerModel('${model.getHref()}', ${model.name}Impl);
+Metagram.Metamodel.registerModel('${model.getHref()}', ${model.name});
 `;
 
-    imports.delete(model);
-    const otherImports = [...imports].map((it) => this.bundler.createReference(it, model)).join(`\n`);
-    return `import * as Metagram from '@metagram/framework';
-${otherImports}
-import { ${model.name} } from './${model.name}';
+    return `${this.generateImports(imports)}
 
 ${text}`;
   }
 
-  generateBasename(element: ModelElement): string {
-    return `${element.name}Impl.ts`;
-  }
 
   isSupporting(element: Element, options: any): boolean {
     return element instanceof Class;

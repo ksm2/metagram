@@ -1,8 +1,4 @@
-import { Element } from '../../models/Element';
-import { Class } from '../../models/uml/Class';
-import { Enumeration } from '../../models/uml/Enumeration';
-import { ModelElement } from '../../models/uml/ModelElement';
-import { Package } from '../../models/uml/Package';
+import { Element, ModelElement, Package } from '../../models';
 import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class ModuleTypeScriptTemplate extends TypeScriptTemplate {

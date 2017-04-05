@@ -1,5 +1,4 @@
-import { Element } from '../../models/Element';
-import { DataType } from '../../models/uml/DataType';
+import { DataType, Element } from '../../models';
 import { HTMLTemplate } from './HTMLTemplate';
 
 export class DataTypeTemplate extends HTMLTemplate {

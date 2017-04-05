@@ -1,5 +1,4 @@
-import { Element } from '../../models/Element';
-import { Enumeration } from '../../models/uml/Enumeration';
+import { Element, Enumeration } from '../../models';
 import { HTMLTemplate } from './HTMLTemplate';
 
 export class EnumerationTemplate extends HTMLTemplate {

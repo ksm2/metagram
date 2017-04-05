@@ -1,10 +1,8 @@
-import { ModelElement, XMI } from '../../models';
-import { Element } from '../../models/Element';
-import { XMIImpl } from '../../models/xmi/XMIImpl';
+import { Element, ModelElement, XMI } from '../../models';
 import { HTMLTemplate } from './HTMLTemplate';
 
 export class IndexTemplate extends HTMLTemplate {
-  render(model: XMIImpl, options: any, next: (element: Element) => void): string {
+  render(model: XMI, options: any, next: (element: Element) => void): string {
     const { baseHref, roots } = options;
 
     // Make all child elements next
@@ -26,6 +24,6 @@ export class IndexTemplate extends HTMLTemplate {
   }
 
   isSupporting(element: Element, options: any): boolean {
-    return element instanceof XMIImpl && options.baseHref && options.roots;
+    return element instanceof XMI && options.baseHref && options.roots;
   }
 }

@@ -1,6 +1,4 @@
-import { Element } from '../../models/Element';
-import { XMI } from '../../models/xmi/XMI';
-import { XMIImpl } from '../../models/xmi/XMIImpl';
+import { Element, XMI } from '../../models';
 import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class TSConfigTypeScriptTemplate extends TypeScriptTemplate {
@@ -30,7 +28,7 @@ export class TSConfigTypeScriptTemplate extends TypeScriptTemplate {
   }
 
   isSupporting(data: any, options: any): boolean {
-    return data instanceof XMIImpl;
+    return data instanceof XMI;
   }
 
   generateFilename(data: any, options: any): string {

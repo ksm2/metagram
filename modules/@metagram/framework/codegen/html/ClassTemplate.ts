@@ -1,5 +1,4 @@
-import { Element } from '../../models/Element';
-import { Class } from '../../models/uml/Class';
+import { Class, Element } from '../../models';
 import { HTMLTemplate } from './HTMLTemplate';
 
 export class ClassTemplate extends HTMLTemplate {

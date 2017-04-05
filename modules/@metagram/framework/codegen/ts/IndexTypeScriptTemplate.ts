@@ -1,14 +1,8 @@
-import { Element } from '../../models/Element';
-import { Class } from '../../models/uml/Class';
-import { ModelElement } from '../../models/uml/ModelElement';
-import { Package } from '../../models/uml/Package';
-import { XMI } from '../../models/xmi/XMI';
-import { XMIImpl } from '../../models/xmi/XMIImpl';
-import { StringService } from '../../services/StringService';
+import { Class, Element, ModelElement, Package, XMI } from '../../models';
 import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class IndexTypeScriptTemplate extends TypeScriptTemplate {
-  render(xmi: XMIImpl, options: any, next: (element: Element) => void): string {
+  render(xmi: XMI, options: any, next: (element: Element) => void): string {
     const elements = [...xmi.contents].filter((e) => e instanceof Class || e instanceof Package) as ModelElement[];
     elements.forEach((element) => next(element));
 
@@ -24,6 +18,6 @@ ${forEach(elements, (model) => exportStmt(model), `\n`)}
   }
 
   isSupporting(element: Element, options: any): boolean {
-    return element instanceof XMIImpl;
+    return element instanceof XMI;
   }
 }

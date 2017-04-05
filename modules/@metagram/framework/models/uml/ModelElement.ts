@@ -1,5 +1,5 @@
 import { Attribute, Class } from '../../decorators';
-import { Element } from '../Element';
+import { Element } from '../metamodel';
 import { VisibilityKind } from './VisibilityKind';
 
 @Class(ModelElement, Element)

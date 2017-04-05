@@ -1,6 +1,5 @@
-import { Element } from '../../models/Element';
-import { Enumeration } from '../../models/uml/Enumeration';
-import { StringService } from '../../services/StringService';
+import { Element, Enumeration } from '../../models';
+import { StringService } from '../../services';
 import { TypeScriptTemplate } from './TypeScriptTemplate';
 
 export class EnumerationTypeScriptTemplate extends TypeScriptTemplate {

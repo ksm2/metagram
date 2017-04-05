@@ -1,8 +1,5 @@
-import { Class } from '../../models/uml/Class';
-import { ModelElement } from '../../models/uml/ModelElement';
-import { Package } from '../../models/uml/Package';
-import { Property } from '../../models/uml/Property';
-import { StringService } from '../../services/StringService';
+import { Class, ModelElement, Package, Property } from '../../models';
+import { StringService } from '../../services';
 import { Template } from '../Template';
 import { TypeScriptBundler } from './TypeScriptBundler';
 
@@ -29,6 +26,20 @@ export class TypeScriptTemplate extends Template {
     return `${element.name}.ts`;
   }
 
+  generateImports(map: Map<string, string>): string {
+    const array = [...map].sort(([imp1, filename1], [imp2, filename2]) => this.compareFilenames(filename1, filename2));
+    return array.map(([imp1, filename1]) => `import ${imp1} from '${filename1}';`).join('\n');
+  }
+
+  compareFilenames(fn1: string, fn2: string): number {
+    const doesNotStartWithDot = /^[^\.]/;
+    if (fn1.match(doesNotStartWithDot) && !fn2.match(doesNotStartWithDot)) return -1;
+    if (!fn1.match(doesNotStartWithDot) && fn2.match(doesNotStartWithDot)) return 1;
+    if (fn1 < fn2) return -1;
+    if (fn1 > fn2) return 1;
+    return 0;
+  }
+
   protected static forEach<T>(
     a: { [Symbol.iterator](): Iterator<T> },
     callback: (a: T) => string,
@@ -43,13 +54,13 @@ export class TypeScriptTemplate extends Template {
     }
 
     if (model instanceof Class) {
-      return `export { ${model.name} } from './${model.name}';\nexport { ${model.name}Impl } from './${model.name}Impl';`;
+      return `export { ${model.name} } from './${model.name}';\nexport { I${model.name} } from './I${model.name}';`;
     }
 
     return `export { ${model.name} } from './${model.name}';`;
   }
 
-  protected static typeOf(model: ModelElement | null, importCb: (type: ModelElement) => void = () => {}) {
+  protected static typeOf(model: ModelElement | null, importCb: (model: ModelElement, type: string) => void = () => {}) {
     if (!model) return 'any';
 
     switch (model.getHref()) {
@@ -58,10 +69,13 @@ export class TypeScriptTemplate extends Template {
       case 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#UnlimitedNatural': return 'number';
       case 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#Real': return 'number';
       case 'http://www.omg.org/spec/UML/20131001/PrimitiveTypes.xmi#Boolean': return 'boolean';
+      case 'http://www.omg.org/spec/UML/20131001/UML.xmi#Element': return 'Metagram.Element';
+      case 'http://www.omg.org/spec/XMI/20131001/XMI-model.xmi#_XMI-DateTime': return 'Date';
     }
 
-    importCb(model);
-    return model.name!;
+    const name = `${model instanceof Class ? 'I' : ''}${model.name}`;
+    importCb(model, `{ ${name} }`);
+    return name;
   }
 
   protected static pluralize(str: string): string {

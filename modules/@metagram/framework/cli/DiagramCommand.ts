@@ -2,10 +2,9 @@ import path = require('path');
 import chalk = require('chalk');
 import { Result } from 'meow';
 import { NodeCanvas } from '../canvas';
-import { Diagram } from '../diagram/Diagram';
-import { XMI } from '../models/xmi/XMI';
-import { XMIImpl } from '../models/xmi/XMIImpl';
-import { XMIDecoder } from '../serialization/encoding/XMIDecoder';
+import { Diagram } from '../diagram';
+import { XMI } from '../models';
+import { XMIDecoder } from '../serialization/encoding';
 import { Command } from './Command';
 
 export class DiagramCommand extends Command {
@@ -16,7 +15,7 @@ export class DiagramCommand extends Command {
   }
 
   async run(result: Result): Promise<void> {
-    let xmi: XMIImpl;
+    let xmi: XMI;
     if (result.input.length === 1) {
       xmi = await this.decoder.loadURL(result.input[0]);
     } else {
