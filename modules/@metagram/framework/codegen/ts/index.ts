@@ -1,4 +1,5 @@
 export { ClassTypeScriptTemplate } from './ClassTypeScriptTemplate';
+export { DataTypeTypeScriptTemplate } from './DataTypeTypeScriptTemplate';
 export { EnumerationTypeScriptTemplate } from './EnumerationTypeScriptTemplate';
 export { IndexTypeScriptTemplate } from './IndexTypeScriptTemplate';
 export { InterfaceTypeScriptTemplate } from './InterfaceTypeScriptTemplate';

@@ -9,6 +9,7 @@ import { Bundler } from '../Bundler';
 
 // Templates
 import { ClassTypeScriptTemplate } from './ClassTypeScriptTemplate';
+import { DataTypeTypeScriptTemplate } from './DataTypeTypeScriptTemplate';
 import { EnumerationTypeScriptTemplate } from './EnumerationTypeScriptTemplate';
 import { IndexTypeScriptTemplate } from './IndexTypeScriptTemplate';
 import { InterfaceTypeScriptTemplate } from './InterfaceTypeScriptTemplate';
@@ -21,6 +22,7 @@ export class TypeScriptBundler extends Bundler {
     super(ioService);
 
     this.addTemplate(new ClassTypeScriptTemplate(this));
+    this.addTemplate(new DataTypeTypeScriptTemplate(this));
     this.addTemplate(new EnumerationTypeScriptTemplate(this));
     this.addTemplate(new ModuleTypeScriptTemplate(this));
     this.addTemplate(new PackageJsonTypeScriptTemplate(this));
