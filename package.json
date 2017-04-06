@@ -58,6 +58,7 @@
     "prebuild": "npm run clean:dest",
     "build": "npm run build:dest && npm run copy:dest",
     "publish": "cd dest && npm publish",
+    "patch": "cd modules/@metagram/framework && npm version patch && cd ../../.. && npm run build",
     "prelink": "npm run build",
     "link": "npm run link:framework",
     "link:framework": "cd dest && npm link",
