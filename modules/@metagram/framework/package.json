@@ -1,6 +1,6 @@
 {
   "name": "@metagram/framework",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "The Metagram browser and server framework",
   "typings": "index.d.ts",
   "repository": {
